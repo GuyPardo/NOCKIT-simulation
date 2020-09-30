@@ -18,7 +18,7 @@ w = 2*pi*Frequency;
     L = 100e-6; % length of each unit cell along main lines (m)
     d = 20e-6; % length of each coupling segment (m)
     N=31; % number of unit cells
-    M = 3; % number of lines
+    M = 2; % number of lines
     idx_of_input_lines =1; % either an integer in [1,M]  or an array of integers in [1,M]
     if any(idx_of_input_lines > M)
         error("idx_of_imput_line greater than number of lines")
@@ -66,10 +66,9 @@ w = 2*pi*Frequency;
 % boundaries reflections and attenuators:
 %  see pdf for details
     
-    % attenuation in dB at the interfaces:  first element is for input
-    % ports, second element is for output ports. set to 0 for full
+    % attenuation in dB at the interfaces:   set to 0 for full
     % reflections, set to inf for no reflections
-        atten_dB =[inf,inf] ; 
+        atten_dB =repmat([inf,inf],M,1); % should be a M*2 matrix. one element for each input/ouput port
         
     atten = 10.^(-atten_dB/20); % voltage attenuation factor
     coax_l =30e-2; % estimated total length of coax cable. set to 0 for reflections from the chip itself

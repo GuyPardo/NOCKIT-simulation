@@ -11,7 +11,8 @@ function [t,r] = SolveArrayFunV3(M,N, L,d,k,k_c,Y_0, Y_c,idx_of_input_lines, ref
 %                      these are the indices of the lines (j) for which we set t(j,1) = 1. 
 %  ref_factor - a complex factor that will be scaling the reflections at
 %               the boundaries. usually given by (atten^2)*exp(2i*k_coax*coax_l)
-%               this should be given as a M*2 matrix: one element for each of the 2M ports    
+%               this should be given as a M*2 matrix: one element for each of the 2M ports
+%               the elements corresponding to the port(s) from which the signal is coming will not be used.                
 %
 %   output arguments:
 % t - a MxN matirx containing the t (positively-propagating) amplitudes for the
