@@ -11,6 +11,7 @@ function [t,r] = SolveArrayFunV3(M,N, L,d,k,k_c,Y_0, Y_c,idx_of_input_lines, ref
 %                      these are the indices of the lines (j) for which we set t(j,1) = 1. 
 %  ref_factor - a complex factor that will be scaling the reflections at
 %               the boundaries. usually given by (atten^2)*exp(2i*k_coax*coax_l)
+%               this should be given as a M*2 matrix: one element for each of the 2M ports    
 %
 %   output arguments:
 % t - a MxN matirx containing the t (positively-propagating) amplitudes for the
@@ -116,7 +117,7 @@ for j = 1:M
     % reflections r from the output:
 
     big_ten(eqn_count+1 , 2*j-1,2*N) = 1;
-    big_ten(eqn_count+1 , 2*j-1,2*N-1) = -1*ref_factor(2);
+    big_ten(eqn_count+1 , 2*j-1,2*N-1) = -1*ref_factor(j,2);
     eqn_count = eqn_count  +1;
     
     % known t for input / reflections from other inputs
@@ -126,7 +127,7 @@ for j = 1:M
         V(eqn_count+1) = 1;
     else
         big_ten(eqn_count+1, 2*j-1,1) = 1;
-        big_ten(eqn_count+1 , 2*j-1,2) =   -1*ref_factor(1);
+        big_ten(eqn_count+1 , 2*j-1,2) =   -1*ref_factor(j,1);
     end
     
     eqn_count = eqn_count  +1;
