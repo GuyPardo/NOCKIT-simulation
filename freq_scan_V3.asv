@@ -59,24 +59,23 @@ w = 2*pi*Frequency;
 % parameters correction from fit. use these to get somthing close to the
 % measurement for 2 traces NOCKIT5, but note that we still have to explain the factor of 2 in
 % the phase velocity. the other two factors are close to 1, so they are OK.
-    v_ph = 1.9935*v_ph;
-    v_ph_c = 0.9295*v_ph_c;
-    Z_c = 0.8418*Z_c;
+    v_ph = 1.*v_ph;
+    v_ph_c = 1.0141*v_ph_c;
+    Z_c = 0.9227 * Z_c;
 
 % boundaries reflections and attenuators:
 %  see pdf for details
     
     % attenuation in dB at the interfaces:   set to 0 for full
     % reflections, set to inf for no reflections
-        atten_dB =repmat([inf,7],M,1); % should be a M*2 matrix. one element for each input/ouput port
+        atten_dB =repmat([10,10],M,1); % should be a M*2 matrix. one element for each input/ouput port
           atten_dB(2,1)=0;
-%           atten_dB(3,1)=0;
+%          atten_dB(3,1)=0;
         
     atten = 10.^(-atten_dB/20); % voltage attenuation factor
-    coax_l =30e-2*ones(size(atten_dB)); % estimated total length of coax cable. set to 0 for reflections from the chip itself
+    coax_l =0e-2; % estimated total length of coax cable. set to 0 for reflections from the chip itself
     v_ph_coax = (2/3)*3e8; % phase velocity in coax lines
-    coax_l(2,1) = 0;
-%     coax_l(3,1) = 0;
+
 % complex wavenumbers and and impedances
 
 k=1i*sqrt((R-1i*w*Z_0/v_ph).*(G-1i*w/(Z_0*v_ph))); % effective complex wave number for primary lines (rad/m)
@@ -100,7 +99,7 @@ Y_c = 1./Zeff_c;
 %loop
 for idx = 1:length(Frequency)
     
-    ref_factor = (atten.^2).*exp(2i*k_coax(idx).*coax_l); % a complex factor that will be scaling the reflections at the boundaries
+    ref_factor = (atten.^2).*exp(2i*k_coax(idx)*coax_l); % a complex factor that will be scaling the reflections at the boundaries
 
     
     [t, r] = SolveArrayFunV3(M,N, L,d,k(idx),k_c(idx),Y_0(idx), Y_c(idx),idx_of_input_lines,ref_factor);
