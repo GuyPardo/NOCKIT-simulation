@@ -18,8 +18,8 @@ w = 2*pi*Frequency;
     L = 100e-6; % length of each unit cell along main lines (m)
     d = 20e-6; % length of each coupling segment (m)
     N=31; % number of unit cells
-    M = 3; % number of lines
-    idx_of_input_lines =1; % either an integer in [1,M]  or an array of integers in [1,M]
+    M = 13; % number of lines
+    idx_of_input_lines =7; % either an integer in [1,M]  or an array of integers in [1,M]
     if any(idx_of_input_lines > M)
         error("idx_of_imput_line greater than number of lines")
     end
@@ -59,9 +59,9 @@ w = 2*pi*Frequency;
 % parameters correction from fit. use these to get somthing close to the
 % measurement for 2 traces NOCKIT5, but note that we still have to explain the factor of 2 in
 % the phase velocity. the other two factors are close to 1, so they are OK.
-    v_ph = 2*v_ph;
-    v_ph_c = 1.0141*v_ph_c;
-    Z_c = 0.9227 * Z_c;
+%     v_ph = 2*v_ph;
+%     v_ph_c = 1.0141*v_ph_c;
+%     Z_c = 0.9227 * Z_c;
 
 % boundaries reflections and attenuators:
 %  see pdf for details

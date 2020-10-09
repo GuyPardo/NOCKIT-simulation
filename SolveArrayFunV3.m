@@ -134,9 +134,9 @@ for j = 1:M
 %     setting t_c and r_c for n=1 to zero (in the actual problem they do not exist,
 %     and they don't appear in any equation so we can set them to whatever we want)
     if j<M
-        big_ten(eqn_count+1 , :,:) = full(sparse(2*j,1,[1],size(big_ten,2),size(big_ten,3)));
+        big_ten(eqn_count+1 , 2*j,1) = 1;
         eqn_count = eqn_count+1;
-        big_ten(eqn_count+1 , :,:) = full(sparse(2*j,2,[1],size(big_ten,2),size(big_ten,3)));
+        big_ten(eqn_count+1 , 2*j,2) =1;
         eqn_count = eqn_count+1;
     end
     
