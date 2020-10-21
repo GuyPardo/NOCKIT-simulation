@@ -21,15 +21,17 @@
 
 tic
 clearvars
-% physical parameters:
-v_ph = 1.3611e+06;
-v_ph_c =  1.4088e+06;
-Y0 = 0.0203; % admittance for lines
-Yc = 0.0027; % admittance for couplers
+%geometry:
 N=30; % number of couplers. (= number of unit cells minus 1) 
-freq = 6e9; 
 L0 = 100e-6; % length of each line segment
 d = 20e-6; % length of each coupler segment
+% physical parameters: (see the NOCKIT simulation  )
+v_ph = 1.361104539023962e+06; % phase velocity for lines
+v_ph_c =  1.408763793738406e+06; % phase velocity for couplers
+Y0 = 0.020259488114653; % admittance for lines
+Yc = 0.002735070881675; % admittance for couplers
+
+freq = 6e9; 
 k0 = 2*pi*freq/v_ph; % wavenumber for lines
 kc = 2*pi*freq/v_ph_c; % wavenumber for couplers
 
@@ -100,7 +102,7 @@ for i=1:G.numnodes
     
     L = [L_in; L_out];
     k = [k_in; k_out];
-    Y = [Y_in; -Y_out];  % the minus sign is to differentiate btw current into the node and out of the node
+    Y = [-Y_in; +Y_out];  % the minus sign is to differentiate btw current into the node and out of the node
     
     
     % encode voltage continuity equation for the  ith node: loop on node edges
