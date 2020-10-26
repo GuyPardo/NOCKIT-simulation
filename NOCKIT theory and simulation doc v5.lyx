@@ -1,0 +1,2701 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\rightmargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+NOCKIT - Theory and Simulation doc
+\end_layout
+
+\begin_layout Author
+Samuel & Guy
+\end_layout
+
+\begin_layout Section
+Writing an ansatz for voltage and current in each segment
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+
+\series bold
+\begin_inset Graphics
+	filename images/pasted3.png
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\series bold
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+a unit cell of a ladder network, composed of three segments p, s and c.
+ p and s denote the primary and secondary lines.
+ c denotes the coupling line.
+ the blue arrows indicate the dimensions of the unit-cell and the orange
+ arrows indicate the origin and positive direction of the coordinates defined
+ for each segment\SpecialChar endofsentence
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Each unit cell is made out of three segments p,s and c Where P denotes the
+ primary line, S denotes the secondary line, and C denotes the coupling
+ line.
+ We can write the voltage and the current in each segment as a guess of
+ the form (eq.
+ 2.14a and 2.14b in Pozar): 
+\begin_inset Formula 
+\begin{align}
+V\left(x\right) & =te^{ikx}+re^{-ikx}\label{eq:ansatz1}\\
+I\left(x\right) & =\frac{1}{Z_{0}}\left[te^{ikx}-re^{-ikx}\right]\label{eq:ansatz2}
+\end{align}
+
+\end_inset
+
+ several notes regarding these expressions:
+\end_layout
+
+\begin_layout Enumerate
+note that our 
+\begin_inset Formula $+i$
+\end_inset
+
+ equals Pozar's 
+\begin_inset Formula $-j$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+If we assume a given frequency, then 
+\begin_inset Formula $k$
+\end_inset
+
+ and 
+\begin_inset Formula $Z_{0}$
+\end_inset
+
+ are known properties of the lines, so they can only take one of two values:
+ one value for the main lines and a different (and known) value for the
+ coupling lines.
+ 
+\end_layout
+
+\begin_layout Enumerate
+The variables 
+\begin_inset Formula $t$
+\end_inset
+
+ and 
+\begin_inset Formula $r$
+\end_inset
+
+ are not reflectance and transmission coefficients.
+ They are unknown variables, and in principle we have 
+\begin_inset Formula $3N$
+\end_inset
+
+ 
+\begin_inset Formula $r$
+\end_inset
+
+'s and 
+\begin_inset Formula $3N$
+\end_inset
+
+ 
+\begin_inset Formula $t$
+\end_inset
+
+'s , one for each segment in the network.
+ We will denote them as: 
+\begin_inset Formula $r_{p}^{n},t_{p}^{n},r_{s}^{n},t_{s}^{n}$
+\end_inset
+
+, 
+\begin_inset Formula $r_{c}^{n},t_{c}^{n}$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Enumerate
+We assume that the voltage is normalized to the input signal amplitude,
+ so 
+\begin_inset Formula $r$
+\end_inset
+
+ and 
+\begin_inset Formula $t$
+\end_inset
+
+ are dimensionless.
+\end_layout
+
+\begin_layout Enumerate
+Each segment has it's own coordinate 
+\begin_inset Formula $x$
+\end_inset
+
+, which goes from 
+\begin_inset Formula $0$
+\end_inset
+
+ to 
+\begin_inset Formula $L$
+\end_inset
+
+ in the case of the main lines (p,s) and from 
+\begin_inset Formula $0$
+\end_inset
+
+ to 
+\begin_inset Formula $d$
+\end_inset
+
+ in the case of the coupling lines (c).
+ 
+\end_layout
+
+\begin_layout Standard
+In the light of these remarks, let's rewrite (1) and (2) for each segment
+ in the 
+\begin_inset Formula $n$
+\end_inset
+
+th unit cell:
+\begin_inset Formula 
+\begin{align}
+V_{p}^{n}\left(x\right) & =t_{p}^{n}e^{ikx}+r_{p}^{n}e^{-ikx}\label{eq:3}\\
+V_{s}^{n}\left(x\right) & =t_{s}^{n}e^{ikx}+r_{s}^{n}e^{-ikx}\\
+V_{c}^{n}\left(x\right) & =t_{c}^{n}e^{ik_{c}x}+r_{c}^{n}e^{-ik_{c}x}
+\end{align}
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align}
+I_{p}^{n}\left(x\right) & =\frac{1}{Z_{0}}\left[t_{p}^{n}e^{ikx}-r_{p}^{n}e^{-ikx}\right]\\
+I_{s}^{n}\left(x\right) & =\frac{1}{Z_{0}}\left[t_{s}^{n}e^{ikx}-r_{s}^{n}e^{-ikx}\right]\\
+I_{c}^{n}\left(x\right) & =\frac{1}{Z_{c}}\left[t_{c}^{n}e^{ik_{c}x}-r_{c}^{n}e^{-ik_{c}x}\right]\label{eq:8}
+\end{align}
+
+\end_inset
+
+where 
+\begin_inset Formula $Z_{c}$
+\end_inset
+
+ is the characteristic impedance of the coupling lines, and 
+\begin_inset Formula $k_{c}$
+\end_inset
+
+ is their wave number.
+ 
+\end_layout
+
+\begin_layout Section
+writing equations for the 
+\begin_inset Formula $r$
+\end_inset
+
+'s and the 
+\begin_inset Formula $t$
+\end_inset
+
+'s :
+\end_layout
+
+\begin_layout Standard
+Now we have to require continuity of the voltage and conservation of current
+ in the two nodes of the cell.
+ Note that each voltage continuity requirement is actually two (independent)
+ equations.
+ For the upper node :
+\begin_inset Formula 
+\begin{align}
+V_{p}^{n}\left(0\right) & =V_{p}^{n-1}\left(L\right)\\
+V_{p}^{n}\left(0\right) & =V_{c}^{n}\left(0\right)
+\end{align}
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+for the lower node :
+\begin_inset Formula 
+\begin{align}
+V_{s}^{n}\left(0\right) & =V_{s}^{n-1}\left(L\right)\\
+V_{s}^{n}\left(0\right) & =V_{c}^{n}\left(d\right)
+\end{align}
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+ The current equations:
+\begin_inset Formula 
+\begin{align}
+0 & =I_{p}^{n-1}\left(L\right)-I_{p}^{n}\left(0\right)-I_{c}^{n}\left(0\right)\\
+0 & =I_{s}^{n-1}\left(L\right)-I_{s}^{n}\left(0\right)+I_{c}^{n}\left(d\right)
+\end{align}
+
+\end_inset
+
+plugging (3) - (8) into (9) - (14) , we get: 
+\begin_inset Formula 
+\begin{align}
+t_{p}^{n}+r_{p}^{n} & =t_{p}^{n-1}e^{ikL}+r_{p}^{n-1}e^{-ikL}\label{eq:15}\\
+t_{p}^{n}+r_{p}^{n} & =t_{c}^{n}+r_{c}^{n}\label{eq:16}\\
+t_{s}^{n}+r_{s}^{n} & =t_{s}^{n-1}e^{ikL}+r_{s}^{n-1}e^{-ikL}\label{eq:17}\\
+t_{s}^{n}+r_{s}^{n} & =t_{c}^{n}e^{ik_{c}d}+r_{c}^{n}e^{-ik_{c}d}\label{eq:18}\\
+0 & =\frac{1}{Z_{0}}\left[t_{p}^{n-1}e^{ikL}-r_{p}^{n-1}e^{-ikL}\right]-\frac{1}{Z_{0}}\left[t_{p}^{n}-r_{p}^{n}\right]-\frac{1}{Z_{c}}\left[t_{c}^{n}-r_{c}^{n}\right]\label{eq:19}\\
+0 & =\frac{1}{Z_{0}}\left[t_{s}^{n-1}e^{ikL}-r_{s}^{n-1}e^{-ikL}\right]-\frac{1}{Z_{0}}\left[t_{s}^{n}-r_{s}^{n}\right]+\frac{1}{Z_{c}}\left[t_{c}^{n}e^{ik_{c}d}-r_{c}^{n}e^{-ik_{c}d}\right]\label{eq:20}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This is true for 
+\begin_inset Formula $2\le n\le N$
+\end_inset
+
+ , as long as we use the boundary conditions : 
+\begin_inset Formula 
+\begin{equation}
+t_{p}^{1}=1,\,\,\,t_{s}^{1}=0
+\end{equation}
+
+\end_inset
+
+ 
+\begin_inset Formula 
+\begin{equation}
+r_{p}^{N}=r_{s}^{N}=0
+\end{equation}
+
+\end_inset
+
+ These assume an incident voltage signal with amplitude 
+\begin_inset Formula $1$
+\end_inset
+
+ in the primary line and no input signals to the secondary line.
+ The first cell has no coupling segment, so the variables 
+\begin_inset Formula $t_{c}^{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $r_{c}^{1}$
+\end_inset
+
+ do not exist.
+ the primary lines are assumed to continue to infinity after the 
+\begin_inset Formula $N$
+\end_inset
+
+th cell and before the 
+\begin_inset Formula $1$
+\end_inset
+
+st.
+ This means that we have 
+\begin_inset Formula $6\left(N-1\right)$
+\end_inset
+
+ linear equations for 
+\begin_inset Formula $6\left(N-1\right)$
+\end_inset
+
+ variables.
+ 
+\end_layout
+
+\begin_layout Section
+Solving the equations
+\end_layout
+
+\begin_layout Subsection
+method I: numerically solve 
+\begin_inset Formula $6\left(N-1\right)$
+\end_inset
+
+ equations for 
+\begin_inset Formula $6\left(N-1\right)$
+\end_inset
+
+ variables
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:method-I:-numarically"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+in order to solve 
+\begin_inset Formula $6\left(N-1\right)$
+\end_inset
+
+ linear equations for 
+\begin_inset Formula $6\left(N-1\right)$
+\end_inset
+
+ variables, we want to encode the system of equation in matrix form: 
+\begin_inset Formula 
+\begin{equation}
+M\vec{x}=\vec{v}\label{eq:}
+\end{equation}
+
+\end_inset
+
+ where 
+\begin_inset Formula $M$
+\end_inset
+
+ is a matrix, 
+\begin_inset Formula $\vec{v}$
+\end_inset
+
+ is a column vector and 
+\begin_inset Formula $\vec{x}$
+\end_inset
+
+ is the column vector of solutions.
+ We'll start by encoding the 6 equations describing one intersection between
+ two unit cell.
+ rewriting (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:15"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+)-(
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:20"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+) such that the left side is zero: 
+\begin_inset Newline newline
+\end_inset
+
+ 
+\begin_inset Formula 
+\begin{align}
+0=t_{p}^{n}+r_{p}^{n} & -t_{p}^{n-1}e^{ikL}-r_{p}^{n-1}e^{-ikL}\\
+0=t_{p}^{n}+r_{p}^{n} & -t_{c}^{n}-r_{c}^{n}\\
+0=t_{s}^{n}+r_{s}^{n} & -t_{s}^{n-1}e^{ikL}-r_{s}^{n-1}e^{-ikL}\\
+0=t_{s}^{n}+r_{s}^{n} & -t_{c}^{n}e^{ik_{c}d}-r_{c}^{n}e^{-ik_{c}d}\\
+0 & =\frac{1}{Z_{0}}\left[t_{p}^{n-1}e^{ikL}-r_{p}^{n-1}e^{-ikL}\right]-\frac{1}{Z_{0}}\left[t_{p}^{n}-r_{p}^{n}\right]-\frac{1}{Z_{c}}\left[t_{c}^{n}-r_{c}^{n}\right]\\
+0 & =\frac{1}{Z_{0}}\left[t_{s}^{n-1}e^{ikL}-r_{s}^{n-1}e^{-ikL}\right]-\frac{1}{Z_{0}}\left[t_{s}^{n}-r_{s}^{n}\right]+\frac{1}{Z_{c}}\left[t_{c}^{n}e^{ik_{c}d}-r_{c}^{n}e^{-ik_{c}d}\right]
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+note that for these six equations there are 10 variables, so in order to
+ write in in the form (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+) we need a 
+\begin_inset Formula $6\times10$
+\end_inset
+
+ matrix 
+\begin_inset Formula $M$
+\end_inset
+
+.
+ We will use the following order for the variables: 
+\begin_inset Formula 
+\begin{equation}
+\vec{x}=\left(t_{p}^{n-1},r_{p}^{n-1},t_{s}^{n-1},r_{s}^{n-1},t_{c}^{n},r_{c}^{n},t_{p}^{n},r_{p}^{n},t_{s}^{n},r_{s}^{n}\right)\label{eq:30}
+\end{equation}
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+such that :
+\begin_inset Formula 
+\begin{equation}
+M=\begin{pmatrix}-e^{ikL} & -e^{-ikL} & 0 & 0 & 0 & 0 & 1 & 1 & 0 & 0\\
+0 & 0 & 0 & 0 & -1 & -1 & 1 & 1 & 0 & 0\\
+0 & 0 & -e^{ikL} & -e^{-ikL} & 0 & 0 & 0 & 0 & 1 & 1\\
+0 & 0 & 0 & 0 & -e^{ik_{c}d} & -e^{-ik_{c}d} & 0 & 0 & 1 & 1\\
+\frac{1}{Z_{0}}e^{ikK} & -\frac{1}{Z_{0}}e^{-ikL} & 0 & 0 & -\frac{1}{Z_{c}} & \frac{1}{Z_{c}} & -\frac{1}{Z_{0}} & \frac{1}{Z_{0}} & 0 & 0\\
+0 & 0 & \frac{1}{Z_{0}}e^{ikL} & -\frac{1}{Z_{0}}e^{-ikL} & \frac{1}{Z_{c}}e^{ik_{c}d} & -\frac{1}{Z_{c}}e^{-ik_{c}d} & 0 & 0 & -\frac{1}{Z_{0}} & \frac{1}{Z_{0}}
+\end{pmatrix}\label{eq:single intersection matrix}
+\end{equation}
+
+\end_inset
+
+choosing the following order for 
+\series bold
+all 
+\series default
+the variables:
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula 
+\[
+\vec{x}=\left(t_{p}^{1},r_{p}^{1}t_{s}^{1},r_{s}^{1},t_{c}^{2},r_{c}^{2},t_{p}^{2},r_{p}^{2}t_{s}^{2},r_{s}^{2},...,t_{p}^{n-1},r_{p}^{n-1},t_{s}^{n-1},r_{s}^{n-1},t_{c}^{n},r_{c}^{n},t_{p}^{n},r_{p}^{n}t_{s}^{n},r_{s}^{n}\right)
+\]
+
+\end_inset
+
+ note that there are 
+\begin_inset Formula $6N-2$
+\end_inset
+
+ variables (since there are no 
+\begin_inset Formula $r_{c}^{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $t_{c}^{1}$
+\end_inset
+
+) of which 4 are known by the boundary conditions.
+\begin_inset Newline newline
+\end_inset
+
+We can build the matrix 
+\begin_inset Formula $M$
+\end_inset
+
+ for the entire problem by pasting copies of the single intersection matrix
+ (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:single intersection matrix"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+) with the correct shifts into a 
+\begin_inset Formula $\left(6N-6\right)\times\left(6N-2\right)$
+\end_inset
+
+ matrix.
+ Then we add 4 more trivial rows (rows that are already solved) to encode
+ the boundary conditions (the 4 known variables).
+ So our matrix will look something like figure
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:a-schematic-of"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ .
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/pasted4.png
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:a-schematic-of"
+
+\end_inset
+
+a schematic of the total 
+\begin_inset Formula $\left(6N-6\right)\times\left(6N-2\right)$
+\end_inset
+
+ matrix encoding our system of linear equations, constructed by pasting
+ copies of the single-intersection 
+\begin_inset Formula $6\times10$
+\end_inset
+
+ matrix 
+\begin_inset Formula $M$
+\end_inset
+
+ (in blue) with the appropriate shifts, and adding 4 trivial rows at the
+ bottom (in green).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+the vector 
+\begin_inset Formula $\vec{v}$
+\end_inset
+
+ is all zeros except of the component corresponding to the boundary condition
+ 
+\begin_inset Formula $t_{p}^{1}=1$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+method II : try to express 
+\begin_inset Formula $t_{i}^{n},r_{i}^{n}$
+\end_inset
+
+ in terms of 
+\begin_inset Formula $t_{i}^{n-1},$
+\end_inset
+
+
+\begin_inset Formula $r_{i}^{n-1}$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+note:
+\bar default
+ the bottom line is: we used method I.
+ Method II looked promising but we didn't find a way to make it work, a
+ more detailed discussion below:
+\end_layout
+
+\begin_layout Standard
+We look at eqns (24)-(29) as if every 
+\begin_inset Formula $t_{i}^{n-1}$
+\end_inset
+
+ and 
+\begin_inset Formula $r_{i}^{n-1}$
+\end_inset
+
+ is known.
+ We will want to write these 6 equations in the form 
+\begin_inset Formula $M\vec{x}=\vec{v}$
+\end_inset
+
+ where 
+\begin_inset Formula 
+\[
+\vec{x}=\left(r_{p}^{n},t_{p}^{n},r_{s}^{n},t_{s}^{n},r_{c}^{n},t_{c}^{n}\right)
+\]
+
+\end_inset
+
+ is the (column) vector of solutions.
+ re-arranging:
+\begin_inset Formula 
+\begin{align}
+r_{p}^{n}+t_{p}^{n}= & t_{p}^{n-1}e^{ikL}+r_{p}^{n-1}e^{-ikL}\\
+r_{p}^{n}+t_{p}^{n}-r_{c}^{n}-t_{c}^{n} & =0\\
+r_{s}^{n}+t_{s}^{n} & =t_{s}^{n-1}e^{ikL}+r_{s}^{n-1}e^{-ikL}\\
+r_{s}^{n}+t_{s}^{n}-r_{c}^{n}e^{-ik_{c}d}-t_{c}^{n}e^{ik_{c}d} & =0\\
+\left[-r_{p}^{n}+t_{p}^{n}\right]+\frac{Z_{0}}{Z_{c}}\left[-r_{c}^{n}+t_{c}^{n}\right] & =\left[t_{p}^{n-1}e^{ikL}-r_{p}^{n-1}e^{-ikL}\right]\\
+\left[-r_{s}^{n}+t_{s}^{n}\right]-\frac{Z_{0}}{Z_{c}}\left[-r_{c}^{n}e^{-ik_{c}d}+t_{c}^{n}e^{ik_{c}d}\right] & =\left[t_{s}^{n-1}e^{ikL}-r_{s}^{n-1}e^{-ikL}\right]
+\end{align}
+
+\end_inset
+
+or in matrix form: 
+\begin_inset Formula 
+\[
+\begin{pmatrix}1 & 1 & 0 & 0 & 0 & 0\\
+1 & 1 & 0 & 0 & -1 & -1\\
+0 & 0 & 1 & 1 & 0 & 0\\
+0 & 0 & 1 & 1 & -e^{-ik_{c}d} & -e^{ik_{c}d}\\
+-1 & 1 & 0 & 0 & -\frac{Z_{0}}{Z_{c}} & \frac{Z_{0}}{Z_{c}}\\
+0 & 0 & -1 & 1 & \frac{Z_{0}}{Z_{c}}e^{-ik_{c}d} & -\frac{Z_{0}}{Z_{c}}e^{+ik_{c}d}
+\end{pmatrix}\begin{pmatrix}r_{p}^{n}\\
+t_{p}^{n}\\
+r_{s}^{n}\\
+t_{s}^{n}\\
+r_{c}^{n}\\
+t_{c}^{n}
+\end{pmatrix}=\begin{pmatrix}t_{p}^{n-1}e^{ikL}+r_{p}^{n-1}e^{-ikL}\\
+0\\
+t_{s}^{n-1}e^{ikL}+r_{s}^{n-1}e^{-ikL}\\
+0\\
+t_{p}^{n-1}e^{ikL}-r_{p}^{n-1}e^{-ikL}\\
+t_{s}^{n-1}e^{ikL}-r_{s}^{n-1}e^{-ikL}
+\end{pmatrix}
+\]
+
+\end_inset
+
+now we can use it to construct an iterative numerical solution in Matlab,
+ or we can solve it analytically in Mathematica:
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\begin{pmatrix}r_{p}^{n}\\
+t_{p}^{n}\\
+r_{s}^{n}\\
+t_{s}^{n}\\
+r_{c}^{n}\\
+t_{c}^{n}
+\end{pmatrix}=\left(\begin{array}{c}
+\frac{e^{-ikL}\left(Z_{0}\left(-\left(e^{2ikL}\left(t_{p}\left(1+e^{2idk_{c}}\right)-2t_{s}e^{idk_{c}}\right)-2r_{s}e^{idk_{c}}\right)\right)-r_{p}\left(Z_{0}\left(1+e^{2idk_{c}}\right)-2Z_{c}\left(-1+e^{2idk_{c}}\right)\right)\right)}{2Z_{c}\left(-1+e^{2idk_{c}}\right)}\\
+\frac{e^{-ikL}\left(e^{2ikL}\left(t_{p}\left(Z_{0}\left(1+e^{2idk_{c}}\right)+2Z_{c}\left(-1+e^{2idk_{c}}\right)\right)-2Z_{0}t_{s}e^{idk_{c}}\right)+Z_{0}r_{p}\left(1+e^{2idk_{c}}\right)-2Z_{0}r_{s}e^{idk_{c}}\right)}{2Z_{c}\left(-1+e^{2idk_{c}}\right)}\\
+\frac{e^{-ikL}\left(-Z_{0}e^{2ikL}\left(t_{s}\left(1+e^{2idk_{c}}\right)-2t_{p}e^{idk_{c}}\right)+2Z_{0}r_{p}e^{idk_{c}}-r_{s}\left(Z_{0}\left(1+e^{2idk_{c}}\right)-2Z_{c}\left(-1+e^{2idk_{c}}\right)\right)\right)}{2Z_{c}\left(-1+e^{2idk_{c}}\right)}\\
+\frac{e^{-ikL}\left(e^{2ikL}\left(t_{s}\left(Z_{0}\left(1+e^{2idk_{c}}\right)+2Z_{c}\left(-1+e^{2idk_{c}}\right)\right)-2Z_{0}t_{p}e^{idk_{c}}\right)-2Z_{0}r_{p}e^{idk_{c}}+Z_{0}r_{s}\left(1+e^{2idk_{c}}\right)\right)}{2Z_{c}\left(-1+e^{2idk_{c}}\right)}\\
+\frac{e^{i\left(dk_{c}-kL\right)}\left(e^{2ikL}\left(-t_{s}+t_{p}e^{idk_{c}}\right)+r_{p}e^{idk_{c}}-r_{s}\right)}{-1+e^{2idk_{c}}}\\
+\frac{e^{-ikL}\left(e^{2ikL}\left(-t_{p}+t_{s}e^{idk_{c}}\right)+r_{s}e^{idk_{c}}-r_{p}\right)}{-1+e^{2idk_{c}}}
+\end{array}\right)
+\]
+
+\end_inset
+
+*in this solution 
+\begin_inset Formula $r_{p}$
+\end_inset
+
+ means 
+\begin_inset Formula $r_{p}^{n-1}$
+\end_inset
+
+ etc.
+ otherwise Mathematica will think it's 
+\begin_inset Formula $r_{p}$
+\end_inset
+
+ to the 
+\begin_inset Formula $\left(n-1\right)$
+\end_inset
+
+th power and it will be a mess...
+\end_layout
+
+\begin_layout Standard
+in second thought - working iteratively is not that easy - for example,
+ in order to calculate any unit cell 2 variable, we need 
+\begin_inset Formula $r_{p}^{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $r_{s}^{1}$
+\end_inset
+
+ which we don't know).
+\end_layout
+
+\begin_layout Section
+Simulation results and discussion
+\end_layout
+
+\begin_layout Standard
+After solving for all the 
+\begin_inset Formula $r$
+\end_inset
+
+'s nad the 
+\begin_inset Formula $t$
+\end_inset
+
+'s , we reconstruct the voltage and current along the main lines from equations
+ (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:3"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+)-(
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:8"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+).
+ an example of such a reconstruction is shown in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Simulated-voltage-and"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, with parameters that we'll call default configurations throughout this
+ section: the frequency is 
+\begin_inset Formula $f=6\text{GHz}$
+\end_inset
+
+, the coupling segment width is 
+\begin_inset Formula $w_{c}=200\unit{nm}$
+\end_inset
+
+, the coupling length 
+\begin_inset Formula $d=20\mu m$
+\end_inset
+
+, the unit cell length is 
+\begin_inset Formula $L=100\mu m$
+\end_inset
+
+ and the number of unit-cells 
+\begin_inset Formula $N=51.$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/pasted5.png
+	scale 70
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Simulated-voltage-and"
+
+\end_inset
+
+Simulated voltage and current magnitudes along the primary and secondary
+ lines.
+\begin_inset Newline newline
+\end_inset
+
+at default configurations: the frequency is 
+\begin_inset Formula $f=6\text{GHz}$
+\end_inset
+
+, the coupling segment width is 
+\begin_inset Formula $w_{c}=200\unit{nm}$
+\end_inset
+
+, the coupling length 
+\begin_inset Formula $d=20\mu m$
+\end_inset
+
+, the unit cell length is 
+\begin_inset Formula $L=100\mu m$
+\end_inset
+
+ and the number of unit-cells 
+\begin_inset Formula $N=51.$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We also calculated the power (see figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Simulated-power-alond"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+) along the lines, using : 
+\begin_inset Formula 
+\begin{equation}
+P=\frac{1}{2}\text{Re}\left[V\cdot I^{*}\right]\label{eq:power}
+\end{equation}
+
+\end_inset
+
+
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/pasted7.png
+	scale 70
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Simulated-power-alond"
+
+\end_inset
+
+Simulated power along the primary and secondary line.
+ default configuration:the frequency is 
+\begin_inset Formula $f=6\text{GHz}$
+\end_inset
+
+, the coupling segment width is 
+\begin_inset Formula $w_{c}=200\unit{nm}$
+\end_inset
+
+, the couling length 
+\begin_inset Formula $d=20\mu m$
+\end_inset
+
+, the unit cell length is 
+\begin_inset Formula $L=100\mu m$
+\end_inset
+
+ and the number of unit-cells 
+\begin_inset Formula $N=51.$
+\end_inset
+
+ one can see the energy oscillates between the two lines.
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/pasted8.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Simulated-network-frequency"
+
+\end_inset
+
+Simulated network frequency response for default configurations: the coupling
+ segment width is 
+\begin_inset Formula $w_{c}=200\unit{nm}$
+\end_inset
+
+, the coupling length 
+\begin_inset Formula $d=20\mu m$
+\end_inset
+
+, the unit cell length is 
+\begin_inset Formula $L=100\mu m$
+\end_inset
+
+ and the number of unit-cells 
+\begin_inset Formula $N=51.$
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+problems for small 
+\begin_inset Formula $d$
+\end_inset
+
+ / low frequencies
+\end_layout
+
+\begin_layout Standard
+We found that when either 
+\begin_inset Formula $d$
+\end_inset
+
+ or 
+\begin_inset Formula $L$
+\end_inset
+
+ are too small relative to the relevant wavelengths (for example around
+ 
+\begin_inset Formula $d=10\unit{\mu m}$
+\end_inset
+
+ for 
+\begin_inset Formula $6\text{GHz},$
+\end_inset
+
+ or below 
+\begin_inset Formula $4\text{GHz}$
+\end_inset
+
+ for the default configurations as can be seen in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Simulated-network-frequency"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+), there is no oscillation of the energy between the primary and the secondary
+ lines, and instead the energy seems to divide equally between the 4 ports
+ : 
+\begin_inset Formula 
+\[
+\left|r_{p}\left(1\right)\right|^{2}=\left|r_{s}\left(1\right)\right|^{2}=\left|t_{p}\left(N\right)\right|^{2}=\left|t_{s}\left(N\right)\right|^{2}\approx0.25
+\]
+
+\end_inset
+
+This can be explained by considering the extreme limit 
+\begin_inset Formula $d=0$
+\end_inset
+
+.
+ In this case each coupling is actually a short-circuit and other than the
+ first intersection there are no reflections at all (it behaves like a single
+ transmission line).
+\end_layout
+
+\begin_layout Section
+Generalization for a lattice of transmission lines
+\end_layout
+
+\begin_layout Standard
+We will try to keep as much of the notation as possible the same.
+ instead of two main lines p and s , we now have 
+\begin_inset Formula $M$
+\end_inset
+
+ lines, denoted with the index 
+\begin_inset Formula $j$
+\end_inset
+
+ instead of the letters 
+\begin_inset Formula $p$
+\end_inset
+
+ and 
+\begin_inset Formula $s$
+\end_inset
+
+.
+ The notation is presented in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:a-lattice-of"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/pasted9.png
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:a-lattice-of"
+
+\end_inset
+
+a lattice of transmission lines with coupling segments.
+\begin_inset Newline newline
+\end_inset
+
+the line segments are denoted 
+\begin_inset Formula $L_{j,n}$
+\end_inset
+
+ and the coupling segments 
+\begin_inset Formula $C_{j,n}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+using the same ansatz as before - equations (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ansatz1"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+), (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ansatz2"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+) - we write the equations for the highlighted node in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:a-lattice-of"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+:
+\begin_inset Formula 
+\begin{align}
+V_{j,n}\left(0\right) & =V_{j,n}^{c}\left(0\right)\nonumber \\
+V_{j,n}\left(0\right) & =V_{j,n-1}\left(L\right)\nonumber \\
+V_{j,n}\left(0\right) & =V_{j-1,n}^{c}\left(d\right)\nonumber \\
+0 & =I_{j,n}\left(0\right)+I_{j,n}^{c}\left(0\right)-I_{j,n-1}\left(L\right)-I_{j-1,n}^{c}\left(d\right)\label{eq:lattice_eqns}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+substituting the ansatz in: 
+\begin_inset Formula 
+\begin{align}
+0 & =t_{j,n}^{c}+r_{j,n}^{c}-t_{j,n}-r_{j,n}\nonumber \\
+0 & =t_{j,n-1}e^{ikL}+r_{j,n-1}e^{-ikL}-t_{j,n}-r_{j,n}\nonumber \\
+0 & =t_{j-1,n}^{c}e^{ik_{c}d}+r_{j-1,n}^{c}e^{-ik_{c}d}-t_{j,n}-r_{j,n}\nonumber \\
+0 & =\frac{1}{Z_{0}}\left(t_{j,n}-r_{j,n}\right)+\frac{1}{Z_{c}}\left(t_{j,n}^{c}-r_{j,n}^{c}\right)-\frac{1}{Z_{0}}\left(t_{j,n-1}e^{ikL}-r_{j,n-1}e^{-ikL}\right)-\frac{1}{Z_{c}}\left(t_{j-1,n}^{c}e^{ik_{c}d}-r_{j-1,n}^{c}e^{-ik_{c}d}\right)\label{eq:lattice_eqns: explicit}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+for 
+\begin_inset Formula $2\le n\le N$
+\end_inset
+
+ and 
+\begin_inset Formula $2\le j\le M-1$
+\end_inset
+
+ .
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+dealing with boundary conditions:
+\end_layout
+
+\begin_layout Standard
+the 
+\begin_inset Formula $n=1$
+\end_inset
+
+ boundary is dealt with in a similar way to the simpler case: we assume
+ that the first unit cell has no coupling and thus 
+\begin_inset Formula $t_{j,1}^{c},r_{j,1}^{c}$
+\end_inset
+
+ do not exist for all 
+\begin_inset Formula $j$
+\end_inset
+
+.
+ Similarly 
+\begin_inset Formula $r_{M,n}^{c},t_{M,n}^{c}$
+\end_inset
+
+ do not exist for all 
+\begin_inset Formula $n$
+\end_inset
+
+.
+ 
+\begin_inset Formula $t_{j,1}$
+\end_inset
+
+ are known for all 
+\begin_inset Formula $j$
+\end_inset
+
+ (that is - we know into which line(s) we send a signal), and 
+\begin_inset Formula $r_{j,N}=0$
+\end_inset
+
+ for all 
+\begin_inset Formula $j$
+\end_inset
+
+.
+ 
+\begin_inset Newline newline
+\end_inset
+
+for the 
+\begin_inset Formula $j=1$
+\end_inset
+
+ boundary we need a different set of equations - specifically the third
+ equation in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:lattice_eqns"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+) is irrelevant, and the last equation has less terms:
+\begin_inset Formula 
+\begin{align}
+0 & =t_{1,n}^{c}+r_{1,n}^{c}-t_{1,n}-r_{1,n}\nonumber \\
+0 & =t_{1,n-1}e^{ikL}+r_{1,n-1}e^{-ikL}-t_{1,n}-r_{1,n}\nonumber \\
+0 & =\frac{1}{Z_{0}}\left(t_{1,n}-r_{1,n}\right)+\frac{1}{Z_{c}}\left(t_{1,n}^{c}-r_{1,n}^{c}\right)-\frac{1}{Z_{0}}\left(t_{1,n-1}e^{ikL}-r_{1,n-1}e^{-ikL}\right)\label{eq:lattice_eqns: explicit_bound}
+\end{align}
+
+\end_inset
+
+for 
+\begin_inset Formula $2\le n\le N$
+\end_inset
+
+.
+ Similarly for 
+\begin_inset Formula $j=M$
+\end_inset
+
+, the first equation is irrelevant and the last one has to be modified :
+ 
+\begin_inset Formula 
+\begin{align}
+0 & =t_{M,n-1}e^{ikL}+r_{M,n-1}e^{-ikL}-t_{M,n}-r_{M,n}\nonumber \\
+0 & =t_{M-1,n}^{c}e^{ik_{c}d}+r_{M-1,n}^{c}e^{-ik_{c}d}-t_{M,n}-r_{M,n}\nonumber \\
+0 & =\frac{1}{Z_{0}}\left(t_{M,n}-r_{M,n}\right)-\frac{1}{Z_{0}}\left(t_{M,n-1}e^{ikL}-r_{M,n-1}e^{-ikL}\right)-\frac{1}{Z_{c}}\left(t_{M-1,n}^{c}e^{ik_{c}d}-r_{M-1,n}^{c}e^{-ik_{c}d}\right)\label{eq:lattice_eqns: explicit_bound_1}
+\end{align}
+
+\end_inset
+
+for 
+\begin_inset Formula $2\le n\le N$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+counting variables and equations
+\end_layout
+
+\begin_layout Standard
+we have 
+\begin_inset Formula $4$
+\end_inset
+
+ variables for each 
+\begin_inset Formula $n$
+\end_inset
+
+ and 
+\begin_inset Formula $j$
+\end_inset
+
+, that is 
+\begin_inset Formula $4MN$
+\end_inset
+
+ of which and 
+\begin_inset Formula $2M+2N-2$
+\end_inset
+
+ do not exist.
+ this gives a total of 
+\begin_inset Formula $4MN-2M-2N+2$
+\end_inset
+
+ .
+ we have 
+\begin_inset Formula $4\left(M-2\right)\left(N-1\right)$
+\end_inset
+
+ equation from (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:lattice_eqns: explicit"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+) , another 
+\begin_inset Formula $6\left(N-1\right)$
+\end_inset
+
+ equation from (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:lattice_eqns: explicit_bound"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+) and (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:lattice_eqns: explicit_bound_1"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+), and yet another 
+\begin_inset Formula $2M$
+\end_inset
+
+ from the boundary conditions (the known variables are treated here as trivial
+ equations).
+ this gives a total of 
+\begin_inset Formula $4\left(M-2\right)\left(N-1\right)+6\left(N-1\right)+2M=4MN-8N-4M+8+6N-6+2M=4MN-2M-2N+2$
+\end_inset
+
+ equations - the same as the number of variables.
+\end_layout
+
+\begin_layout Subsection
+Encoding the equations
+\end_layout
+
+\begin_layout Standard
+first, look at the bulk equations for a given 
+\begin_inset Formula $n,j$
+\end_inset
+
+: Think of the variables as stored in a matrix: 
+\begin_inset Formula 
+\[
+\begin{pmatrix}M_{j-1,n-1} & M_{j-1,n}\\
+M_{j,n-1} & M_{j,n}
+\end{pmatrix}
+\]
+
+\end_inset
+
+ where 
+\begin_inset Formula 
+\[
+M_{j,n}:=\begin{pmatrix}t_{j,n} & r_{j,n}\\
+t_{j,n}^{c} & r_{j,n}^{c}
+\end{pmatrix}
+\]
+
+\end_inset
+
+or, explicitly: 
+\begin_inset Formula 
+\begin{equation}
+\left(\begin{array}{cccc}
+t_{j-1,n-1} & r_{j-1,n-1} & t_{j-1,n} & r_{j-1,n}\\
+t_{j-1,n-1}^{c} & r_{j-1,n-1}^{c} & t_{j-1,n}^{c} & r_{j-1,n}^{c}\\
+t_{j,n-1} & r_{j,n-1} & t_{j,n} & r_{j,n}\\
+t_{j,n-1}^{c} & r_{j,n-1}^{c} & t_{j,n}^{c} & r_{j,n}^{c}
+\end{array}\right)\label{eq:unitVarTen}
+\end{equation}
+
+\end_inset
+
+the same way that a matrix can be used to encode a large number of equations
+ for a vector of variables, we can use a 3D tensor to encode a large number
+ of equations for a matrix of variables.
+ In the previous case, each column corresponds to a variable, and each line
+ to an equation.
+ now, each matrix-slice will correspond to an equation, encoding the coefficient
+s in it's rows and columns.
+ s.t the system of equations will be encoded by 
+\begin_inset Formula 
+\[
+T*X=V
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $T$
+\end_inset
+
+ is a 3D tensor of coefficients, 
+\begin_inset Formula $X$
+\end_inset
+
+ is a 2D matrix of variables, and 
+\begin_inset Formula $V$
+\end_inset
+
+ is a 1D vector .
+ for this to work we need to define the product 
+\begin_inset Formula $*$
+\end_inset
+
+ of a tensor and a matrix like this
+\begin_inset Formula 
+\[
+\left(T*X\right)_{i}=\sum_{k,m}T_{i,k,m}X_{k,m}
+\]
+
+\end_inset
+
+so, we see that the first index 
+\begin_inset Formula $i$
+\end_inset
+
+ of 
+\begin_inset Formula $T$
+\end_inset
+
+ is the index of the equations, and for a specific 
+\begin_inset Formula $i$
+\end_inset
+
+ 
+\begin_inset Formula $T_{km}$
+\end_inset
+
+ are the coefficients of the equation.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+ for example, using this encoding, the matrix for the first equation in
+ (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:lattice_eqns: explicit"
+
+\end_inset
+
+) will be encoded by: 
+\begin_inset Formula 
+\[
+\left(\begin{array}{cccc}
+0 & 0 & 0 & 0\\
+0 & 0 & 0 & 0\\
+0 & 0 & -1 & -1\\
+0 & 0 & 1 & 1
+\end{array}\right)
+\]
+
+\end_inset
+
+and the second eqn by: 
+\begin_inset Formula 
+\[
+\left(\begin{array}{cccc}
+0 & 0 & 0 & 0\\
+0 & 0 & 0 & 0\\
+e^{ikL} & e^{-ikL} & -1 & -1\\
+0 & 0 & 0 & 0
+\end{array}\right)
+\]
+
+\end_inset
+
+the third: 
+\begin_inset Formula 
+\[
+\left(\begin{array}{cccc}
+0 & 0 & 0 & 0\\
+0 & 0 & e^{ik_{c}d} & e^{-ik_{c}d}\\
+0 & 0 & -1 & -1\\
+0 & 0 & 0 & 0
+\end{array}\right)
+\]
+
+\end_inset
+
+and the fourth: 
+\begin_inset Formula 
+\[
+\left(\begin{array}{cccc}
+0 & 0 & 0 & 0\\
+0 & 0 & -Y_{c}e^{ik_{c}d} & Y_{c}e^{-ik_{c}d}\\
+-Y_{0}e^{ikL} & Y_{0}e^{-ikL} & Y_{0} & -Y_{0}\\
+0 & 0 & Y_{c} & -Y_{c}
+\end{array}\right)
+\]
+
+\end_inset
+
+ This way we can construct the 
+\begin_inset Quotes eld
+\end_inset
+
+unit-tensor
+\begin_inset Quotes erd
+\end_inset
+
+ - that is the tensor that encodes the 4 equations of a single unit cell.
+ We can than construct the big 3D tensor for all the bulk equations by pasting
+ shifted copies of the 
+\begin_inset Quotes eld
+\end_inset
+
+unit-tensor
+\begin_inset Quotes erd
+\end_inset
+
+.
+ We can do a similar thing with the boundary equations.
+ Note that since 
+\begin_inset Formula $t_{j,1}^{c},r_{j,1}^{c}$
+\end_inset
+
+ do not exist for all 
+\begin_inset Formula $j$
+\end_inset
+
+, and 
+\begin_inset Formula $r_{M,n}^{c},t_{M,n}^{c}$
+\end_inset
+
+ do not exist for all 
+\begin_inset Formula $n$
+\end_inset
+
+, in the big matrix of variables (built from the unit-cell matrix of variables
+ (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:unitVarTen"
+
+\end_inset
+
+)) there are redundant elements.
+ In the case of 
+\begin_inset Formula $r_{M,n}^{c},t_{M,n}^{c}$
+\end_inset
+
+ this is the last row of the big variables matrix, so we can just remove
+ it.
+ It is not so simple for 
+\begin_inset Formula $t_{j,1}^{c},r_{j,1}^{c}$
+\end_inset
+
+ because in our encoding these do not correspond to a single row or column.
+ On the other hand, these variables are not participating in any equation,
+ so we can add trivial equations that fix them to some value (say, zero)
+ and not worry about them any more.
+ 
+\end_layout
+
+\begin_layout Standard
+The actual solving of the equations is done by 
+\begin_inset Quotes eld
+\end_inset
+
+unfolding
+\begin_inset Quotes erd
+\end_inset
+
+ the tensor into a big matrix using matlab's reshape().
+ 
+\end_layout
+
+\begin_layout Subsection
+Simulation Results
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/multi_line_power_prop.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:13LinesPowProp"
+
+\end_inset
+
+ power propagation through 13 lines at 
+\begin_inset Formula $6\text{GHz}$
+\end_inset
+
+.
+ configurations: 
+\begin_inset Formula $w=2.3\unit{\mu m}$
+\end_inset
+
+ , 
+\begin_inset Formula $t=8\text{nm}$
+\end_inset
+
+ (thickness of WSi), 
+\begin_inset Formula $H=16\text{nm}$
+\end_inset
+
+ (thickness of dielectric), 
+\begin_inset Formula $w_{c}=300\text{nm}$
+\end_inset
+
+
+\begin_inset Formula $L=100\unit{\mu m},$
+\end_inset
+
+
+\begin_inset Formula $d=20\unit{\mu m},N=31$
+\end_inset
+
+, 
+\begin_inset Formula $M=13$
+\end_inset
+
+, input from line 
+\begin_inset Formula $7$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/13lines_freq_scan.png
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:13LinesfreqScan"
+
+\end_inset
+
+Frequancy response for 13 lines.
+ configurations: 
+\begin_inset Formula $w=2.3\unit{\mu m}$
+\end_inset
+
+ , 
+\begin_inset Formula $t=8\text{nm}$
+\end_inset
+
+ (thickness of WSi), 
+\begin_inset Formula $H=16\text{nm}$
+\end_inset
+
+ (thickness of dielectric), 
+\begin_inset Formula $w_{c}=300\text{nm}$
+\end_inset
+
+
+\begin_inset Formula $L=100\unit{\mu m},$
+\end_inset
+
+
+\begin_inset Formula $d=20\unit{\mu m},N=31$
+\end_inset
+
+, 
+\begin_inset Formula $M=13$
+\end_inset
+
+, input from line 
+\begin_inset Formula $7$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Introducing reflections
+\end_layout
+
+\begin_layout Standard
+up until now we assumed that the traces go on to infinity on either side.
+ This is a valid assumption if everything is impedance-matched, but it is
+ technically challanging to make sure numerous chip outputs (around 
+\begin_inset Formula $2M$
+\end_inset
+
+) are terminated by a 
+\begin_inset Formula $50\unit{\Omega}$
+\end_inset
+
+ cap.
+ Therefore, we would like to introduce reflections to the simulation.
+ As a first step, let's assume that the lines are ended with an open circuit
+ after the last or first segment, and thus we have full reflections.
+ Previously we had 
+\begin_inset Formula $t_{j,1}=0$
+\end_inset
+
+ for all 
+\begin_inset Formula $j$
+\end_inset
+
+ (other than the special ones through which we send the signal), and 
+\begin_inset Formula $r_{j,N}=0$
+\end_inset
+
+ for all 
+\begin_inset Formula $j$
+\end_inset
+
+, now we have instead : 
+\begin_inset Formula $t_{j,1}=r_{j,1}$
+\end_inset
+
+ for all 
+\begin_inset Formula $j$
+\end_inset
+
+ other than the special ones, and 
+\begin_inset Formula $r_{j,N}=t_{j,N}$
+\end_inset
+
+.
+ Solving for such a scenario shows that we don't get the behavior we wanted,
+ so an alternative solution is to introduce attenuators in the way, such
+ that we have: 
+\begin_inset Formula 
+\begin{align*}
+t_{j,1} & =a^{2}e^{2ik_{cx}L_{cx}}r_{j,1}\,\,\,\,\,\,\left(\text{for all \ensuremath{j} other than the special ones}\right)\\
+r_{j,N} & =a^{2}e^{2ik_{cx}L_{cx}}t_{j,1}\,\,\,\,\,\,\left(\text{for all \ensuremath{j} }\right)
+\end{align*}
+
+\end_inset
+
+where 
+\begin_inset Formula $a$
+\end_inset
+
+ is a voltage attenuation factor, 
+\begin_inset Formula $k_{cx}\approx\frac{3}{2}\frac{\omega}{c}$
+\end_inset
+
+ is the wavenumber for the readout coaxial lines, and 
+\begin_inset Formula $L_{cx}$
+\end_inset
+
+ is the readout line total length (
+\begin_inset Formula $\sim30\text{cm}$
+\end_inset
+
+).
+ 
+\end_layout
+
+\begin_layout Section
+Introducing loss
+\end_layout
+
+\begin_layout Standard
+Based on Pozar chapter 2.1, we can introduce loss by considering the transmission
+ line finite series resistance 
+\begin_inset Formula $R$
+\end_inset
+
+ per unit length, and its finite shunt conductance 
+\begin_inset Formula $G$
+\end_inset
+
+ per unit length.
+ Solving the telegrapher's equations we get a general solution of the form
+ (eqn 2.6 and 2.8 from Pozar) 
+\begin_inset Formula 
+\begin{align}
+V\left(z\right) & =V_{0}^{+}e^{-\gamma z}+V_{0}^{-}e^{\gamma z}\nonumber \\
+I\left(z\right) & =\frac{1}{Z_{0}}\left(V_{0}^{+}e^{-\gamma z}-V_{0}^{-}e^{\gamma z}\right)\label{eq:Pozar}
+\end{align}
+
+\end_inset
+
+where 
+\begin_inset Formula 
+\begin{align*}
+\gamma & :=\sqrt{\left(R+j\omega L\right)\left(G+j\omega C\right)}\\
+Z_{0} & :=\sqrt{\frac{R+j\omega L}{G+j\omega C}}
+\end{align*}
+
+\end_inset
+
+two steps are required in order to translate Pozar's expressions to our
+ notation:
+\end_layout
+
+\begin_layout Enumerate
+Pozar's 
+\begin_inset Formula $j$
+\end_inset
+
+ becomes 
+\begin_inset Formula $-i$
+\end_inset
+
+.
+ That's because his convention assumes everything goes with 
+\begin_inset Formula $e^{+j\omega t}$
+\end_inset
+
+ , and we use 
+\begin_inset Formula $e^{-i\omega t}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+we want to speak in the terms of a complex 
+\begin_inset Formula $\tilde{k}$
+\end_inset
+
+ and 
+\begin_inset Formula $\tilde{Z}_{0}$
+\end_inset
+
+ s.t the general solution is 
+\begin_inset Formula 
+\begin{eqnarray}
+V\left(x\right) & = & V_{0}^{+}e^{+i\tilde{k}x}+V_{0}^{-}e^{-i\tilde{k}x}\nonumber \\
+I\left(z\right) & = & \frac{1}{\tilde{Z}_{0}}\left(V_{0}^{+}e^{+i\tilde{k}x}-V_{0}^{-}e^{-i\tilde{k}x}\right)\label{eq:PozarModified}
+\end{eqnarray}
+
+\end_inset
+
+comparing (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:PozarModified"
+
+\end_inset
+
+) to (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:Pozar"
+
+\end_inset
+
+) this means that 
+\begin_inset Formula $k=-\frac{\gamma}{i}=+i\gamma$
+\end_inset
+
+.
+ Note that the sign has flipped since in our notation 
+\begin_inset Formula $e^{+ikx}$
+\end_inset
+
+ is a traveling wave in the positive direction, and Pozar uses the opposite
+ convention.
+\end_layout
+
+\begin_layout Standard
+Thus our ansatz becomes of the form of eqns (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ansatz1"
+
+\end_inset
+
+) (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:ansatz2"
+
+\end_inset
+
+) , with 
+\begin_inset Formula 
+\begin{align}
+\tilde{k} & =i\sqrt{\left(R-i\omega L\right)\left(G-i\omega C\right)}\label{eq:complexKandZ}\\
+\tilde{Z}_{0} & =\sqrt{\frac{R-i\omega L}{G-i\omega C}}\nonumber 
+\end{align}
+
+\end_inset
+
+It will be more convenient to express these in terms of the lossless phase-veloc
+ity 
+\begin_inset Formula $v_{ph}$
+\end_inset
+
+ and lossless characteristic impedance 
+\begin_inset Formula $Z_{0}$
+\end_inset
+
+.
+ note that 
+\begin_inset Formula 
+\[
+C=\frac{1}{Z_{0}v_{ph}}\,\,\,\,\,L=\frac{Z_{0}}{v_{ph}}
+\]
+
+\end_inset
+
+plugging into (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:complexKandZ"
+
+\end_inset
+
+): 
+\begin_inset Formula 
+\begin{align}
+\tilde{k} & =i\sqrt{\left(R-i\omega\frac{Z_{0}}{v_{ph}}\right)\left(G-i\omega\frac{1}{Z_{0}v_{ph}}\right)}\label{eq:complexKandZ2}\\
+\tilde{Z}_{0} & =\sqrt{\frac{R-i\omega\frac{Z_{0}}{v_{ph}}}{G-i\omega\frac{1}{Z_{0}v_{ph}}}}\nonumber 
+\end{align}
+
+\end_inset
+
+It is important to take the square roots in such a way that 
+\begin_inset Formula $\text{Re}\left(\tilde{k}\right)>0$
+\end_inset
+
+ , 
+\begin_inset Formula $\text{Im}\left(\tilde{k}\right)$
+\end_inset
+
+>0 and 
+\begin_inset Formula $\text{Re}\left(\tilde{Z}_{0}\right)>0$
+\end_inset
+
+.
+ Matlab takes the square-root by halving the angle in the complex plane,
+ when the angle is defined on 
+\begin_inset Formula $\left(-\pi,\pi\right].$
+\end_inset
+
+ For 
+\begin_inset Formula $\tilde{Z}_{0}$
+\end_inset
+
+ the expression inside the square root has a positive real part, so 
+\begin_inset Formula $\tilde{Z}_{0}$
+\end_inset
+
+ also has a positive real part.
+ for 
+\begin_inset Formula $\tilde{k}$
+\end_inset
+
+ there is a subtle point - if the 
+\begin_inset Formula $\text{Im}\left\{ \left(R-i\omega L\right)\left(G-i\omega C\right)\right\} <0$
+\end_inset
+
+, we get 
+\begin_inset Formula $\text{Re}\left(\tilde{k}\right)>0$
+\end_inset
+
+ and 
+\begin_inset Formula $\text{Im}\left(\tilde{k}\right)$
+\end_inset
+
+>0, but if 
+\begin_inset Formula $\text{Im}\left\{ \left(R-i\omega L\right)\left(G-i\omega C\right)\right\} =0$
+\end_inset
+
+, we get a real and negative 
+\begin_inset Formula $\tilde{k}$
+\end_inset
+
+, which is not what we want.
+ One way to get around that is to use only nonzero values for 
+\begin_inset Formula $R$
+\end_inset
+
+ or 
+\begin_inset Formula $G$
+\end_inset
+
+.
+ another way (which we used) is to multiply 
+\begin_inset Formula $\tilde{k}$
+\end_inset
+
+ by the sign of it's real part.
+ 
+\end_layout
+
+\begin_layout Section
+Non-linearity
+\end_layout
+
+\begin_layout Standard
+The kinetic inductance has the following non-linear current dependence:
+ 
+\begin_inset Formula 
+\[
+L_{\text{kin}}=L_{0}\left(1+\left(\frac{I}{I_{*}}\right)^{2}\right)
+\]
+
+\end_inset
+
+ where 
+\begin_inset Formula $L_{0}$
+\end_inset
+
+ is the zero current kinetic inductance and , and 
+\begin_inset Formula $I_{*}$
+\end_inset
+
+ is comparable to the critical current.
+ We can try to take that into account by working in iterations: solving
+ the linear problem, get the current distribution along the lattice, calculate
+ the correction to the kinetic inductance and then solve again with corrected
+ effective wavenumber 
+\begin_inset Formula $\tilde{k}$
+\end_inset
+
+ and characteristic impedance 
+\begin_inset Formula $\tilde{Z}_{0}$
+\end_inset
+
+ .
+ For each line segment (coupler or not) we need two values for 
+\begin_inset Formula $L_{kin}$
+\end_inset
+
+ : one for 
+\begin_inset Formula $x=0$
+\end_inset
+
+ and one for 
+\begin_inset Formula $x=L$
+\end_inset
+
+ (or 
+\begin_inset Formula $x=d$
+\end_inset
+
+).
+ 
+\begin_inset Newline newline
+\end_inset
+
+to be continued..
+\end_layout
+
+\begin_layout Section
+Measurement results
+\end_layout
+
+\begin_layout Standard
+Below are some of the results from the measurement of NOCKIT5:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/nockit5_2lines.png
+	scale 70
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:2LinesMeas"
+
+\end_inset
+
+measured transmission of the two lines (
+\begin_inset Quotes eld
+\end_inset
+
+ladder
+\begin_inset Quotes erd
+\end_inset
+
+) device.
+ The transmission through the primary line (through which a signal is sent)
+ is plotted in blue, the transmission through the coupled line is plotted
+ in red.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/nockit5_3lines.png
+	scale 70
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:3LinesMeas"
+
+\end_inset
+
+measured transmission of the three lines device.
+ the input signal is through line 1.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Fitting
+\end_layout
+
+\begin_layout Standard
+There are essentially three parameters in the simulation that we can tune
+ independently:
+\end_layout
+
+\begin_layout Enumerate
+the phase velocity of the lines 
+\begin_inset Formula $v_{ph}$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+the phase velocity of the couplers 
+\begin_inset Formula $v_{ph_{c}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+the ratio of characteristic impedances 
+\begin_inset Formula $Z_{c}/Z_{0}$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+(we can of course tune the impedance independently, but it is only the ratio
+ that effects the result)
+\end_layout
+
+\begin_layout Standard
+We performed the fitting by having an initial educated guess for all the
+ characteristic-impedances and phase-velocities based on the geometry and
+ dimensions of the the fabricated device.
+ Than we multiply 
+\begin_inset Formula $v_{ph}$
+\end_inset
+
+, 
+\begin_inset Formula $v_{ph_{c}}$
+\end_inset
+
+and 
+\begin_inset Formula $Z_{c}$
+\end_inset
+
+ by three different factors 
+\begin_inset Formula $\left(x_{1,}x_{2},x_{3}\right)$
+\end_inset
+
+ and minimize the deviation of simulation from measurement w.r.t 
+\begin_inset Formula $\vec{x}$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+For the 2-lines case we got some promising results for 
+\begin_inset Formula 
+\begin{equation}
+\vec{x}=\left(2.0000,1.0141,0.9227\right)\label{eq:FitVals2Lines}
+\end{equation}
+
+\end_inset
+
+as can be seen in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:2LinesFittedSim"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+It is a encouraging that 
+\begin_inset Formula $x_{2}$
+\end_inset
+
+ and 
+\begin_inset Formula $x_{3}$
+\end_inset
+
+ are close to 
+\begin_inset Formula $1$
+\end_inset
+
+, but having 
+\begin_inset Formula $x_{1}$
+\end_inset
+
+ at 
+\begin_inset Formula $2.000$
+\end_inset
+
+ is suspicious.
+ It seems like we have a factor of 2 mistake somewhere, but we haven't found
+ where yet.
+ It is particularly weird that the error is in 
+\begin_inset Formula $v_{ph}$
+\end_inset
+
+ but not in 
+\begin_inset Formula $v_{ph_{c}}$
+\end_inset
+
+ , as the two are calculated basically the same way.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement !h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/nockit5_2lines.png
+	scale 70
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Graphics
+	filename 2LinesFittedSim.png
+	scale 70
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:2LinesFittedSim"
+
+\end_inset
+
+Measurement (top) and simulation with parameters from fit procedure (bottom)
+ of a two lines device.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For the 3 lines device, the results are less definitive: We suspect the
+ middle line got disconnected somehow.
+ The simulation does seem to bear some qualitative resemblance to the measuremen
+t, particularly if we allow reflections at the input: see figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:3LinesFit"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/nockit5_3lines.png
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/3linesSimFitted.png
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename images/3linesSimFitted2.png
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:3LinesFit"
+
+\end_inset
+
+(top) measured transmission of the three lines device.
+ the input signal is through line 1, (center) simulated transmission of
+ three lines with fit parameters 
+\begin_inset Formula $\vec{x}$
+\end_inset
+
+ from 2 lines measurement, with full reflections at the input, (bottom)
+ simulated transmission of three lines with fit parameters 
+\begin_inset Formula $\vec{x}$
+\end_inset
+
+ from 2 lines measurement, no reflections.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
