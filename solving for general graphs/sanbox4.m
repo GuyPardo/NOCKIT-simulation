@@ -33,6 +33,7 @@ Y0 = 0.020259488114653; % admittance for lines
 Yc = 0.002735070881675; % admittance for couplers
 
 freq = 6e9; 
+omega= 2*pi*freq;
 k0 = 2*pi*freq/v_ph; % wavenumber for lines
 kc = 2*pi*freq/v_ph_c; % wavenumber for couplers
 
@@ -45,9 +46,10 @@ w = [1*ones(1,N), 2*ones(1,length(source)-N)]; % 1 is for coupling edges, 2 for 
 
 G = digraph(source,target,w);
 edge_num = G.numedges;
+nodes_num = G.numnodes;
 clearvars G.Edges.k G.Edges.L G.Edges.Y
-G.Edges.k(G.Edges.Weight==2) = k0*ones(sum(G.Edges.Weight==2),1);
-G.Edges.k(G.Edges.Weight==1) = kc*ones(sum(G.Edges.Weight==1),1);
+G.Edges.v_ph(G.Edges.Weight==2) = v_ph*ones(sum(G.Edges.Weight==2),1);
+G.Edges.v_ph(G.Edges.Weight==1) = v_ph_c*ones(sum(G.Edges.Weight==1),1);
 G.Edges.L(G.Edges.Weight==2) = L0*ones(sum(G.Edges.Weight==2),1);
 G.Edges.L(G.Edges.Weight==1) = d*ones(sum(G.Edges.Weight==1),1);
 G.Edges.Y(G.Edges.Weight==2) = Y0*ones(sum(G.Edges.Weight==2),1);
@@ -66,40 +68,64 @@ G.Edges.BC(G.findedge(2*N+1,2*N+3)) = 2;
 G.Edges.BC(G.findedge(2*N+2,2*N+4)) = 2;
 
 
-disp('graph construction:')
-toc
+L_arr = G.Edges.L;
+v_ph_arr = G.Edges.v_ph;
+Y_arr = G.Edges.Y;
+BC_arr = G.Edges.BC;
+
+
 
 
 figure(504)
 G.plot('EdgeLabel', G.Edges.Weight);
+outedges_cell = cell(1,nodes_num);
+inedges_cell = cell(1,nodes_num);
+edges_cell = cell(1,nodes_num);
+
+for i=1:nodes_num
+   outedges_cell{i}  = G.outedges(i);
+   inedges_cell{i}  = G.inedges(i);
+   edges_cell{i} = [ inedges_cell{i}; outedges_cell{i}];
+end
+
+disp('graph construction:')
+toc
+
+
+
 
 %% encode equations
 tic
 
+
+
 %  index translation functions:
-tIdx = @(x) 2*x-1;
-rIdx = @(x) 2*x;
+tIdx =  2*(1:edge_num)-1;
+rIdx =  2*(1:edge_num);
 
 % pre allocation:
 mat = zeros(2*edge_num);
 vec = zeros(2*edge_num,1);
 eqn_count = 0; % the number of equation we have encoded
 
+
+
 % loop on nodes
-for i=1:G.numnodes
-    outedges = G.outedges(i); % edges going from  node i
-    inedges = G.inedges(i); % edges going out of  node i
+for i=1:nodes_num
+    outedges = outedges_cell{i}; % edges going from  node i
+    inedges = inedges_cell{i}; % edges going out of  node i
     edges = [ inedges; outedges]; % all edges connected to node i
+
     
     % edges parameters
-    L_in = G.Edges.L(inedges);
+    L_in = L_arr(inedges);
     L_out = zeros(size(outedges));
     
-    k_out = G.Edges.k(outedges);
-    Y_out  = G.Edges.Y(outedges);
+    k_out = omega*(v_ph_arr(outedges)).^-1;
+    Y_out  = Y_arr(outedges);
     
-    k_in = G.Edges.k(inedges);
-    Y_in = G.Edges.Y(inedges);
+    k_in = omega*(v_ph_arr(inedges)).^-1;
+    Y_in = Y_arr(inedges);
     
     L = [L_in; L_out];
     k = [k_in; k_out];
@@ -130,7 +156,7 @@ end
 
 % boundary conditions eqns:
 for i = 1:edge_num
-    switch G.Edges.BC(i)
+    switch BC_arr(i)
         case 1  
             mat(eqn_count+1, tIdx(i))=1;
             eqn_count = eqn_count+1;
@@ -194,10 +220,23 @@ end
 P = 0.5*real(V.*conj(I));
 
 
-%% plot
+%% plot graphs
 figure(502)
 plot(x,P, 'linewidth', 1.5); grid on; legend('line 1', 'line 2','fontsize',14, 'location', 'best');
 
 xlabel( "position along line (m)" , "fontsize", 15)
 ylabel( "power (a.u.)" , "fontsize", 15)
 title(sprintf("power propagation at %g GHz", freq*1e-9),"fontsize", 15)
+%% plot - colormap
+figure(503)
+clf
+imagesc(transpose(real(P)), "XData",x )
+shading flat
+colorbar
+yticks(1:M)
+
+title(sprintf("power propagation at %g GHz", freq*1e-9))
+ylabel( "line" , "fontsize", 15)
+xlabel( "position along line (m)" , "fontsize", 15)
+
+colormap jet
