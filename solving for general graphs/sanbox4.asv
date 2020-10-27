@@ -71,12 +71,10 @@ G.Edges.BC(G.findedge(2*N+2,2*N+4)) = 2;
 L_arr = G.Edges.L;
 v_ph_arr = G.Edges.v_ph;
 Y_arr = G.Edges.Y;
-BC_arr = G.edges.BC;
+BC_arr = G.Edges.BC;
 
-
-disp('graph construction:')
-toc
-
+%% graph pre proccesing:
+ 
 
 figure(504)
 G.plot('EdgeLabel', G.Edges.Weight);
@@ -90,6 +88,12 @@ for i=1:nodes_num
    edges_cell{i} = [ inedges_cell{i}; outedges_cell{i}];
 end
 
+%  index translation functions:
+tIdx =  2*(1:edge_num)-1;
+rIdx =  2*(1:edge_num);
+
+disp('graph construction and pre proccessing:')
+toc
 
 
 
@@ -97,14 +101,6 @@ end
 %% encode equations
 tic
 
-
-
-
-
-
-%  index translation functions:
-tIdx = @(x) 2*x-1;
-rIdx = @(x) 2*x;
 
 % pre allocation:
 mat = zeros(2*edge_num);
@@ -159,7 +155,7 @@ end
 
 % boundary conditions eqns:
 for i = 1:edge_num
-    switch G.Edges.BC(i)
+    switch BC_arr(i)
         case 1  
             mat(eqn_count+1, tIdx(i))=1;
             eqn_count = eqn_count+1;
@@ -223,10 +219,23 @@ end
 P = 0.5*real(V.*conj(I));
 
 
-%% plot
+%% plot graphs
 figure(502)
 plot(x,P, 'linewidth', 1.5); grid on; legend('line 1', 'line 2','fontsize',14, 'location', 'best');
 
 xlabel( "position along line (m)" , "fontsize", 15)
 ylabel( "power (a.u.)" , "fontsize", 15)
 title(sprintf("power propagation at %g GHz", freq*1e-9),"fontsize", 15)
+%% plot - colormap
+figure(503)
+clf
+imagesc(transpose(real(P)), "XData",x )
+shading flat
+colorbar
+yticks(1:M)
+
+title(sprintf("power propagation at %g GHz", freq*1e-9))
+ylabel( "line" , "fontsize", 15)
+xlabel( "position along line (m)" , "fontsize", 15)
+
+colormap jet
