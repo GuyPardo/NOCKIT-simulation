@@ -22,7 +22,7 @@ clearvars
 
 
 tic
-% geometry: and netwirk structure
+% geometry: and network structure
 N=30; % number of couplers. (= number of unit cells minus 1) 
 M = 13; % number of lines
 L0 = 100e-6; % length of each line segment
@@ -35,7 +35,7 @@ Y0 = 0.020259488114653; % admittance for lines
 Yc = 0.002735070881675; % admittance for couplers
 
 % frequency etc.
-freq = 6e9; 
+freq = [6e9]; 
 omega= 2*pi*freq;
 k0 = 2*pi*freq/v_ph; % wavenumber for lines
 kc = 2*pi*freq/v_ph_c; % wavenumber for couplers
@@ -76,7 +76,7 @@ figure(504)
 clf
 G.plot('xdata', x, 'ydata',y, 'linewidth', LWidths);
 
-%%
+%
 
 
 % define edges attributres; pahe velocity, length and characteristic
@@ -224,17 +224,29 @@ solution = linsolve(mat,vec);
 t_edges = solution(1:2:end-1);
 r_edges = solution(2:2:end);
 
-% read solution: this part is specific to the NOCKIT geometry 
- t = reshape(t_edges(G.findedge(nodes(:,1:N+1) ,nodes(:,2:N+2) )), M,N+1);
- r = reshape(r_edges(G.findedge(nodes(:,1:N+1) ,nodes(:,2:N+2) )), M,N+1);
  
- % check energy conservation (this is also specific to the ladder network)
- cond =abs(-1+ sum(abs(r(:,1)).^2) + sum(abs(t(:,end)).^2));
- if cond>1e14
+ % check energy conservation:
+end_nodes_out = logical(cellfun(@(x) length(x), outedges_cell).*~cellfun(@(x) length(x), inedges_cell));
+end_nodes_in = logical(~cellfun(@(x) length(x), outedges_cell).*cellfun(@(x) length(x), inedges_cell));
+ 
+end_edges_in = cell2mat(inedges_cell(end_nodes_in));
+end_edges_out = cell2mat(outedges_cell(end_nodes_out));
+
+     
+sum_in =  sum(abs(t_edges(end_edges_out)).^2) + sum(abs(r_edges(end_edges_in)).^2); 
+sum_out =  sum(abs(r_edges(end_edges_out)).^2) + sum(abs(t_edges(end_edges_in)).^2); 
+ cond =abs(sum_in-sum_out);
+ if cond>1e-14
      warning('energy conservation condition does not hold')
      cond
  end
-disp('solve:')
+%
+
+% read solution: this part is specific to the NOCKIT geometry 
+ t = reshape(t_edges(G.findedge(nodes(:,1:N+1) ,nodes(:,2:N+2) )), M,N+1);
+ r = reshape(r_edges(G.findedge(nodes(:,1:N+1) ,nodes(:,2:N+2) )), M,N+1);
+% 
+ disp('solve:')
 toc
  %% reconstruct physical quantities
 % defining coordinates along the lines:
@@ -262,14 +274,9 @@ P = 0.5*real(V.*conj(I));
 
 
 %% plot graphs
-figure(502)
-plot(x,P, 'linewidth', 1.5); grid on; legend('line 1', 'line 2','fontsize',14, 'location', 'best');
-
-xlabel( "position along line (m)" , "fontsize", 15)
-ylabel( "power (a.u.)" , "fontsize", 15)
-title(sprintf("power propagation at %g GHz", freq*1e-9),"fontsize", 15)
 %% plot - colormap
-figure(503)
+
+figure(203)
 clf
 imagesc(transpose(real(P)), "XData",x )
 shading flat
@@ -281,3 +288,13 @@ ylabel( "line" , "fontsize", 15)
 xlabel( "position along line (m)" , "fontsize", 15)
 
 colormap jet
+
+%% plot - graphs
+figure(204)
+clf
+plot(x,real(P), 'linewidth', 1.5);
+leg = legend(num2str((1:M)'),"location", "best", "fontsize", 13);
+grid on;
+xlabel( "position along line (m)" , "fontsize", 15)
+ylabel( "power (a.u)" , "fontsize", 15)
+title(sprintf("power propagation at %g GHz", freq*1e-9),"fontsize", 15)

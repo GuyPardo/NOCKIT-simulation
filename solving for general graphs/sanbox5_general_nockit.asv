@@ -22,12 +22,12 @@ clearvars
 
 
 tic
-% geometry: and netwirk structure
+% geometry: and network structure
 N=30; % number of couplers. (= number of unit cells minus 1) 
 M = 13; % number of lines
 L0 = 100e-6; % length of each line segment
 d = 20e-6; % length of each coupler segment
-input_idx = [4];   % can be more than one.
+input_idx = [7];   % can be more than one.
 % physical parameters: (see the NOCKIT simulation for the way these values were calculated  )
 v_ph = 1.361104539023962e+06; % phase velocity for lines
 v_ph_c =  1.408763793738406e+06; % phase velocity for couplers
@@ -35,7 +35,7 @@ Y0 = 0.020259488114653; % admittance for lines
 Yc = 0.002735070881675; % admittance for couplers
 
 % frequency etc.
-freq = 6e9; 
+freq = [6e9]; 
 omega= 2*pi*freq;
 k0 = 2*pi*freq/v_ph; % wavenumber for lines
 kc = 2*pi*freq/v_ph_c; % wavenumber for couplers
@@ -76,7 +76,7 @@ figure(504)
 clf
 G.plot('xdata', x, 'ydata',y, 'linewidth', LWidths);
 
-%%
+%
 
 
 % define edges attributres; pahe velocity, length and characteristic
@@ -112,10 +112,9 @@ BC_arr = G.Edges.BC;
 %% graph pre-proccesing:
 
 % define cell arrays of edge-ids:
-outedges_cell = cell(1,nodes_num); % the ith
-inedges_cell = cell(1,nodes_num);
-edges_cell = cell(1,nodes_num);
-
+outedges_cell = cell(1,nodes_num);
+inedges_cell = cell(1,nodes_num); 
+edges_cell = cell(1,nodes_num); 
 for i=1:nodes_num
    outedges_cell{i}  = G.outedges(i);
    inedges_cell{i}  = G.inedges(i);
@@ -151,10 +150,12 @@ for i=1:nodes_num
 
     
     % edges parameters
+    % by converntion we only add exp(+-ikL) for the inedges. so we set
+    % L_out and k_out to zero.
     L_in = L_arr(inedges);
     L_out = zeros(size(outedges));
     
-    k_out = omega*(v_ph_arr(outedges)).^-1;
+    k_out = zeros(size(outedges));
     Y_out  = Y_arr(outedges);
     
     k_in = omega*(v_ph_arr(inedges)).^-1;
@@ -188,11 +189,14 @@ for i=1:nodes_num
 end
 
 % boundary conditions eqns:
-% TODO maybe this is not very effecient becuase we usually don't really
-% need to go over all the edges.
 indices = find(BC_arr);% find indices where BC_arr is not zero
 for i = 1:length(indices)
     ii = indices(i);
+    % add the correct eqns based on the conventions:
+    % 1 - set t to 0
+    % 2 - set r to 0
+    % 3 - set t to 1
+    % 4 - set r t0 1
     switch BC_arr(indices(i))
         case 1  
             mat(eqn_count+1, tIdx(ii))=1;
@@ -220,17 +224,29 @@ solution = linsolve(mat,vec);
 t_edges = solution(1:2:end-1);
 r_edges = solution(2:2:end);
 
-% read solution: this part is specific to the NOCKIT geometry 
- t = reshape(t_edges(G.findedge(nodes(:,1:N+1) ,nodes(:,2:N+2) )), M,N+1);
- r = reshape(r_edges(G.findedge(nodes(:,1:N+1) ,nodes(:,2:N+2) )), M,N+1);
  
- % check energy conservation (this is also specific to the ladder network)
- cond =abs(-1+ sum(abs(r(:,1)).^2) + sum(abs(t(:,end)).^2));
- if cond>1e14
+ % check energy conservation:
+end_nodes_out = logical(cellfun(@(x) length(x), outedges_cell).*~cellfun(@(x) length(x), inedges_cell));
+end_nodes_in = find(~cellfun(@(x) length(x), outedges_cell).*cellfun(@(x) length(x), inedges_cell));
+ 
+end_edges_in = cell2mat(inedges_cell(end_nodes_in));
+end_edges_out = cell2mat(outedges_cell(end_nodes_out));
+
+     
+sum_in =  sum(abs(t_edges(end_edges_out)).^2) + sum(abs(r_edges(end_edges_in)).^2); 
+sum_out =  sum(abs(r_edges(end_edges_out)).^2) + sum(abs(t_edges(end_edges_in)).^2); 
+ cond =abs(sum_in-sum_out);
+ if cond>1e-14
      warning('energy conservation condition does not hold')
      cond
  end
-disp('solve:')
+%
+
+% read solution: this part is specific to the NOCKIT geometry 
+ t = reshape(t_edges(G.findedge(nodes(:,1:N+1) ,nodes(:,2:N+2) )), M,N+1);
+ r = reshape(r_edges(G.findedge(nodes(:,1:N+1) ,nodes(:,2:N+2) )), M,N+1);
+% 
+ disp('solve:')
 toc
  %% reconstruct physical quantities
 % defining coordinates along the lines:
