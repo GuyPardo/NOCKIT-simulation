@@ -6,6 +6,7 @@
 
 % for loops on parameters (like frequency) it is more convenient to use
 % SolveArrayFunV3.m
+clearvars
 %% Configurations
 % Geometry:
 % Lines gerometry:
