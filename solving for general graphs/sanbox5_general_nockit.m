@@ -273,7 +273,6 @@ end
 P = 0.5*real(V.*conj(I));
 
 
-%% plot graphs
 %% plot - colormap
 
 figure(203)
