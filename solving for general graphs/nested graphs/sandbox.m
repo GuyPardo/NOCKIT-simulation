@@ -14,12 +14,12 @@
                 % 4 - set r to 1
 % if you don't know how to add properties to graph edges see:
 % https://www.mathworks.com/help/matlab/math/add-graph-node-names-edge-weights-and-other-attributes.html#AddGraphNodeNamesEdgeWeightsAndOtherAttributesExample-4
-clearvars
+
 %% construct graph
 % this part constructs the graph representing the 2 traces ladder network
 % (NOCKIT) 
 
-
+clearvars
 
 tic
 % geometry: and network structure
@@ -27,7 +27,7 @@ N=5; %number of colums (ndoes)
 M = 5; % number of rows (nodes)
 L0 = 100e-6; % length of each line segment
 d = 20e-6; % length of each coupler segment
-input_idx = [7];   % can be more than one.
+input_idx = [3];   % can be more than one.
 % physical parameters: (see the NOCKIT simulation for the way these values were calculated  )
 v_ph = 1.361104539023962e+06; % phase velocity for lines
 v_ph_c =  1.408763793738406e+06; % phase velocity for couplers
@@ -62,16 +62,9 @@ w = 2*ones(size(s));
 G = G.addedge(s,t,w);
 
 
-edge_num = G.numedges;
-nodes_num = G.numnodes;
 
-% define coordinates for plotting the graph: (this has no effect on the solution)
-x = repmat(L0*(0:N-1), M,1);
-y = repmat(L0*fliplr((0:M-1)), 1,N); % the y coordinates are in the flipped to plot from top to bottom
 
-x = reshape(x, 1,nodes_num);
-y = reshape(y, 1,nodes_num);
-LWidths = 6*G.Edges.Weight/max(G.Edges.Weight); 
+
 
 % G.plot('xdata', x, 'ydata',y, 'linewidth', LWidths);
 endnodes = G.Edges.EndNodes;
@@ -80,15 +73,49 @@ for i=1:G.numedges
 end
 
 
-% add inputs/outputs
 
+% define boundary conditions attribute for each edge according to the
+% following convention:
+% 0 - do nothing
+% 1 - set t to 0
+% 2 - set r to 0
+% 3 - set t to 1
+% 4 - set r to 1
+
+G.Edges.BC = zeros(G.numedges,1);
+% add inputs/outputs
+% left :  
+BC_left_arr = 2*ones(M,1);
+BC_left_arr(input_idx) = 4;
+edge_table  = table(ones(M,1),BC_left_arr ,'variablenames', {'Weight', 'BC'});
+[G, left_edges] = add_free_edge(G,nodes(:,1), edge_table);
+left_edges
+plot(G, 'edgelabel', 1:G.numedges)
+%%
+% right: 
+ edge_table  = table(ones(M,1),2*ones(M,1) ,'variablenames', {'Weight', 'BC'});
+ [G, right_edges] = add_free_edge(G,nodes(:,N), edge_table);
+ right_edges
+
+plot(G, 'edgelabel', 1:G.numedges)
+%%
+% top: 
+edge_table  = table(ones(N,1),2*ones(N,1) ,'variablenames', {'Weight', 'BC'});
+[G, top_edges] = add_free_edge(G,nodes(1,:), edge_table);
+plot(G, 'edgelabel', 1:G.numedges)
+
+%%
+
+% bottom: 
+edge_table  = table(ones(N,1),2*ones(N,1) ,'variablenames', {'Weight', 'BC'});
+[G, bottom_edges]  = add_free_edge(G,nodes(M,:), edge_table);
 
 
 
 % define edges attributres; pahe velocity, length and characteristic
 % admittance:
 % rememeber weight = 1 means coupler edge, weight = 2 means regular edge:
-clearvars G.Edges.v_ph G.Edges.L G.Edges.Y
+% clearvars G.Edges.v_ph G.Edges.L G.Edges.Y
 G.Edges.v_ph(G.Edges.Weight==2) = v_ph*ones(sum(G.Edges.Weight==2),1);
 G.Edges.v_ph(G.Edges.Weight==1) = v_ph_c*ones(sum(G.Edges.Weight==1),1);
 G.Edges.L(G.Edges.Weight==2) = L0*ones(sum(G.Edges.Weight==2),1);
@@ -99,28 +126,18 @@ G.Edges.Y(G.Edges.Weight==1) = Yc*ones(sum(G.Edges.Weight==1),1);
 
 
 
-% define boundary conditions attribute for each edge according to the
-% following convention:
-% 0 - do nothing
-% 1 - set t to 0
-% 2 - set r to 0
-% 3 - set t to 1
-% 4 - set r t0 1
-% G.Edges.BC = zeros(edge_num,1);
-% G.Edges.BC(G.findedge(nodes(:,1),nodes(:,2))) = 1*ones(M,1);
-% G.Edges.BC(G.findedge(nodes(input_idx,1),nodes(input_idx,2))) = 3;
-% G.Edges.BC(G.findedge(nodes(:,N+1),nodes(:,N+2))) = 2*ones(M,1);
 
 
 L_arr = G.Edges.L;
 v_ph_arr = G.Edges.v_ph;
 Y_arr = G.Edges.Y;
-%BC_arr = G.Edges.BC;
+BC_arr = G.Edges.BC;
 
 clf
-G.plot('edgelabel', G.Edges.Weight)
+G.plot('edgelabel', 1:G.numedges)
 %% graph pre-proccesing:
-
+edge_num = G.numedges;
+nodes_num = G.numnodes;
 % define cell arrays of edge-ids:
 outedges_cell = cell(1,nodes_num);
 inedges_cell = cell(1,nodes_num); 
@@ -252,9 +269,9 @@ sum_out =  sum(abs(r_edges(end_edges_out)).^2) + sum(abs(t_edges(end_edges_in)).
  end
 %
 
-% read solution: this part is specific to the NOCKIT geometry 
- t = reshape(t_edges(G.findedge(nodes(:,1:N+1) ,nodes(:,2:N+2) )), M,N+1);
- r = reshape(r_edges(G.findedge(nodes(:,1:N+1) ,nodes(:,2:N+2) )), M,N+1);
+% % read solution: this part is specific to the NOCKIT geometry 
+%  t = reshape(t_edges(G.findedge(nodes(:,1:N+1) ,nodes(:,2:N+2) )), M,N+1);
+%  r = reshape(r_edges(G.findedge(nodes(:,1:N+1) ,nodes(:,2:N+2) )), M,N+1);
 % 
  disp('solve:')
 toc
