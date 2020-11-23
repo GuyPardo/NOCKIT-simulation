@@ -66,7 +66,7 @@ G = G.addedge(s,t,w);
 
 
 
-% G.plot('xdata', x, 'ydata',y, 'linewidth', LWidths);
+% % G.plot('xdata', x, 'ydata',y, 'linewidth', LWidths);
 endnodes = G.Edges.EndNodes;
 for i=1:G.numedges
     G = add_middle_nodes(G,endnodes(i,1),endnodes(i,2), 2, [1,2,1]);
@@ -83,36 +83,46 @@ end
 % 4 - set r to 1
 
 G.Edges.BC = zeros(G.numedges,1);
+ G.Edges.ID = (1:G.numedges)';
+plot(G, 'edgelabel', G.Edges.ID)
+
 % add inputs/outputs
+% all inputs and outputs are represented by OUT-going edges.
+
+
 % left :  
+% left BC : all r's are zero exctept the special one(s): (it's an OUT going edge, so r is going to the right)
 BC_left_arr = 2*ones(M,1);
 BC_left_arr(input_idx) = 4;
-edge_table  = table(ones(M,1),BC_left_arr ,'variablenames', {'Weight', 'BC'});
+edge_table  = table(ones(M,1),BC_left_arr , G.numedges + (1:M)','variablenames', {'Weight', 'BC','ID'});
 [G, left_edges] = add_free_edge(G,nodes(:,1), edge_table);
-left_edges
-plot(G, 'edgelabel', 1:G.numedges)
-%%
+left_edges_ID = G.Edges.ID(left_edges);
+plot(G, 'edgelabel',G.Edges.ID);
+
 % right: 
- edge_table  = table(ones(M,1),2*ones(M,1) ,'variablenames', {'Weight', 'BC'});
+ edge_table  = table(ones(M,1),2*ones(M,1),G.numedges + (1:M)' ,'variablenames', {'Weight', 'BC','ID'});
  [G, right_edges] = add_free_edge(G,nodes(:,N), edge_table);
- right_edges
+ right_edges_ID = G.Edges.ID(right_edges);
 
-plot(G, 'edgelabel', 1:G.numedges)
-%%
+plot(G, 'edgelabel', 1:G.numedges);
+
 % top: 
-edge_table  = table(ones(N,1),2*ones(N,1) ,'variablenames', {'Weight', 'BC'});
-[G, top_edges] = add_free_edge(G,nodes(1,:), edge_table);
-plot(G, 'edgelabel', 1:G.numedges)
+edge_table  = table(ones(N,1),2*ones(N,1),G.numedges + (1:N)' ,'variablenames', {'Weight', 'BC', 'ID'});
+[G, top_edges] = add_free_edge(G,(nodes(1,:))', edge_table);
+plot(G, 'edgelabel', G.Edges.ID)
+top_edges_ID = G.Edges.ID(top_edges);
 
-%%
 
 % bottom: 
-edge_table  = table(ones(N,1),2*ones(N,1) ,'variablenames', {'Weight', 'BC'});
+edge_table  = table(ones(N,1),2*ones(N,1), G.numedges + (1:N)','variablenames', {'Weight', 'BC', 'ID'});
 [G, bottom_edges]  = add_free_edge(G,nodes(M,:), edge_table);
+bottom_edges_ID = G.Edges.ID(bottom_edges);
 
 
+edgeOrder(G.Edges.ID) = 1:G.numedges;
 
-% define edges attributres; pahe velocity, length and characteristic
+%
+% define edges attributres; phase velocity, length and characteristic
 % admittance:
 % rememeber weight = 1 means coupler edge, weight = 2 means regular edge:
 % clearvars G.Edges.v_ph G.Edges.L G.Edges.Y
@@ -134,7 +144,7 @@ Y_arr = G.Edges.Y;
 BC_arr = G.Edges.BC;
 
 clf
-G.plot('edgelabel', 1:G.numedges)
+G.plot('edgelabel',G.Edges.ID,'layout', 'force')
 %% graph pre-proccesing:
 edge_num = G.numedges;
 nodes_num = G.numnodes;
@@ -269,58 +279,12 @@ sum_out =  sum(abs(r_edges(end_edges_out)).^2) + sum(abs(t_edges(end_edges_in)).
  end
 %
 
-% % read solution: this part is specific to the NOCKIT geometry 
-%  t = reshape(t_edges(G.findedge(nodes(:,1:N+1) ,nodes(:,2:N+2) )), M,N+1);
-%  r = reshape(r_edges(G.findedge(nodes(:,1:N+1) ,nodes(:,2:N+2) )), M,N+1);
+
 % 
  disp('solve:')
 toc
- %% reconstruct physical quantities
-% defining coordinates along the lines:
-Npoints = 100; %points per segment
-
-x = linspace(0,(N+1)*L0,(N+1)*Npoints);
-
-% pre-allocating
-V = zeros(length(x),M); % voltage
-I = zeros(length(x),M); % current
-
-
-% calculating
-for j=1:M
-    for n=1:N+1
-       V(Npoints*(n-1)+1:Npoints*n,j) = t(j,n)*exp(1i*k0*x(1:Npoints)) + r(j,n)*exp(-1i*k0*x(1:Npoints));
-       
-       I(Npoints*(n-1)+1:Npoints*n,j) = Y0*(t(j,n)*exp(1i*k0*x(1:Npoints)) - r(j,n)*exp(-1i*k0*x(1:Npoints)));
-       
-    end
-end
-
-% calculate power
-P = 0.5*real(V.*conj(I));
-
-
-%% plot - colormap
-
-figure(203)
-clf
-imagesc(transpose(real(P)), "XData",x )
-shading flat
-colorbar
-yticks(1:M)
-
-title(sprintf("power propagation at %g GHz", freq*1e-9))
-ylabel( "line" , "fontsize", 15)
-xlabel( "position along line (m)" , "fontsize", 15)
-
-colormap jet
-
-%% plot - graphs
-figure(204)
-clf
-plot(x,real(P), 'linewidth', 1.5);
-leg = legend(num2str((1:M)'),"location", "best", "fontsize", 13);
-grid on;
-xlabel( "position along line (m)" , "fontsize", 15)
-ylabel( "power (a.u)" , "fontsize", 15)
-title(sprintf("power propagation at %g GHz", freq*1e-9),"fontsize", 15)
+ %%
+ 
+ 
+ 
+ 

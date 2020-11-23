@@ -14,6 +14,7 @@ function [G, edges] = add_free_edge(G,node_id, attributes)
 
 N = numel(node_id);
 previous_numnodes =  G.numnodes;
+G = G.addnode(N);
 if nargin==3
     G=G.addedge(node_id, (1:N) + previous_numnodes, attributes);
 else
