@@ -1,3 +1,4 @@
+clearvars
 tic 
 % written by Guy 2020_08_31
 % version 3 includes also attenuated reflections and loss
@@ -8,7 +9,7 @@ Frequency=linspace(3,9,201)*1e9;
 w = 2*pi*Frequency;
 
 %% Configurations
-coplanar_couplers = true; % toggle wether to calculate the coupler capacitance as a microstrip or as a coplanar
+coplanar_couplers =true; % toggle wether to calculate the coupler capacitance as a microstrip or as a coplanar
 
 % Lines gerometry:
     W=3e-6; % width of primary and secondary transmission lines
@@ -22,7 +23,8 @@ coplanar_couplers = true; % toggle wether to calculate the coupler capacitance a
     d = 27e-6; % length of each coupling segment (m)
     N=32; % number of unit cells (31 couplers)
     M = 7; % number of lines
-    idx_of_input_lines =4; % either an integer in [1,M]  or an array of integers in [1,M]
+    idx_of_input_lines =1; % either an integer in [1,M]  or an array of integers in [1,M]
+
     if any(idx_of_input_lines > M)
         error("idx_of_imput_line greater than number of lines")
     end
@@ -79,7 +81,7 @@ coplanar_couplers = true; % toggle wether to calculate the coupler capacitance a
 % parameters correction from fit. use these to get somthing close to the
 % measurement for 2 traces NOCKIT5, but note that we still have to explain the factor of 2 in
 % the phase velocity. the other two factors are close to 1, so they are OK.
-%     v_ph = 2*v_ph;
+%      v_ph = 2*v_ph;
 %     v_ph_c = 1.0141*v_ph_c;
 %     Z_c = 0.9227 * Z_c;
 

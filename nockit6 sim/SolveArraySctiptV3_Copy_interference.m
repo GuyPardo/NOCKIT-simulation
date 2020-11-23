@@ -8,19 +8,23 @@
 % SolveArrayFunV3.m
 clearvars
 %% Configurations
+coplanar_couplers =true; % toggle wether to calculate the coupler capacitance as a microstrip or as a coplanar
+phase = transpose(linspace(0,2*pi,201));
+phase_factor = exp(1i*phase);
+
 % Geometry:
 % Lines gerometry:
 W=3e-6; % width of primary and secondary transmission lines
 t=10e-9; % thickness of WSi (sputtered)
 H=16e-9; % height of dielectric (say, Si - evaporated)
 W_c=200e-9; % width of coupling line
- 
+gap_c = 1.4e-6; 
 % network geometry
 L = 100e-6; % length of each unit cell along main lines (m)
 d = 27e-6; % length of each coupling segment (m)
 N=32; % number of unit cells
 M =7; % number of lines
-idx_of_input_lines = [4];
+idx_of_input_lines = [1,4];
 if any(idx_of_input_lines > M)
     error("idx_of_imput_line greater than number of lines")
 end
@@ -33,11 +37,32 @@ L_kin=30.75615e-6*2e-6/W*10e-9/t;
 L_kin_c=30.75615e-6*2e-6/W_c*10e-9/t; % for coupling line
 % The kinetic inductance per unit length (L_kin) is calibrated according to measurement from 11.2.19 of a 10 nm / 2 micron strip
 L_geo=0.00508*39.3701*(log(2/(W+H))+0.5+0.2235*(W+H))*0.000001;
-L_geo_c=0.00508*39.3701*(log(2/(W_c+H))+0.5+0.2235*(W_c+H))*0.000001;
 % Formula for geometric inductance per unit length taken from https://www.allaboutcircuits.com/tools/microstrip-inductance-calculator/
 % (note that one must convert from inches). But L_geo<L_kin, so it might not be so important...
 C=W*eps_0*eps_r/H; % capacitance per unit length
-C_c=W_c*eps_0*eps_r/H; % capacitance per unit length for coupling line
+
+
+
+if coplanar_couplers
+        % copied from CPWR_calculations.m:
+        c = 3e8;
+        u0 = 4*pi*1e-7;
+        e_eff = (eps+1)/2*1.03^2;
+       % Elliptic integrals
+        k1 = W_c./(W_c+2*gap_c);
+        k2 = sqrt(1-k1.^2);
+        K1 = ellipke(k1.^2);
+        K2 = ellipke(k2.^2);
+        % Inductance and capacitance per unit length
+        L_geo_c = u0/4*K2./K1;
+        C_c = 4/(u0*c^2)*e_eff*K1./K2;
+ 
+else
+        C_c=W_c*eps_0*eps_r/H; % capacitance per unit length for coupling line
+        L_geo_c=0.00508*39.3701*(log(2/(W_c+H))+0.5+0.2235*(W_c+H))*0.000001;
+end
+
+
 
 L_tot=L_geo+L_kin; % total inductance per unit length;
 L_tot_c=L_geo_c+L_kin_c; % total inductance per unit length for coupling line;
@@ -54,6 +79,8 @@ v_ph=1/sqrt(L_tot*C);
 v_ph_c=1/sqrt(L_tot_c*C_c);
 Z_0=sqrt(L_tot/C);
 Z_c=sqrt(L_tot_c/C_c);
+
+v_ph=2*v_ph;
 
 Y_0 = 1/Z_0;
 Y_c = 1/Z_c;
@@ -89,7 +116,7 @@ Zeff = sqrt((R-1i*w*Z_0/v_ph)./(G-1i*w/(Z_0*v_ph)));
 Zeff_c = sqrt((R_c-1i*w*Z_c/v_ph_c)./(G_c-1i*w/(Z_c*v_ph_c)));
 
 
-tic
+for ii = 1:length(phase)
 %% encoding equations
 %  see the pdf for details on the encoding procedure
 eqn_num = 4*M*N - 2*M - 2*N +2;
@@ -194,8 +221,14 @@ for j = 1:M
     % known t for input / reflections from other inputs
     
     if any(idx_of_input_lines==j) 
-        big_ten(eqn_count+1, 2*j-1,1) = 1;
-        V(eqn_count+1) = 1;
+        if j==1
+            big_ten(eqn_count+1, 2*j-1,1) = 1;
+            V(eqn_count+1) = 1;
+        end
+        if j==4
+            big_ten(eqn_count+1, 2*j-1,1) = phase_factor(ii);
+            V(eqn_count+1) = 1;
+        end
         
     else
         big_ten(eqn_count+1, 2*j-1,1) = 1;
@@ -216,11 +249,10 @@ for j = 1:M
    
     
 end
-toc
 
 
 %% solving
-tic
+
 % translating 3D tensor to 2D matrix:
 big_mat = reshape(big_ten, [eqn_count,eqn_count]);
 
@@ -241,52 +273,20 @@ cond = abs(sum(abs(t(:,N)).^2) + sum(abs(r(:,1)).^2) - sum(abs(t(:,1)).^2) - sum
 if cond
     warning("energy conservation condition does not hold")
 end
-toc
-%% reconstructing voltage and current 
-
-% defining coordinates along the lines:
-Npoints = 100; %points per segment
-x = linspace(0,N*L,N*Npoints);
-
-% pre-allocating
-V = zeros(length(x),M); % voltage
-I = zeros(length(x),M); % current
 
 
-% calculating
-for j=1:M
-    for n=1:N
-       V(Npoints*(n-1)+1:Npoints*n,j) = t(j,n)*exp(1i*k*x(1:Npoints)) + r(j,n)*exp(-1i*k*x(1:Npoints));
-       
-       I(Npoints*(n-1)+1:Npoints*n,j) = (1/Z_0)*(t(j,n)*exp(1i*k*x(1:Npoints)) - r(j,n)*exp(-1i*k*x(1:Npoints)));
-       
-    end
+trans(:,ii) = t(:,end);
 end
-
-% calculate power
-P = 0.5*real(V.*conj(I));
-
-
-%% plot - colormap
-
-figure(203)
-clf
-imagesc(transpose(real(P)), "XData",x )
-shading flat
-colorbar
-yticks(1:M)
-
-title(sprintf("power propagation at %g GHz", Frequency*1e-9))
-ylabel( "line" , "fontsize", 15)
-xlabel( "position along line (m)" , "fontsize", 15)
-
-colormap jet
 
 %% plot - graphs
 figure(204)
 clf
-plot(x,real(P), 'linewidth', 1.5);
+plot(phase,(abs(trans(1:4,:))), 'linewidth', 1.5);
 grid on;
-xlabel( "position along line (m)" , "fontsize", 15)
-ylabel( "power (a.u)" , "fontsize", 15)
-title(sprintf("power propagation at %g GHz", Frequency*1e-9),"fontsize", 15)
+xlabel( "phase difference in lines 1 & 4" , "fontsize", 15)
+ylabel( "transmission (a.u.)" , "fontsize", 15)
+title(sprintf("interference at %g GHz", Frequency*1e-9),"fontsize", 15)
+leg = legend(num2str((1:4)'),"location", "best", "fontsize", 16);
+    title(leg, "line")
+ set(gca,'XTick',0:pi/2:2*pi) 
+ set(gca,'XTickLabel',{'0','\pi/2','\pi','3\pi/2','2\pi'})

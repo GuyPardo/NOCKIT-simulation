@@ -8,19 +8,23 @@
 % SolveArrayFunV3.m
 clearvars
 %% Configurations
+coplanar_couplers =false; % toggle wether to calculate the coupler capacitance as a microstrip or as a coplanar
+phase = transpose(linspace(0,2*pi,201));
+phase_factor = [ones(size(phase)),exp(1i*phase)];
+
 % Geometry:
 % Lines gerometry:
-W=2.3e-6; % width of primary and secondary transmission lines
-t=8e-9; % thickness of WSi (sputtered)
+W=3e-6; % width of primary and secondary transmission lines
+t=10e-9; % thickness of WSi (sputtered)
 H=16e-9; % height of dielectric (say, Si - evaporated)
-W_c=300e-9; % width of coupling line
- 
+W_c=200e-9; % width of coupling line
+gap_c = 1.4e-6; 
 % network geometry
 L = 100e-6; % length of each unit cell along main lines (m)
-d = 20e-6; % length of each coupling segment (m)
-N=31; % number of unit cells
-M =13; % number of lines
-idx_of_input_lines = [7];
+d = 27e-6; % length of each coupling segment (m)
+N=32; % number of unit cells
+M =7; % number of lines
+idx_of_input_lines = [1,4];
 if any(idx_of_input_lines > M)
     error("idx_of_imput_line greater than number of lines")
 end
@@ -33,11 +37,32 @@ L_kin=30.75615e-6*2e-6/W*10e-9/t;
 L_kin_c=30.75615e-6*2e-6/W_c*10e-9/t; % for coupling line
 % The kinetic inductance per unit length (L_kin) is calibrated according to measurement from 11.2.19 of a 10 nm / 2 micron strip
 L_geo=0.00508*39.3701*(log(2/(W+H))+0.5+0.2235*(W+H))*0.000001;
-L_geo_c=0.00508*39.3701*(log(2/(W_c+H))+0.5+0.2235*(W_c+H))*0.000001;
 % Formula for geometric inductance per unit length taken from https://www.allaboutcircuits.com/tools/microstrip-inductance-calculator/
 % (note that one must convert from inches). But L_geo<L_kin, so it might not be so important...
 C=W*eps_0*eps_r/H; % capacitance per unit length
-C_c=W_c*eps_0*eps_r/H; % capacitance per unit length for coupling line
+
+
+
+if coplanar_couplers
+        % copied from CPWR_calculations.m:
+        c = 3e8;
+        u0 = 4*pi*1e-7;
+        e_eff = (eps+1)/2*1.03^2;
+       % Elliptic integrals
+        k1 = W_c./(W_c+2*gap_c);
+        k2 = sqrt(1-k1.^2);
+        K1 = ellipke(k1.^2);
+        K2 = ellipke(k2.^2);
+        % Inductance and capacitance per unit length
+        L_geo_c = u0/4*K2./K1;
+        C_c = 4/(u0*c^2)*e_eff*K1./K2;
+ 
+else
+        C_c=W_c*eps_0*eps_r/H; % capacitance per unit length for coupling line
+        L_geo_c=0.00508*39.3701*(log(2/(W_c+H))+0.5+0.2235*(W_c+H))*0.000001;
+end
+
+
 
 L_tot=L_geo+L_kin; % total inductance per unit length;
 L_tot_c=L_geo_c+L_kin_c; % total inductance per unit length for coupling line;
@@ -54,6 +79,8 @@ v_ph=1/sqrt(L_tot*C);
 v_ph_c=1/sqrt(L_tot_c*C_c);
 Z_0=sqrt(L_tot/C);
 Z_c=sqrt(L_tot_c/C_c);
+
+v_ph=2*v_ph;
 
 Y_0 = 1/Z_0;
 Y_c = 1/Z_c;
