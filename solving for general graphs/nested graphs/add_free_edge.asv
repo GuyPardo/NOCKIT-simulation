@@ -15,16 +15,18 @@ function [G, edges] = add_free_edge(G,node_id, attributes,dx,dy)
 N = numel(node_id);
 previous_numnodes =  G.numnodes;
 X = G.Nodes.X(node_id)+dx;
-Y = G.Nodes.Y(node_id) + dy;
-nodeprops = table(X,Y, 'variablenames', {'X', 'Y'});
+Y = G.Nodes.Y(nodes_id) + d
+nodeprops = table(X',Y', 'variablenames', {'X', 'Y'});
 
 G = G.addnode( nodeprops);
 
 
 G = G.addnode(N);
-
+if nargin==3
     G=G.addedge(node_id, (1:N) + previous_numnodes, attributes);
-
+else
+    G = G.addedge(node_id, (1:N) + previous_numnodes);
+end
 
 
 edges = G.findedge(node_id, (1:N) + previous_numnodes);

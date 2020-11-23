@@ -32,8 +32,8 @@ input_idx = [3];   % can be more than one.
 v_ph = 1.361104539023962e+06; % phase velocity for lines
 v_ph_c =  1.408763793738406e+06; % phase velocity for couplers
 Y0 = 0.020259488114653; % admittance for lines
-Yc = 0.002735070881675; % admittance for couplers
-
+% Yc = 0.002735070881675; % admittance for couplers
+Yc = 0.012735070881675; % admittance for couplers
 % frequency etc.
 freq = [6e9]; 
 omega= 2*pi*freq;
@@ -43,9 +43,12 @@ kc = 2*pi*freq/v_ph_c; % wavenumber for couplers
 % define grpah: define an array of nodes with M rows and N+2 columns. the
 % nodes are numbered such that nodes 1:M are the first column, M+1:2*M are
 % the socind column  etc.
-nodes = reshape(1:M*N,M,N );  
+nodes = reshape(1:M*N,M,N );
+
+
+nodes_x =  
 G = digraph();
-% define main lines:
+% define horizontal lines
 % connect each node (m,n) to (m, n+1), with weight  2.
 % by convention weight 2 means a "main" edge and not a coupler.
 s = nodes(:,1:N-1);
@@ -53,7 +56,7 @@ t = nodes(:,2:N);
 w = 2*ones(size(s));
 G = G.addedge(s,t,w);
 
-% define coupling lines:
+% define vertical lines
 % connect each node (m,n) to (n+1,n) with weight 1.
 
 s = nodes(1:M-1, 1:N);
@@ -61,6 +64,7 @@ t = nodes(2:M, 1:N);
 w = 2*ones(size(s));
 G = G.addedge(s,t,w);
 
+G.Nodes.X = 
 
 
 
@@ -96,13 +100,13 @@ BC_left_arr = 2*ones(M,1);
 BC_left_arr(input_idx) = 4;
 edge_table  = table(ones(M,1),BC_left_arr , G.numedges + (1:M)','variablenames', {'Weight', 'BC','ID'});
 [G, left_edges] = add_free_edge(G,nodes(:,1), edge_table);
-left_edges_ID = G.Edges.ID(left_edges)
+left_edges_ID = G.Edges.ID(left_edges);
 plot(G, 'edgelabel',G.Edges.ID);
 
 % right: 
  edge_table  = table(ones(M,1),2*ones(M,1),G.numedges + (1:M)' ,'variablenames', {'Weight', 'BC','ID'});
  [G, right_edges] = add_free_edge(G,nodes(:,N), edge_table);
- right_edges_ID = G.Edges.ID(right_edges)
+ right_edges_ID = G.Edges.ID(right_edges);
 
 plot(G, 'edgelabel', 1:G.numedges);
 
@@ -144,7 +148,7 @@ Y_arr = G.Edges.Y;
 BC_arr = G.Edges.BC;
 
 clf
-G.plot('edgelabel',G.Edges.ID)
+G.plot('edgelabel',G.Edges.ID,'layout', 'force')
 %% graph pre-proccesing:
 edge_num = G.numedges;
 nodes_num = G.numnodes;
@@ -262,7 +266,7 @@ t_edges = solution(1:2:end-1);
 r_edges = solution(2:2:end);
 
  
- % check energy conservation:
+ % check energy conservation: (for a general graph!)
 end_nodes_out = logical(cellfun(@(x) length(x), outedges_cell).*~cellfun(@(x) length(x), inedges_cell));
 end_nodes_in = logical(~cellfun(@(x) length(x), outedges_cell).*cellfun(@(x) length(x), inedges_cell));
  
@@ -273,7 +277,7 @@ end_edges_out = cell2mat(outedges_cell(end_nodes_out));
 sum_in =  sum(abs(t_edges(end_edges_out)).^2) + sum(abs(r_edges(end_edges_in)).^2); 
 sum_out =  sum(abs(r_edges(end_edges_out)).^2) + sum(abs(t_edges(end_edges_in)).^2); 
  cond =abs(sum_in-sum_out);
- if cond>1e-14
+ if cond>1e-16
      warning('energy conservation condition does not hold')
      cond
  end
@@ -283,8 +287,17 @@ sum_out =  sum(abs(r_edges(end_edges_out)).^2) + sum(abs(t_edges(end_edges_in)).
 % 
  disp('solve:')
 toc
- %%
+%%
+% define edge power value
+G.Edges.power = abs(t_edges).^2 - abs(r_edges).^2;
+ %% plot
+ reverse_idx = G.Edges.power<0;
+ ids = 1:G.numedges;
+ G_rev = G.flipedge(ids(reverse_idx));
  
- 
+h = plot(G_rev,'layout', 'force','linewidth', 8,  'arrowsize', 25 ,'edgealpha',1 );
+colormap default;
+h.EdgeCData = abs(G_rev.Edges.power);
+colorbar
  
  

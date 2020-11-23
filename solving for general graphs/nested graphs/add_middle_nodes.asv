@@ -9,19 +9,19 @@ function G = add_middle_nodes(G, node1, node2,N, w)
  % it should be a vector of length N+1
  
 nodes_num = G.numnodes; % initial number of nodes
-X = G.Nodes.X(node1)  + (1:N)*(G.Nodes.X(node2) - G.Nodes.X(node1))/(N+1) ;
-Y = G.Nodes.Y(node1) + (1:N)*(G.Nodes.Y(node2) - G.Nodes.Y(node1))/(N+1);
-nodeprops = table(X',Y', 'variablenames', {'X', 'Y'});
+X = G.Nodes.X(node1)  + (G.Nodes.X(node2) - G.Nodes.X(node1)) ;
+Y = G.Nodes.Y(nodes1) + dy;
+nodeprops = table(X,Y, 'variablenames', {'X', 'Y'});
 
-G = G.addnode( nodeprops);
+G = G.addnode(N);
 G = G.rmedge( node1, node2); % remove the edge btw node1 and node2
 
 source = [node1 , nodes_num+1:nodes_num+N];
 target = [ nodes_num+1:nodes_num+N, node2];
 if nargin==5
-    G = G.addedge(source, target, w);
+    G = G.addedge(source, target, w, nodeprops);
 else
-    G = G.addedge(source, target);
+    G = G.addedge(source, target, nodeprops);
 end
 
 
