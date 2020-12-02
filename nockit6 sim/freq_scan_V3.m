@@ -5,12 +5,12 @@ tic
 % edit 2020_11_15:
 % parameters for nockit 6 design
 % frequency scan 
-Frequency=linspace(3,9,201)*1e9;
+Frequency=linspace(2,9,201)*1e9;
 w = 2*pi*Frequency;
 
 %% Configurations
 coplanar_couplers =true; % toggle wether to calculate the coupler capacitance as a microstrip or as a coplanar
-
+use_nockit_5_fit = true; 
 % Lines gerometry:
     W=3e-6; % width of primary and secondary transmission lines
     t=10e-9; % thickness of WSi (sputtered)
@@ -77,13 +77,17 @@ coplanar_couplers =true; % toggle wether to calculate the coupler capacitance as
     Z_0=sqrt(L_tot/C);
     Z_c=sqrt(L_tot_c/C_c);
 
-
+ if use_nockit_5_fit
 % parameters correction from fit. use these to get somthing close to the
 % measurement for 2 traces NOCKIT5, but note that we still have to explain the factor of 2 in
 % the phase velocity. the other two factors are close to 1, so they are OK.
-%      v_ph = 2*v_ph;
-%     v_ph_c = 1.0141*v_ph_c;
-%     Z_c = 0.9227 * Z_c;
+x = [1.9935    0.9193    0.8418];     
+%x = [2,1,1]
+v_ph = v_ph*x(1);
+    v_ph_c = v_ph_c*x(2);
+    Z_c =  Z_c*x(3);
+    
+ end
 
 % boundaries reflections and attenuators:
 %  see pdf for details
@@ -142,7 +146,8 @@ figure(1) % transmittance graphs
     title(leg, "line")
     xlabel("frequency (Hz)", "fontsize", 16)
     ylabel("dB", "fontsize", 16)
-    title("transmittace", "fontsize", 16)
+    title_str = sprintf('tramsmission in  lines ourput  with input from line %d', idx_of_input_lines);
+    title(title_str, "fontsize", 16)
 figure(2)  % reflectance graphs  
     plot(Frequency, ref_dB(:,1:4)', 'linewidth', 1.5)
     grid on
