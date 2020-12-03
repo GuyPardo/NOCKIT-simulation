@@ -9,8 +9,10 @@
 clearvars
 %% Configurations
 coplanar_couplers =true; % toggle wether to calculate the coupler capacitance as a microstrip or as a coplanar
+use_nockit_5_fit = true; 
 phase = transpose(linspace(0,2*pi,201));
 phase_factor = exp(1i*phase);
+
 
 % Geometry:
 % Lines gerometry:
@@ -24,9 +26,11 @@ L = 100e-6; % length of each unit cell along main lines (m)
 d = 27e-6; % length of each coupling segment (m)
 N=32; % number of unit cells
 M =7; % number of lines
-idx_of_input_lines = [1,4];
+idx_of_input_lines = [1,4]; % should be a length two vector with elements from 1:M.
+%                             the first will have an input amplitude of 1/sqrt(2) with zero phase.
+%                             the second with amplitude 1/sqrt(2)  and varying phase from 0:2*pi.
 if any(idx_of_input_lines > M)
-    error("idx_of_imput_line greater than number of lines")
+    error("idx_of_imput_line greater than number of lines") 
 end
 
 % Electromagnetic properties:
@@ -80,7 +84,17 @@ v_ph_c=1/sqrt(L_tot_c*C_c);
 Z_0=sqrt(L_tot/C);
 Z_c=sqrt(L_tot_c/C_c);
 
-v_ph=2*v_ph;
+ if use_nockit_5_fit
+% parameters correction from fit. use these to get somthing close to the
+% measurement for 2 traces NOCKIT5, but note that we still have to explain the factor of 2 in
+% the phase velocity. the other two factors are close to 1, so they are OK.
+x = [1.9935    0.9193    0.8418];     
+%x = [2,1,1]
+v_ph = v_ph*x(1);
+    v_ph_c = v_ph_c*x(2);
+    Z_c =  Z_c*x(3);
+    
+ end
 
 Y_0 = 1/Z_0;
 Y_c = 1/Z_c;
@@ -221,13 +235,13 @@ for j = 1:M
     % known t for input / reflections from other inputs
     
     if any(idx_of_input_lines==j) 
-        if j==1
+        if j==idx_of_input_lines(1)
             big_ten(eqn_count+1, 2*j-1,1) = 1;
-            V(eqn_count+1) = 1;
+            V(eqn_count+1) = 1/sqrt(2);
         end
-        if j==4
-            big_ten(eqn_count+1, 2*j-1,1) = phase_factor(ii);
-            V(eqn_count+1) = 1;
+        if j==idx_of_input_lines(2)
+            big_ten(eqn_count+1, 2*j-1,1) = 1;
+            V(eqn_count+1) = 1/sqrt(2)*phase_factor(ii);
         end
         
     else
