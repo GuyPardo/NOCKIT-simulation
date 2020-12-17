@@ -10,7 +10,7 @@ w = 2*pi*Frequency;
 
 %% Configurations
 coplanar_couplers =true; % toggle wether to calculate the coupler capacitance as a microstrip or as a coplanar
-use_nockit_5_fit = true; 
+use_nockit_5_fit = false; 
 % Lines gerometry:
     W=3e-6; % width of primary and secondary transmission lines
     t=10e-9; % thickness of WSi (sputtered)
@@ -23,7 +23,7 @@ use_nockit_5_fit = true;
     d = 27e-6; % length of each coupling segment (m)
     N=32; % number of unit cells (31 couplers)
     M = 7; % number of lines
-    idx_of_input_lines =1; % either an integer in [1,M]  or an array of integers in [1,M]
+    idx_of_input_lines =4; % either an integer in [1,M]  or an array of integers in [1,M]
 
     if any(idx_of_input_lines > M)
         error("idx_of_imput_line greater than number of lines")
@@ -77,6 +77,8 @@ use_nockit_5_fit = true;
     Z_0=sqrt(L_tot/C);
     Z_c=sqrt(L_tot_c/C_c);
 
+    
+    
  if use_nockit_5_fit
 % parameters correction from fit. use these to get somthing close to the
 % measurement for 2 traces NOCKIT5, but note that we still have to explain the factor of 2 in
@@ -128,13 +130,18 @@ for idx = 1:length(Frequency)
 
     
     [t, r] = SolveArrayFunV3(M,N, L,d,k(idx),k_c(idx),Y_0(idx), Y_c(idx),idx_of_input_lines,ref_factor);
-    trans(idx,:) = abs(t(:,end)).^2;
-    ref(idx,:) = abs(r(:,1)).^2;
-
+    trans(idx,:) = t(:,end);
+    ref(idx,:) = r(:,1);
+    
 end
 
-trans_dB = 10*log10(trans);
-ref_dB = 10*log10(ref);
+trans_mag = abs(trans);
+ref_mag = abs(ref);
+
+trans_phase = unwrap(angle(trans));
+
+trans_dB = 20*log10(trans_mag);
+ref_dB = 20*log10(ref_mag);
 
 toc
 %% plot
@@ -146,8 +153,9 @@ figure(1) % transmittance graphs
     title(leg, "line")
     xlabel("frequency (Hz)", "fontsize", 16)
     ylabel("dB", "fontsize", 16)
-    title_str = sprintf('tramsmission in  lines ourput  with input from line %d', idx_of_input_lines);
+    title_str = sprintf('lines transmission w. input from line %d \n NOCKIT5 fit = %d \n coplanar couplers = %d' , idx_of_input_lines, use_nockit_5_fit,coplanar_couplers);
     title(title_str, "fontsize", 16)
+
 figure(2)  % reflectance graphs  
     plot(Frequency, ref_dB(:,1:4)', 'linewidth', 1.5)
     grid on
@@ -176,3 +184,18 @@ figure(3) % colormaps
        title("reflectance (dB)", "fontsize", 16)
     
        colormap jet
+%%
+
+figure(4)
+clf
+    plot(Frequency, trans_phase(:,4)', 'linewidth', 1.5)
+    grid on
+    leg = legend(num2str((4)'),"location", "best", "fontsize", 16);
+    title(leg, "line")
+    xlabel("frequency (Hz)", "fontsize", 16)
+    ylabel("phase", "fontsize", 16)
+    title_str = sprintf('phase at output w. input from line %d \n NOCKIT5 fit = %d \n coplanar couplers = %d' , idx_of_input_lines, use_nockit_5_fit,coplanar_couplers);
+    title(title_str, "fontsize", 16)
+
+    
+ 
