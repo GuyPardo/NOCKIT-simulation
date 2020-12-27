@@ -7,7 +7,7 @@ tic
 % frequency scan 
 Frequency=linspace(2,9,201)*1e9;
 w = 2*pi*Frequency;
-line = 4;
+line = 3;
 %% Configurations
 coplanar_couplers =true; % toggle wether to calculate the coupler capacitance as a microstrip or as a coplanar
 use_nockit_5_fit = false; 
@@ -47,7 +47,7 @@ use_nockit_5_fit = false;
         % copied from CPWR_calculations.m:
         c = 3e8;
         u0 = 4*pi*1e-7;
-        e_eff = (eps+1)/2*1.03^2;
+        e_eff = (eps_r+1)/2*1.03^2;
        % Elliptic integrals
         k1 = W_c./(W_c+2*gap_c);
         k2 = sqrt(1-k1.^2);
