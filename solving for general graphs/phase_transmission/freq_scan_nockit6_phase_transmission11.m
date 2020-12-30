@@ -147,7 +147,7 @@ for i=1:length(freq)
   % read solution: (this part is specific to the NOCKIT geometry)   
     ref(:,i) = r_edges(G.findedge(nodes(:,1),nodes(:,2)));
     trans(:,i) =t_edges(G.findedge(nodes(:,end-1),nodes(:,end))); 
-    
+    trans_end(:,i) = trans(:,i).*exp(1i*2*pi*freq(i)*(lengths')/v_ph);
     
     
 end
@@ -156,7 +156,7 @@ toc
 ref_mag2 = abs(ref);
 trans_mag2 = abs(trans);
 
- trans_phase = unwrap(angle(trans), [],2);
+ trans_phase = unwrap(angle(trans_end), [],2);
 
 %% plot
 ref_dB = 10*log10(ref_mag2);
