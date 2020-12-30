@@ -1,7 +1,7 @@
 
-clearvars
+% clearvars
 
-
+line = 4;
 coplanar_couplers = true;
 nockit5_fit  = false;
 %% construct graph
@@ -16,16 +16,37 @@ N=31; % number of couplers. (= number of unit cells minus 1)
 M = 7; % number of lines
 L0 = 100e-6; % length of each line segment
 d = 27e-6; % length of each coupler segment
+t = 10e-9;
+W = 3e-6;
+W_c = 200e-9;
+H = 16e-9;
+gap_c = 1.4e-6;
+addpath(genpath('Z:\Users\Guy\coupling transission lines\repos\NOCKIT-simulation'))
 
+[Y0, v_ph]  = get_microstrip_properties(W,t,H);
+if coplanar_couplers
+    [Yc, v_ph_c ] = get_CPW_properties(t,W_c,gap_c);
+else
+    [Yc, v_ph_c ] = get_microstrip_properties(W_c, t,H);
+end
 
-[Y0, v_ph]  = 
+% % % physical parameters: (see the NOCKIT simulation for the way these values were calculated  )
+% % v_ph = 1.361104539023962e+06; % phase velocity for lines
+% % v_ph_c =  1.408763793738406e+06; % phase velocity for couplers
+% % Y0 = 0.020259488114653; % admittance for lines
+% % Yc = 0.002735070881675; % admittance for couplers
 
-% physical parameters: (see the NOCKIT simulation for the way these values were calculated  )
-v_ph = 1.361104539023962e+06; % phase velocity for lines
-v_ph_c =  1.408763793738406e+06; % phase velocity for couplers
-Y0 = 0.020259488114653; % admittance for lines
-Yc = 0.002735070881675; % admittance for couplers
-
+if nockit5_fit
+% parameters correction from fit. use these to get somthing close to the
+% measurement for 2 traces NOCKIT5, but note that we still have to explain the factor of 2 in
+% the phase velocity. the other two factors are close to 1, so they are OK.
+x = [1.9935    0.9193    0.8418];     
+%x = [2,1,1]
+v_ph = v_ph*x(1);
+    v_ph_c = v_ph_c*x(2);
+    Yc =  Yc/x(3);
+    
+end
 
 
 % frequency etc.
@@ -34,7 +55,8 @@ omega= 2*pi*freq;
 
 
 
-input_idx = [7];   % can be more than one.
+input_idx = [line];   % can be more than one.
+%%
 % define graph: define an array of nodes with M rows and N+2 columns. the
 % nodes are numbered such that nodes 1:M are the first column, M+1:2*M are
 % the socond column  etc.
@@ -74,7 +96,7 @@ G.plot('xdata', x, 'ydata',y, 'linewidth', LWidths);
 %
 
 
-% define edges attributres; pahe velocity, length and characteristic
+% define edges attributres; phase velocity, length and characteristic
 % admittance:
 % rememeber weight = 1 means coupler edge, weight = 2 means regular edge:
 clearvars G.Edges.v_ph G.Edges.L G.Edges.Y
@@ -98,6 +120,18 @@ G.Edges.BC(G.findedge(nodes(input_idx,1),nodes(input_idx,2))) = 3;
 G.Edges.BC(G.findedge(nodes(:,N+1),nodes(:,N+2))) = 2*ones(M,1);
 
 
+lengths = [2600,2000, 1700, 700, 1700,2000,2600]*1e-6; 
+
+
+
+G.Edges.L(G.findedge(nodes(:,1),nodes(:,2))) =lengths'; 
+G.Edges.L(G.findedge(nodes(:,end-1),nodes(:,end))) =lengths';
+
+
+
+
+
+
 %%  solve
 % pre-process grpah:
 graph_data = process_graph(G);
@@ -110,22 +144,28 @@ for i=1:length(freq)
     [t_edges, r_edges] = solve_graph(graph_data,freq(i)); % solve
     
   % read solution: (this part is specific to the NOCKIT geometry)   
-    ref(:,i) = abs(r_edges(G.findedge(nodes(:,1),nodes(:,2)))).^2;
-    trans(:,i) = abs(t_edges(G.findedge(nodes(:,end-1),nodes(:,end)))).^2; 
+    ref(:,i) = r_edges(G.findedge(nodes(:,1),nodes(:,2)));
+    trans(:,i) =t_edges(G.findedge(nodes(:,end-1),nodes(:,end))); 
+    
+    
     
 end
 toc
+%%
+ref_mag2 = abs(ref);
+trans_mag2 = abs(trans);
 
+ trans_phase = unwrap(angle(trans), [],2);
 
 %% plot
-ref_dB = 10*log10(ref);
-trans_dB = 10*log10(trans);
+ref_dB = 10*log10(ref_mag2);
+trans_dB = 10*log10(trans_mag2);
 
 figure(701) % transmittance graphs
 clf;
-    plot(freq, trans_dB, 'linewidth', 1.5)
+    plot(freq, trans_dB(1:4,:), 'linewidth', 1.5)
     grid on
-    leg = legend(num2str((1:M)'),"location", "best", "fontsize", 13);
+    leg = legend(num2str((1:4)'),"location", "best", "fontsize", 13);
     title(leg, "line")
     xlabel("frequency (Hz)", "fontsize", 16)
     ylabel("dB", "fontsize", 16)
@@ -160,3 +200,27 @@ clf;
        title("reflectance (dB)", "fontsize", 16)
     
        colormap jet
+ %%      
+figure(704)
+clf
+    plot(freq, trans_phase(line,:), 'linewidth', 1.5)
+    grid on
+    leg = legend(num2str((line)'),"location", "best", "fontsize", 16);
+    
+    xlabel("frequency (Hz)", "fontsize", 16)
+    ylabel("phase", "fontsize", 16)
+    title_str = sprintf('phase at output w. input from line %d \n NOCKIT5 fit = %d \n coplanar couplers = %d' , input_idx, nockit5_fit,coplanar_couplers);
+    title(title_str, "fontsize", 16)
+
+    
+    P = polyfit(1e-9*freq, trans_phase(line,:),1 );
+    yfit = 1e-9*P(1)*freq +P(2);
+    slope = 1e-9*P(1);
+    
+    total_L = L0*(N-1) + 2*lengths(line);
+    v_ph_est = 2*pi*total_L/slope;
+    
+    hold on
+    plot(freq, yfit, '--')
+    leg = legend([sprintf('%d-->%d', line,line), sprintf("linear fit, slope = %.3g\n v_p_h_,_e_s_t = %.4g", slope, v_ph_est)],"location", "best", "fontsize", 16);
+    

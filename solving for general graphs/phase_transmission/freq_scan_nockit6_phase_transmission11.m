@@ -1,7 +1,7 @@
 
-clearvars
+% clearvars
 
-line = 4;
+
 coplanar_couplers = true;
 nockit5_fit  = false;
 %% construct graph
@@ -96,7 +96,7 @@ G.plot('xdata', x, 'ydata',y, 'linewidth', LWidths);
 %
 
 
-% define edges attributres; pahe velocity, length and characteristic
+% define edges attributres; phase velocity, length and characteristic
 % admittance:
 % rememeber weight = 1 means coupler edge, weight = 2 means regular edge:
 clearvars G.Edges.v_ph G.Edges.L G.Edges.Y
@@ -120,6 +120,19 @@ G.Edges.BC(G.findedge(nodes(input_idx,1),nodes(input_idx,2))) = 3;
 G.Edges.BC(G.findedge(nodes(:,N+1),nodes(:,N+2))) = 2*ones(M,1);
 
 
+lengths = [2600,2000, 1700, 500, 1700,2000,2600]*1e-6; 
+
+
+
+
+G.Edges.L(G.findedge(nodes(:,1),nodes(:,2))) =lengths'; 
+G.Edges.L(G.findedge(nodes(:,end-1),nodes(:,end))) =lengths';
+
+
+
+
+
+
 %%  solve
 % pre-process grpah:
 graph_data = process_graph(G);
@@ -135,13 +148,15 @@ for i=1:length(freq)
     ref(:,i) = r_edges(G.findedge(nodes(:,1),nodes(:,2)));
     trans(:,i) =t_edges(G.findedge(nodes(:,end-1),nodes(:,end))); 
     
+    
+    
 end
 toc
-
+%%
 ref_mag2 = abs(ref);
 trans_mag2 = abs(trans);
 
-trans_phase = unwrap(angle(transpose(trans))';
+ trans_phase = unwrap(angle(trans), [],2);
 
 %% plot
 ref_dB = 10*log10(ref_mag2);
@@ -202,9 +217,11 @@ clf
     P = polyfit(1e-9*freq, trans_phase(line,:),1 );
     yfit = 1e-9*P(1)*freq +P(2);
     slope = 1e-9*P(1);
-    v_ph_est = 2*pi*L0*N/slope;
+    
+    total_L = L0*(N-1) + 2*lengths(line);
+    v_ph_est = 2*pi*total_L/slope;
     
     hold on
     plot(freq, yfit, '--')
-    leg = legend([sprintf('%d-->%d', line,line), sprintf("linear fit, slope = %.3g\n v_p_h_,_e_s_t = %.4g", slope, 2*pi*L0*N/slope)],"location", "best", "fontsize", 16);
+    leg = legend([sprintf('%d-->%d', line,line), sprintf("linear fit, slope = %.3g\n v_p_h_,_e_s_t = %.4g", slope, v_ph_est)],"location", "best", "fontsize", 16);
     
