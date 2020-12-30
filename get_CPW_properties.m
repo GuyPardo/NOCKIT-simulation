@@ -1,5 +1,6 @@
 function [Y0, v_ph] = get_CPW_properties(thickness, width,gap)
-% returns the transmission line properties from the geometric 
+% returns the transmission line properties (admittance and phase-velocity)
+% for a WSi coplanar wave guide transmission line
 
 % Lines gerometry:
     W=width; 

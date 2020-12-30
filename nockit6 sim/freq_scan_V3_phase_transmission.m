@@ -7,7 +7,7 @@ tic
 % frequency scan 
 Frequency=linspace(2,9,201)*1e9;
 w = 2*pi*Frequency;
-line = 3;
+line = 4;
 %% Configurations
 coplanar_couplers =true; % toggle wether to calculate the coupler capacitance as a microstrip or as a coplanar
 use_nockit_5_fit = false; 

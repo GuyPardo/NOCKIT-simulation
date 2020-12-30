@@ -150,7 +150,7 @@ end_edges_out = cell2mat(outedges_cell(end_nodes_out));
 sum_in =  sum(abs(t_edges(end_edges_out)).^2) + sum(abs(r_edges(end_edges_in)).^2); 
 sum_out =  sum(abs(r_edges(end_edges_out)).^2) + sum(abs(t_edges(end_edges_in)).^2); 
  cond =abs(sum_in-sum_out);
- if cond>1e-14
+ if cond>1e-13
      warning('energy conservation condition does not hold:')
      cond
  end

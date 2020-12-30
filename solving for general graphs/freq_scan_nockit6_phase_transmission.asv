@@ -1,7 +1,7 @@
 
 clearvars
 
-line = 4; % for phase transmission sim
+line = 4;
 coplanar_couplers = true;
 nockit5_fit  = false;
 %% construct graph
@@ -55,7 +55,7 @@ omega= 2*pi*freq;
 
 
 
-input_idx = [4];   % can be more than one.
+input_idx = [line];   % can be more than one.
 %%
 % define graph: define an array of nodes with M rows and N+2 columns. the
 % nodes are numbered such that nodes 1:M are the first column, M+1:2*M are
@@ -141,11 +141,11 @@ toc
 ref_mag2 = abs(ref);
 trans_mag2 = abs(trans);
 
-trans_phase = unwrap(angle(trans));
+trans_phase = unwrap(angle(transpose(trans))';
 
 %% plot
-ref_dB = 10*log10(ref_mag);
-trans_dB = 10*log10(trans_mag);
+ref_dB = 10*log10(ref_mag2);
+trans_dB = 10*log10(trans_mag2);
 
 figure(701) % transmittance graphs
 clf;
@@ -186,3 +186,25 @@ clf;
        title("reflectance (dB)", "fontsize", 16)
     
        colormap jet
+ %%      
+figure(704)
+clf
+    plot(freq, trans_phase(line,:), 'linewidth', 1.5)
+    grid on
+    leg = legend(num2str((line)'),"location", "best", "fontsize", 16);
+    
+    xlabel("frequency (Hz)", "fontsize", 16)
+    ylabel("phase", "fontsize", 16)
+    title_str = sprintf('phase at output w. input from line %d \n NOCKIT5 fit = %d \n coplanar couplers = %d' , input_idx, nockit5_fit,coplanar_couplers);
+    title(title_str, "fontsize", 16)
+
+    
+    P = polyfit(1e-9*freq, trans_phase(line,:),1 );
+    yfit = 1e-9*P(1)*freq +P(2);
+    slope = 1e-9*P(1);
+    v_ph_est = 2*pi*L0*N/slope;
+    
+    hold on
+    plot(freq, yfit, '--')
+    leg = legend([sprintf('%d-->%d', line,line), sprintf("linear fit, slope = %.3g\n v_p_h_,_e_s_t = %.4g", slope, 2*pi*L0*N/slope)],"location", "best", "fontsize", 16);
+    
