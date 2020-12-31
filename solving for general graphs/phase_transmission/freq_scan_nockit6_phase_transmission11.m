@@ -89,9 +89,9 @@ y = repmat(d*fliplr((0:M-1)), 1,N+2); % the y coordinates are in the flipped to 
 x = reshape(x, 1,nodes_num);
 y = reshape(y, 1,nodes_num);
 LWidths = 6*G.Edges.Weight/max(G.Edges.Weight); 
-figure(504)
-clf
-G.plot('xdata', x, 'ydata',y, 'linewidth', LWidths);
+% figure(504)
+% clf
+% G.plot('xdata', x, 'ydata',y, 'linewidth', LWidths);
 
 %
 
@@ -121,6 +121,7 @@ G.Edges.BC(G.findedge(nodes(:,N+1),nodes(:,N+2))) = 2*ones(M,1);
 
 
 lengths = [2600,2000, 1700, 500, 1700,2000,2600]*1e-6; 
+lengths =  L0*ones(1,M);
 
 
 
@@ -159,69 +160,69 @@ trans_mag2 = abs(trans);
  trans_phase = unwrap(angle(trans_end), [],2);
 
 %% plot
-ref_dB = 10*log10(ref_mag2);
-trans_dB = 10*log10(trans_mag2);
-
-figure(701) % transmittance graphs
-clf;
-    plot(freq, trans_dB(1:4,:), 'linewidth', 1.5)
-    grid on
-    leg = legend(num2str((1:4)'),"location", "best", "fontsize", 13);
-    title(leg, "line")
-    xlabel("frequency (Hz)", "fontsize", 16)
-    ylabel("dB", "fontsize", 16)
-    title("transmittace", "fontsize", 16)
-figure(702)  % reflectance graphs  
-clf;
-    plot(freq, ref_dB, 'linewidth', 1.5)
-    grid on
-    leg = legend(num2str((1:M)'),"location", "best", "fontsize", 13);
-    title(leg, "line")
-    xlabel("frequency (Hz)", "fontsize", 16)
-    ylabel("dB", "fontsize", 16)
-    title("reflectance", "fontsize", 16)
-
-figure(703) % colormaps
-clf;
-   subplot(2,1,1) % transmittance
-       imagesc( trans_dB, "XData", freq, "YData", (1:M))
-       view(2)
-       shading flat
-       colorbar
-       xlabel("frequency (Hz)", "fontsize", 13)
-       ylabel("line", "fontsize", 16)
-       title("transmittace (dB)", "fontsize", 16)  
-    subplot(2,1,2) % reflectance
-       imagesc( ref_dB, "XData", freq, "YData", (1:M))
-       view(2)
-       shading flat
-       colorbar
-       xlabel("frequency (Hz)", "fontsize", 13)
-       ylabel("line", "fontsize", 16)
-       title("reflectance (dB)", "fontsize", 16)
-    
-       colormap jet
+% ref_dB = 10*log10(ref_mag2);
+% trans_dB = 10*log10(trans_mag2);
+% 
+% figure(701) % transmittance graphs
+% clf;
+%     plot(freq, trans_dB(1:4,:), 'linewidth', 1.5)
+%     grid on
+%     leg = legend(num2str((1:4)'),"location", "best", "fontsize", 13);
+%     title(leg, "line")
+%     xlabel("frequency (Hz)", "fontsize", 16)
+%     ylabel("dB", "fontsize", 16)
+%     title("transmittace", "fontsize", 16)
+% figure(702)  % reflectance graphs  
+% clf;
+%     plot(freq, ref_dB, 'linewidth', 1.5)
+%     grid on
+%     leg = legend(num2str((1:M)'),"location", "best", "fontsize", 13);
+%     title(leg, "line")
+%     xlabel("frequency (Hz)", "fontsize", 16)
+%     ylabel("dB", "fontsize", 16)
+%     title("reflectance", "fontsize", 16)
+% 
+% figure(703) % colormaps
+% clf;
+%    subplot(2,1,1) % transmittance
+%        imagesc( trans_dB, "XData", freq, "YData", (1:M))
+%        view(2)
+%        shading flat
+%        colorbar
+%        xlabel("frequency (Hz)", "fontsize", 13)
+%        ylabel("line", "fontsize", 16)
+%        title("transmittace (dB)", "fontsize", 16)  
+%     subplot(2,1,2) % reflectance
+%        imagesc( ref_dB, "XData", freq, "YData", (1:M))
+%        view(2)
+%        shading flat
+%        colorbar
+%        xlabel("frequency (Hz)", "fontsize", 13)
+%        ylabel("line", "fontsize", 16)
+%        title("reflectance (dB)", "fontsize", 16)
+%     
+%        colormap jet
  %%      
-figure(704)
-clf
-    plot(freq, trans_phase(line,:), 'linewidth', 1.5)
-    grid on
-    leg = legend(num2str((line)'),"location", "best", "fontsize", 16);
-    
-    xlabel("frequency (Hz)", "fontsize", 16)
-    ylabel("phase", "fontsize", 16)
-    title_str = sprintf('phase at output w. input from line %d \n NOCKIT5 fit = %d \n coplanar couplers = %d' , input_idx, nockit5_fit,coplanar_couplers);
-    title(title_str, "fontsize", 16)
-
-    
-    P = polyfit(1e-9*freq, trans_phase(line,:),1 );
-    yfit = 1e-9*P(1)*freq +P(2);
-    slope = 1e-9*P(1);
-    
-    total_L = L0*(N-1) + 2*lengths(line);
-    v_ph_est = 2*pi*total_L/slope;
-    
-    hold on
-    plot(freq, yfit, '--')
-    leg = legend([sprintf('%d-->%d', line,line), sprintf("linear fit, slope = %.3g\n v_p_h_,_e_s_t = %.4g", slope, v_ph_est)],"location", "best", "fontsize", 16);
-    
+% figure(704)
+% clf
+%     plot(freq, trans_phase(line,:), 'linewidth', 1.5)
+%     grid on
+%     leg = legend(num2str((line)'),"location", "best", "fontsize", 16);
+%     
+%     xlabel("frequency (Hz)", "fontsize", 16)
+%     ylabel("phase", "fontsize", 16)
+%     title_str = sprintf('phase at output w. input from line %d \n NOCKIT5 fit = %d \n coplanar couplers = %d' , input_idx, nockit5_fit,coplanar_couplers);
+%     title(title_str, "fontsize", 16)
+% 
+%     
+%     P = polyfit(1e-9*freq, trans_phase(line,:),1 );
+%     yfit = 1e-9*P(1)*freq +P(2);
+%     slope = 1e-9*P(1);
+%     
+%     total_L = L0*(N-1) + 2*lengths(line);
+%     v_ph_est = 2*pi*total_L/slope;
+%     
+%     hold on
+%     plot(freq, yfit, '--')
+%     leg = legend([sprintf('%d-->%d', line,line), sprintf("linear fit, slope = %.3g\n v_p_h_,_e_s_t = %.4g", slope, v_ph_est)],"location", "best", "fontsize", 16);
+%     

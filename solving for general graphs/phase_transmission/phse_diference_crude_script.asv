@@ -1,34 +1,31 @@
 
 clearvars phase
-
+figure(706)
+clf
 for line = 1:4
 freq_scan_nockit6_phase_transmission11
 phase(line,:) = trans_phase(line,:);
 
 
-
-
-end
-
-phase_delta = phase(1,:) - phase(4,:);
-%%
-
-figure(706)
-clf
-for line=1:4
 subplot(2,2,line)
 plot(freq, phase(line,:))
-P = polyfit(1e-9*freq, phase(line,:),1 );
+P = polyfit(1e-9*freq, phase_delta,1 );
 yfit = 1e-9*P(1)*freq +P(2);
 slope = 1e-9*P(1);
 total_L = L0*(N-1) + 2*lengths(line);
 v_ph_est = 2*pi*total_L/slope;
- 
+    
 hold on
 plot(freq, yfit, '--')
-title(sprintf("line %g , v_p_h_,_e_s_t = %.4g",line, v_ph_est))
+title(sprintf("data with linear fit, v_p_h_,_e_s_t = %.4g", v_ph_est))
 grid on
+
 end
+
+phase_delta = phase(1,:) - phase(4,:);
+
+
+
 
 figure(705)
 clf
@@ -38,7 +35,7 @@ clf
     
     xlabel("frequency (Hz)", "fontsize", 16)
     ylabel("phase", "fontsize", 16)
-    title_str = sprintf('line 1 - line 4  \n NOCKIT5 fit = %d \n coplanar couplers = %d' ,  nockit5_fit,coplanar_couplers);
+    title_str = sprintf('phase at output w. input from line %d \n NOCKIT5 fit = %d \n coplanar couplers = %d' , input_idx, nockit5_fit,coplanar_couplers);
     title(title_str, "fontsize", 16)
 
     
