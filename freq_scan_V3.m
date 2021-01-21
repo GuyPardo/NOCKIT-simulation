@@ -3,7 +3,7 @@ tic
 % version 3 includes also attenuated reflections and loss
 
 % frequency scan 
-Frequency=linspace(3,9,201)*1e9;
+Frequency=linspace(3,9,2001)*1e9;
 w = 2*pi*Frequency;
 
 %% Configurations
@@ -18,8 +18,8 @@ w = 2*pi*Frequency;
     L = 100e-6; % length of each unit cell along main lines (m)
     d = 20e-6; % length of each coupling segment (m)
     N=31; % number of unit cells
-    M = 13; % number of lines
-    idx_of_input_lines =7; % either an integer in [1,M]  or an array of integers in [1,M]
+    M = 2; % number of lines
+    idx_of_input_lines =1; % either an integer in [1,M]  or an array of integers in [1,M]
     if any(idx_of_input_lines > M)
         error("idx_of_imput_line greater than number of lines")
     end

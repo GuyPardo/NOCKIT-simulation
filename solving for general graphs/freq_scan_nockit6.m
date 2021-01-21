@@ -3,7 +3,7 @@ clearvars
 
 
 coplanar_couplers = true;
-nockit5_fit  = false;
+nockit5_fit  = true;
 %% construct graph
 % this part constructs the graph representing nockit network: a square
 % lattice made out of  M lines with N couplers between each adjacent pair. 
@@ -21,6 +21,19 @@ W = 3e-6;
 W_c = 200e-9;
 H = 29e-9;%16e-9;
 gap_c = 1.4e-6;
+
+
+
+% % % % % geometry: and network structure
+% % % % N=30; % number of couplers. (= number of unit cells minus 1) 
+% % % % M = 2; % number of lines
+% % % % L0 = 100e-6; % length of each line segment
+% % % % d = 20e-6; % length of each coupler segment
+% % % % t = 8e-9;
+% % % % W = 2.3e-6;
+% % % % W_c = 300e-9;
+% % % % H = 16e-9;
+% % % % gap_c = 1.4e-6;
 addpath(genpath('Z:\Users\Guy\coupling transission lines\repos\NOCKIT-simulation'))
 
 [Y0, v_ph]  = get_microstrip_properties(W,t,H);
@@ -40,7 +53,8 @@ if nockit5_fit
 % parameters correction from fit. use these to get somthing close to the
 % measurement for 2 traces NOCKIT5, but note that we still have to explain the factor of 2 in
 % the phase velocity. the other two factors are close to 1, so they are OK.
-x = [1.9935    0.9193    0.8418];     
+x = [1.9935    0.9193    0.8418];  
+
 %x = [2,1,1]
 %x =  [1.0479    0.5550    0.4589  -52.1305]
 v_ph = v_ph*x(1);
@@ -56,7 +70,7 @@ omega= 2*pi*freq;
 
 
 
-input_idx = [4];   % can be more than one.
+input_idx = [1];   % can be more than one.
 %%
 % define graph: define an array of nodes with M rows and N+2 columns. the
 % nodes are numbered such that nodes 1:M are the first column, M+1:2*M are
