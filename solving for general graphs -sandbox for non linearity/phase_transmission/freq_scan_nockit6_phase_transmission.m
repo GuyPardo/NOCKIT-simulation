@@ -16,10 +16,10 @@ N=31; % number of couplers. (= number of unit cells minus 1)
 M = 7; % number of lines
 L0 = 100e-6; % length of each line segment
 d = 27e-6; % length of each coupler segment
-t = 8.5e-9 ;%10e-9;
+t = 10e-9;
 W = 3e-6;
 W_c = 200e-9;
-H = 29e-9; %16e-9;
+H = 16e-9;
 gap_c = 1.4e-6;
 addpath(genpath('Z:\Users\Guy\coupling transission lines\repos\NOCKIT-simulation'))
 

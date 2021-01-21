@@ -1,7 +1,7 @@
 
 clearvars
 
-line = 4; % for phase transmission sim
+
 coplanar_couplers = true;
 nockit5_fit  = false;
 %% construct graph
@@ -16,10 +16,10 @@ N=31; % number of couplers. (= number of unit cells minus 1)
 M = 7; % number of lines
 L0 = 100e-6; % length of each line segment
 d = 27e-6; % length of each coupler segment
-t = 10e-9;
+t = 8.5e-9;%10e-9;
 W = 3e-6;
 W_c = 200e-9;
-H = 16e-9;
+H = 29e-9;%16e-9;
 gap_c = 1.4e-6;
 addpath(genpath('Z:\Users\Guy\coupling transission lines\repos\NOCKIT-simulation'))
 
@@ -42,6 +42,7 @@ if nockit5_fit
 % the phase velocity. the other two factors are close to 1, so they are OK.
 x = [1.9935    0.9193    0.8418];     
 %x = [2,1,1]
+%x =  [1.0479    0.5550    0.4589  -52.1305]
 v_ph = v_ph*x(1);
     v_ph_c = v_ph_c*x(2);
     Yc =  Yc/x(3);
@@ -50,7 +51,7 @@ end
 
 
 % frequency etc.
-freq = 1e9*linspace(3,9,201); 
+freq = 1e9*linspace(2,9,201); 
 omega= 2*pi*freq;
 
 
@@ -144,8 +145,8 @@ trans_mag2 = abs(trans);
 trans_phase = unwrap(angle(trans));
 
 %% plot
-ref_dB = 10*log10(ref_mag);
-trans_dB = 10*log10(trans_mag);
+ref_dB = 10*log10(ref_mag2);
+trans_dB = 10*log10(trans_mag2);
 
 figure(701) % transmittance graphs
 clf;

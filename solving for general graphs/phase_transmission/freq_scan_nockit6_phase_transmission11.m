@@ -16,13 +16,13 @@ N=31; % number of couplers. (= number of unit cells minus 1)
 M = 7; % number of lines
 L0 = 100e-6; % length of each line segment
 d = 27e-6; % length of each coupler segment
-t = 10e-9;
+t = 8.5e-9; %10e-9;
 W = 3e-6;
 W_c = 200e-9;
-H = 16e-9;
+H = 29e-9;%16e-9;
 gap_c = 1.4e-6;
 addpath(genpath('Z:\Users\Guy\coupling transission lines\repos\NOCKIT-simulation'))
-
+addpath(genpath('C:\Users\guypa\Google Drive\LIMUDIM\Lab_research\repos2\NOCKIT-simulation'))
 [Y0, v_ph]  = get_microstrip_properties(W,t,H);
 if coplanar_couplers
     [Yc, v_ph_c ] = get_CPW_properties(t,W_c,gap_c);
