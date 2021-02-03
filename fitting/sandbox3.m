@@ -1,13 +1,21 @@
 clearvars
+addpath('')
+name = "\Transmission@-40";
+
+lab = true;
 
 
+if lab
 
-
+   folder = 'Z:\Measurements\2020.dir\01_12_20 cooldown\Nockit6';
+else
+   folder = 'C:\Users\guypa\Google Drive\LIMUDIM\Lab_research\nockit6 data\Nockit6'; 
+end
 %% import data
-smoothing = 15;
+smoothing = 0;
 
 traceid = 1:4;
-path =  "C:\Users\guypa\Google Drive\LIMUDIM\Lab_research\nockit6 data\Nockit6\Transmission@-40";
+path =  strcat(folder,name);
 clearvars data
 for i=1:length(traceid)
 
@@ -39,7 +47,7 @@ for i=1:4
 end
 
 %% plot 
-figure(1); clf; plot(freq_red, data_dB_red(:,:), 'linewidth', 1.5); grid on; xlabel('freq (Hz)'); ylabel('dB'); title('measured transmission')
+figure(301); clf; plot(freq_red, data_dB_red(:,:), 'linewidth', 1.5); grid on; xlabel('freq (Hz)'); ylabel('dB'); title('measured transmission')
 legend("4-->1","4-->2","4-->3","4-->4");
 %  c_o = colororder;
  
@@ -157,19 +165,23 @@ fun = @(x) get_cost_5(G,freq_red, data_dB_red, x);
 
 %% plot
 % X = [1.6973    2.9982    2.9024  -52.7307];
-X = [2.1635    0.7438    0.7321  -51.2686]
-X = [2.1740    0.4795    0.4708,-51.2686]
-figure(2); clf;
+X = [2.1635    0.7438    0.7321  -51.2686];
+% X = [2.1740    0.4795    0.4708,-51.2686]
+% X = [2.1386    2.8675    2.9995];
+X = [1.0096    0.2403    0.2425];
 
-    v_ph = 1.8628e+06*X(1);
-    v_ph_c = 5.4916e+06*X(2);
-    Z0 = 50.1153;
-     Zc = 1.9916e+03*X(3);
+offset = -51.2686;
+figure(333); clf;
+% 
+%     v_ph = 1.8628e+06*X(1);
+%     v_ph_c = 5.4916e+06*X(2);
+%     Z0 = 50.1153;
+%      Zc = 1.9916e+03*X(3);
 
-trans = freq_scan_fun_4(freq,v_ph, v_ph_c, 1/Z0, 1/Zc );
+trans_dB = get_trans(G,freq,X, offset, 1:4);
 %%
 figure(333)
-plot(freq, 20*log10(abs(trans(1:4,:))) + X(4), 'linewidth',1.5 );
+plot(freq, (trans_dB(1:4,:)), 'linewidth',1.5 );
 % ylim('auto')
 legend("4-->1","4-->2","4-->3","4-->4");
  grid on; xlabel('freq (Hz)'); ylabel('dB'); title('simulated transmission')

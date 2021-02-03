@@ -15,7 +15,7 @@ N=31; % number of couplers. (= number of unit cells minus 1)
 M = 7; % number of lines
 L0 = 100e-6; % length of each line segment
 d = 27e-6; % length of each coupler segment
-t = 10e-9;
+tattget = 10e-9;
 W = 3e-6;
 W_c = 200e-9;
 H = 16e-9;
@@ -124,83 +124,18 @@ G.Edges.BC(G.findedge(nodes(:,N+1),nodes(:,N+2))) = 2*ones(M,1);
 
 %% solve recursively:
 
-pwr_dbm = -20;
-pwr = (10^pwr_dbm)*1e-3;
-
-
-
-input_voltage_amp = sqrt(pwr*50);
-loop_num = 100;
+loop_num = 3;
 
 for i=1:loop_num
-    i
-    graph_data = process_graph(G);
-    [t_edges, r_edges] = solve_graph_non_lin(graph_data,freq, input_voltage_amp);
+    [t_edges, r_edges] = solve_graph(graph_data,freq);
     
     
-    power_edges = abs(t_edges).^2 - abs(r_edges).^2; % propagating power (with sign)
-    I_eff = sqrt(abs(power_edges).*G.Edges.Y); % effective current magnitude: sqrt(P/Z0)
-    kin_ind_factor = 1+(I_eff./G.Edges.Ic).^2;
+    power_edges = abs(t_edges).^2 - abs(r_edges).^2 % propagating power (with sign);
+    I_eff = 
     
     
-    G.Edges.Y = G.Edges.Y./sqrt(kin_ind_factor);
-    G.Edges.v_ph = G.Edges.v_ph./sqrt(kin_ind_factor);
     
-           
+    
 end
 
-
-%% get solution and plot
-% read solution: this part is specific to the NOCKIT geometry 
- t = reshape(t_edges(G.findedge(nodes(:,1:N+1) ,nodes(:,2:N+2) )), M,N+1);
- r = reshape(r_edges(G.findedge(nodes(:,1:N+1) ,nodes(:,2:N+2) )), M,N+1);
- %% reconstruct physical quantities
-% defining coordinates along the lines:
-Npoints = 100; %points per segment
-
-x = linspace(0,(N+1)*L0,(N+1)*Npoints);
-
-% pre-allocating
-V = zeros(length(x),M); % voltage
-I = zeros(length(x),M); % current
-
-k0 = 2*pi*freq/v_ph;
-% calculating
-for j=1:M
-    for n=1:N+1
-       V(Npoints*(n-1)+1:Npoints*n,j) = t(j,n)*exp(1i*k0*x(1:Npoints)) + r(j,n)*exp(-1i*k0*x(1:Npoints));
-       
-       I(Npoints*(n-1)+1:Npoints*n,j) = Y0*(t(j,n)*exp(1i*k0*x(1:Npoints)) - r(j,n)*exp(-1i*k0*x(1:Npoints)));
-       
-    end
-end
-
-% calculate power
-P = 0.5*real(V.*conj(I));
-
-
-%% plot - colormap
-
-figure(203)
-clf
-imagesc(transpose(real(P)), "XData",x )
-shading flat
-colorbar
-yticks(1:M)
-
-title(sprintf("power propagation at %g GHz", freq*1e-9))
-ylabel( "line" , "fontsize", 15)
-xlabel( "position along line (m)" , "fontsize", 15)
-
-colormap jet
-
-%% plot - graphs
-figure(204)
-clf
-plot(x,real(P), 'linewidth', 1.5);
-leg = legend(num2str((1:M)'),"location", "best", "fontsize", 13);
-grid on;
-xlabel( "position along line (m)" , "fontsize", 15)
-ylabel( "power (a.u)" , "fontsize", 15)
-title(sprintf("power propagation at %g GHz", freq*1e-9),"fontsize", 15)
 

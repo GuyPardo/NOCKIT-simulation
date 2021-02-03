@@ -10,11 +10,11 @@ w = 2*pi*Frequency;
 
 %% Configurations
 coplanar_couplers =true; % toggle wether to calculate the coupler capacitance as a microstrip or as a coplanar
-use_nockit_5_fit = true; 
+use_nockit_5_fit = false; 
 % Lines gerometry:
     W=3e-6; % width of primary and secondary transmission lines
-    t=10e-9; % thickness of WSi (sputtered)
-    H=16e-9; % height of dielectric (say, Si - evaporated)
+    t=8.5e-9; % thickness of WSi (sputtered)
+    H=32e-9; % height of dielectric (say, Si - evaporated)
     W_c=200e-9; % width of coupling line
     gap_c = 1.4e-6; % coplanar gap for coupler. only relevant for the coplanar couplers case
  
