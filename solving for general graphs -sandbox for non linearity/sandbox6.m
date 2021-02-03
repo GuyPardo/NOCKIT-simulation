@@ -130,7 +130,7 @@ pwr = (10^pwr_dbm)*1e-3;
 
 
 input_voltage_amp = sqrt(pwr*50);
-loop_num = 100;
+loop_num = 1;
 
 for i=1:loop_num
     i
