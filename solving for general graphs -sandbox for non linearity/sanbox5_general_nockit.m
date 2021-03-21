@@ -15,6 +15,7 @@
 % if you don't know how to add properties to graph edges see:
 % https://www.mathworks.com/help/matlab/math/add-graph-node-names-edge-weights-and-other-attributes.html#AddGraphNodeNamesEdgeWeightsAndOtherAttributesExample-4
 clearvars
+use_nockit_5_fit=true;
 %% construct graph
 % this part constructs the graph representing the 2 traces ladder network
 % (NOCKIT) 
@@ -24,15 +25,29 @@ clearvars
 tic
 % geometry: and network structure
 N=30; % number of couplers. (= number of unit cells minus 1) 
-M = 13; % number of lines
+M = 7; % number of lines
 L0 = 100e-6; % length of each line segment
 d = 20e-6; % length of each coupler segment
-input_idx = [7];   % can be more than one.
+input_idx = [4];   % can be more than one.
 % physical parameters: (see the NOCKIT simulation for the way these values were calculated  )
 v_ph = 1.361104539023962e+06; % phase velocity for lines
 v_ph_c =  1.408763793738406e+06; % phase velocity for couplers
 Y0 = 0.020259488114653; % admittance for lines
 Yc = 0.002735070881675; % admittance for couplers
+
+
+    
+ if use_nockit_5_fit
+% parameters correction from fit. use these to get somthing close to the
+% measurement for 2 traces NOCKIT5, but note that we still have to explain the factor of 2 in
+% the phase velocity. the other two factors are close to 1, so they are OK.
+x = [1.9935    0.9193    0.8418];     
+%x = [2,1,1]
+v_ph = v_ph*x(1);
+    v_ph_c = v_ph_c*x(2);
+    Yc =  Yc/x(3);
+    
+ end
 
 % frequency etc.
 freq = [6e9]; 

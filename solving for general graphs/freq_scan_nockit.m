@@ -7,10 +7,10 @@ clearvars
 tic
 % geometry: and network structure
 N=30; % number of couplers. (= number of unit cells minus 1) 
-M = 7; % number of lines
+M = 2; % number of lines
 L0 = 100e-6; % length of each line segment
 d = 20e-6; % length of each coupler segment
-input_idx = [7];   % can be more than one.
+input_idx = [1];   % can be more than one.
 % physical parameters: (see the NOCKIT simulation for the way these values were calculated  )
 v_ph = 1.361104539023962e+06; % phase velocity for lines
 v_ph_c =  1.408763793738406e+06; % phase velocity for couplers

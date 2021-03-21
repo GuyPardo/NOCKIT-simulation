@@ -1,7 +1,12 @@
+%% written by guy 2021_03_18 for nockit 5 (two traces) data vs simulation
+
+
 
 clearvars
+%% get meas data
+load('C:\Users\guypa\Google Drive\LIMUDIM\Lab_research\NOCKIT_new_folder\data\NOCKIT5_2traces_data.mat')
 
-
+%%
 coplanar_couplers = false;
 nockit5_fit  = true;
 %% construct graph
@@ -11,22 +16,22 @@ nockit5_fit  = true;
 
 
 tic
-% geometry: and network structure
-N=31; % number of couplers. (= number of unit cells minus 1) 
-M = 2; % number of lines
-L0 = 100e-6; % length of each line segment
-d = 27e-6; % length of each coupler segment
-t = 8.5e-9;%10e-9;
-W = 3e-6;
-W_c = 200e-9;
-H = 29e-9;%16e-9;
-gap_c = 1.4e-6;
+% % % % % geometry: and network structure (for nocckit 6)
+% % % % N=31; % number of couplers. (= number of unit cells minus 1) 
+% % % % M = 7; % number of lines
+% % % % L0 = 100e-6; % length of each line segment
+% % % % d = 27e-6; % length of each coupler segment
+% % % % t = 8.5e-9;%10e-9;
+% % % % W = 3e-6;
+% % % % W_c = 200e-9;
+% % % % H = 29e-9;%16e-9;
+% % % % gap_c = 1.4e-6;
 
 
 
 % geometry: and network structure
 N=30; % number of couplers. (= number of unit cells minus 1) 
-M = 7; % number of lines
+M = 2; % number of lines
 L0 = 100e-6; % length of each line segment
 d = 20e-6; % length of each coupler segment
 t = 8e-9;
@@ -65,12 +70,12 @@ end
 
 
 % frequency etc.
-freq = 1e9*linspace(3,9,201); 
+% freq = 1e9*linspace(3,9,201); 
 omega= 2*pi*freq;
 
 
 
-input_idx = [4];   % can be more than one.
+input_idx = [1];   % can be more than one.
 %%
 % define graph: define an array of nodes with M rows and N+2 columns. the
 % nodes are numbered such that nodes 1:M are the first column, M+1:2*M are
@@ -158,19 +163,33 @@ trans_mag2 = abs(trans);
 
 trans_phase = unwrap(angle(trans));
 
+
+
 %% plot
+
+
 ref_dB = 10*log10(ref_mag2);
 trans_dB = 10*log10(trans_mag2);
 
-figure(701) % transmittance graphs
-clf;
-    plot(freq, trans_dB(1:M,:), 'linewidth', 1.5)
+for i=1:M
+
+
+figure(7000+i)
+clf
+
+    plot(1e-9*freq, data_dB(:,i), 'linewidth', 1.5)
     grid on
-    leg = legend(num2str((1:M)'),"location", "best", "fontsize", 13);
-    title(leg, "line")
-    xlabel("frequency (Hz)", "fontsize", 16)
+    str = ["measuement", "simulation"];
+
+    
+    xlabel("frequency (GHz)", "fontsize", 16)
     ylabel("dB", "fontsize", 16)
-    title("transmittace", "fontsize", 16)
+    title(sprintf("transmittace from line %d",i), "fontsize", 16)
+    hold on
+    plot(1e-9*freq, trans_dB(i,:)-21.9094,  '-.','linewidth', 1.5,'color', 'black')
+        legend(str,"location", "best", "fontsize", 13);
+end
+    %%
 figure(702)  % reflectance graphs  
 clf;
     plot(freq, ref_dB, 'linewidth', 1.5)
