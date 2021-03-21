@@ -3,6 +3,7 @@ clearvars
 nockit5_fit=false;
 coplanar_couplers=true;
 freq = 6e9;
+omega = 2*pi*freq;
 %% construct graph
 % this part constructs the graph representing nockit network: a square
 % lattice made out of  M lines with N couplers between each adjacent pair. 
@@ -15,7 +16,7 @@ N=31; % number of couplers. (= number of unit cells minus 1)
 M = 7; % number of lines
 L0 = 100e-6; % length of each line segment
 d = 27e-6; % length of each coupler segment
-tattget = 10e-9;
+t = 10e-9;
 W = 3e-6;
 W_c = 200e-9;
 H = 16e-9;
@@ -54,12 +55,13 @@ Ic = 0.0002*t/0.00000001*W/0.000001;
 Ic_c = 0.0002*t/0.00000001*W_c/0.000001;
 
 
+L = 1/v_ph/Y0; Lc = 1/v_ph_c/Yc;
+C = 1/v_ph*Y0; Cc = 1/v_ph_c*Yc;
+
 %
 %
 
-% define graph: define an array of nodes with M rows and N+2 columns. the
-% nodes are numbered such that nodes 1:M are the first column, M+1:2*M are
-% the socond column  etc.
+%%
 nodes = reshape(1:M*(N+2),M,N+2 );  
 G = digraph();
 % define main lines:
@@ -86,28 +88,27 @@ nodes_num = G.numnodes;
 x = repmat(L0*(0:N+1), M,1);
 y = repmat(d*fliplr((0:M-1)), 1,N+2); % the y coordinates are in the flipped to plot from top to bottom
 
-x = reshape(x, 1,nodes_num);
-y = reshape(y, 1,nodes_num);
+G.Nodes.X = reshape(x, 1,nodes_num)';
+G.Nodes.Y = reshape(y, 1,nodes_num)';
 LWidths = 6*G.Edges.Weight/max(G.Edges.Weight); 
 figure(504)
 clf
-G.plot('xdata', x, 'ydata',y, 'linewidth', LWidths);
-
-%
+G.plot('xdata', G.Nodes.X, 'ydata',G.Nodes.Y, 'linewidth', LWidths);
 
 
-% define edges attributres; pahe velocity, length and characteristic
-% admittance:
+%%
+
+
+% define edges attributres; inducrtance (L), and capacitalce (C) per unoit length 
 % rememeber weight = 1 means coupler edge, weight = 2 means regular edge:
-clearvars G.Edges.v_ph G.Edges.L G.Edges.Y G.Edges.Ic
-G.Edges.v_ph(G.Edges.Weight==2) = v_ph*ones(sum(G.Edges.Weight==2),1);
-G.Edges.v_ph(G.Edges.Weight==1) = v_ph_c*ones(sum(G.Edges.Weight==1),1);
-G.Edges.L(G.Edges.Weight==2) = L0*ones(sum(G.Edges.Weight==2),1);
-G.Edges.L(G.Edges.Weight==1) = d*ones(sum(G.Edges.Weight==1),1);
-G.Edges.Y(G.Edges.Weight==2) = Y0*ones(sum(G.Edges.Weight==2),1);
-G.Edges.Y(G.Edges.Weight==1) = Yc*ones(sum(G.Edges.Weight==1),1);
+clearvars G.Edges.C G.Edges.L  G.Edges.Ic
+G.Edges.L(G.Edges.Weight==2) = L*ones(sum(G.Edges.Weight==2),1);
+G.Edges.L(G.Edges.Weight==1) = Lc*ones(sum(G.Edges.Weight==1),1);
+G.Edges.C(G.Edges.Weight==2) = C*ones(sum(G.Edges.Weight==2),1);
+G.Edges.C(G.Edges.Weight==1) = Cc*ones(sum(G.Edges.Weight==1),1);
 G.Edges.Ic(G.Edges.Weight==2) = Ic*ones(sum(G.Edges.Weight==2),1);
 G.Edges.Ic(G.Edges.Weight==1) = Ic_c*ones(sum(G.Edges.Weight==1),1);
+
 
 % define boundary conditions attribute for each edge according to the
 % following convention:
@@ -122,20 +123,50 @@ G.Edges.BC(G.findedge(nodes(input_idx,1),nodes(input_idx,2))) = 3;
 G.Edges.BC(G.findedge(nodes(:,N+1),nodes(:,N+2))) = 2*ones(M,1);
 
 
-%% solve recursively:
 
-loop_num = 3;
+%% solve
 
-for i=1:loop_num
-    [t_edges, r_edges] = solve_graph(graph_data,freq);
+graph_data = process_graph2(G);
+[t_edges, r_edges] = solve_graph_non_lin(graph_data,freq, 1);
+
+%% define new graph
+subdivide = 3;
+H = add_middle_nodes(G,(1:G.numedges), subdivide - 1);
+
+figure(45345)
+clf
+H.plot('xdata', H.Nodes.X, 'ydata',H.Nodes.Y);
+
+%% 
+for i=1:G.numedges
+
+L = G.L(i);
+C = G.C(i);
+RR = 0;
+GG = 1e-6;
+
+
+    k  = 1i*sqrt((RR - 1i*omega*L)*(GG - 1i*omega*C));
+   Y = sqrt((GG - 1i*omega*C)/(RR - 1i*omega*L));
     
-    
-    power_edges = abs(t_edges).^2 - abs(r_edges).^2 % propagating power (with sign);
-    I_eff = 
-    
-    
-    
-    
+    pos = H.Nodes.
+     I = t_edges(i)*exp(1i*k*)
 end
+
+
+
+%%
+
+
+
+
+% read solution: this part is specific to the NOCKIT geometry 
+ t = reshape(t_edges(G.findedge(nodes(:,1:N+1) ,nodes(:,2:N+2) )), M,N+1);
+ r = reshape(r_edges(G.findedge(nodes(:,1:N+1) ,nodes(:,2:N+2) )), M,N+1);
+
+
+
+
+
 
 
