@@ -2,7 +2,7 @@
 clearvars
 
 
-coplanar_couplers = true;
+coplanar_couplers = false;
 nockit5_fit  = true;
 %% construct graph
 % this part constructs the graph representing nockit network: a square
@@ -24,16 +24,16 @@ gap_c = 1.4e-6;
 
 
 
-% % % % % geometry: and network structure
-% % % % N=30; % number of couplers. (= number of unit cells minus 1) 
-% % % % M = 2; % number of lines
-% % % % L0 = 100e-6; % length of each line segment
-% % % % d = 20e-6; % length of each coupler segment
-% % % % t = 8e-9;
-% % % % W = 2.3e-6;
-% % % % W_c = 300e-9;
-% % % % H = 16e-9;
-% % % % gap_c = 1.4e-6;
+% geometry: and network structure
+N=30; % number of couplers. (= number of unit cells minus 1) 
+M = 7; % number of lines
+L0 = 100e-6; % length of each line segment
+d = 20e-6; % length of each coupler segment
+t = 8e-9;
+W = 2.3e-6;
+W_c = 300e-9;
+H = 16e-9;
+gap_c = 1.4e-6;
 addpath(genpath('Z:\Users\Guy\coupling transission lines\repos\NOCKIT-simulation'))
 
 [Y0, v_ph]  = get_microstrip_properties(W,t,H);
@@ -65,12 +65,12 @@ end
 
 
 % frequency etc.
-freq = 1e9*linspace(2,9,201); 
+freq = 1e9*linspace(3,9,201); 
 omega= 2*pi*freq;
 
 
 
-input_idx = [1];   % can be more than one.
+input_idx = [4];   % can be more than one.
 %%
 % define graph: define an array of nodes with M rows and N+2 columns. the
 % nodes are numbered such that nodes 1:M are the first column, M+1:2*M are
@@ -164,9 +164,9 @@ trans_dB = 10*log10(trans_mag2);
 
 figure(701) % transmittance graphs
 clf;
-    plot(freq, trans_dB(1:4,:), 'linewidth', 1.5)
+    plot(freq, trans_dB(1:M,:), 'linewidth', 1.5)
     grid on
-    leg = legend(num2str((1:4)'),"location", "best", "fontsize", 13);
+    leg = legend(num2str((1:M)'),"location", "best", "fontsize", 13);
     title(leg, "line")
     xlabel("frequency (Hz)", "fontsize", 16)
     ylabel("dB", "fontsize", 16)
