@@ -15,8 +15,6 @@
 % if you don't know how to add properties to graph edges see:
 % https://www.mathworks.com/help/matlab/math/add-graph-node-names-edge-weights-and-other-attributes.html#AddGraphNodeNamesEdgeWeightsAndOtherAttributesExample-4
 clearvars
- nockit5_fit=true;
- coplanar_couplers=true;
 %% construct graph
 % this part constructs the graph representing the 2 traces ladder network
 % (NOCKIT) 
@@ -24,88 +22,17 @@ clearvars
 
 
 tic
-
-
 % geometry: and network structure
-N=31; % number of couplers. (= number of unit cells minus 1) 
+N=30; % number of couplers. (= number of unit cells minus 1) 
 M = 7; % number of lines
 L0 = 100e-6; % length of each line segment
-d = 27e-6; % length of each coupler segment
-t = 8.5e-9;%10e-9;
-W = 3e-6;
-W_c = 200e-9;
-H = 29e-9;%16e-9;
-gap_c = 1.4e-6;
-
-
-
-% % geometry: and network structure
-% N=30; % number of couplers. (= number of unit cells minus 1) 
-% M = 7; % number of lines
-% L0 = 100e-6; % length of each line segment
-% d = 20e-6; % length of each coupler segment
-% t = 8e-9;
-% W = 2.3e-6;
-% W_c = 300e-9;
-% H = 16e-9;
-% gap_c = 1.4e-6;
-addpath(genpath('Z:\Users\Guy\coupling transission lines\repos\NOCKIT-simulation'))
-
-[Y0, v_ph]  = get_microstrip_properties(W,t,H);
-if coplanar_couplers
-    [Yc, v_ph_c ] = get_CPW_properties(t,W_c,gap_c);
-else
-    [Yc, v_ph_c ] = get_microstrip_properties(W_c, t,H);
-end
-
-% % % physical parameters: (see the NOCKIT simulation for the way these values were calculated  )
-% % v_ph = 1.361104539023962e+06; % phase velocity for lines
-% % v_ph_c =  1.408763793738406e+06; % phase velocity for couplers
-% % Y0 = 0.020259488114653; % admittance for lines
-% % Yc = 0.002735070881675; % admittance for couplers
-
-if nockit5_fit
-% parameters correction from fit. use these to get somthing close to the
-% measurement for 2 traces NOCKIT5, but note that we still have to explain the factor of 2 in
-% the phase velocity. the other two factors are close to 1, so they are OK.
-x = [1.9935    0.9193    0.8418];  
-
-%x = [2,1,1]
-%x =  [1.0479    0.5550    0.4589  -52.1305]
-v_ph = v_ph*x(1);
-    v_ph_c = v_ph_c*x(2);
-    Yc =  Yc/x(3);
-    
-end
-
- input_idx = [4];
-
-% % geometry: and network structure
-% N=30; % number of couplers. (= number of unit cells minus 1) 
-% M = 7; % number of lines
-% L0 = 100e-6; % length of each line segment
-% d = 20e-6; % length of each coupler segment
-% input_idx = [4];   % can be more than one.
-% % physical parameters: (see the NOCKIT simulation for the way these values were calculated  )
-% v_ph = 1.361104539023962e+06; % phase velocity for lines
-% v_ph_c =  1.408763793738406e+06; % phase velocity for couplers
-% Y0 = 0.020259488114653; % admittance for lines
-% Yc = 0.002735070881675; % admittance for couplers
-
-
-
-% % geometry: and network structure
-% N=31; % number of couplers. (= number of unit cells minus 1) 
-% M = 7; % number of lines
-% L0 = 100e-6; % length of each line segment
-% d = 27e-6; % length of each coupler segment
-% t = 8.5e-9;%10e-9;
-% W = 3e-6;
-% W_c = 200e-9;
-% H = 29e-9;%16e-9;
-% gap_c = 1.4e-6;
-
-
+d = 20e-6; % length of each coupler segment
+input_idx = [4];   % can be more than one.
+% physical parameters: (see the NOCKIT simulation for the way these values were calculated  )
+v_ph = 1.361104539023962e+06; % phase velocity for lines
+v_ph_c =  1.408763793738406e+06; % phase velocity for couplers
+Y0 = 0.020259488114653; % admittance for lines
+Yc = 0.002735070881675; % admittance for couplers
 
 % frequency etc.
 freq = [6e9]; 
@@ -149,7 +76,7 @@ figure(504)
 clf
 G.plot('xdata', x, 'ydata',y, 'linewidth', LWidths);
 
-
+%
 
 
 % define edges attributres; pahe velocity, length and characteristic

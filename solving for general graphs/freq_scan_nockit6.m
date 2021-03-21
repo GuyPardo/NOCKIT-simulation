@@ -26,7 +26,7 @@ gap_c = 1.4e-6;
 
 % geometry: and network structure
 N=30; % number of couplers. (= number of unit cells minus 1) 
-M = 2; % number of lines
+M = 7; % number of lines
 L0 = 100e-6; % length of each line segment
 d = 20e-6; % length of each coupler segment
 t = 8e-9;
@@ -70,7 +70,7 @@ omega= 2*pi*freq;
 
 
 
-input_idx = [1];   % can be more than one.
+input_idx = [4];   % can be more than one.
 %%
 % define graph: define an array of nodes with M rows and N+2 columns. the
 % nodes are numbered such that nodes 1:M are the first column, M+1:2*M are

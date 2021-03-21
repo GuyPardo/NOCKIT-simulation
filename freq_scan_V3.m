@@ -45,9 +45,9 @@ w = 2*pi*Frequency;
 
 % loss mechanisms:
     R = 0e4; % series resistance per unit length  
-    G = 0e1; % shunt conductance per unit length
+    G = 5e-1; % shunt conductance per unit length
     R_c =0;  % series resistance per unit length for couplers 
-    G_c =0;  % shunt conductance per unit length for couplers
+    G_c =5e-1;  % shunt conductance per unit length for couplers
 
 % Phase velocity and characteristic impedance
     v_ph=1/sqrt(L_tot*C);
@@ -59,9 +59,10 @@ w = 2*pi*Frequency;
 % parameters correction from fit. use these to get somthing close to the
 % measurement for 2 traces NOCKIT5, but note that we still have to explain the factor of 2 in
 % the phase velocity. the other two factors are close to 1, so they are OK.
-%     v_ph = 2*v_ph;
-%     v_ph_c = 1.0141*v_ph_c;
-%     Z_c = 0.9227 * Z_c;
+X = [1.9935    0.9193    0.8418  -21.9094];
+    v_ph = X(1)*v_ph;
+    v_ph_c = X(2)*v_ph_c;
+    Z_c = X(3) * Z_c;
 
 % boundaries reflections and attenuators:
 %  see pdf for details
