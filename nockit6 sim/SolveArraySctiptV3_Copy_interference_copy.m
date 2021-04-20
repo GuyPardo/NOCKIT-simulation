@@ -1,13 +1,15 @@
-%  written by Guy 2020_08_24
+%  written by Guy 2021_04_21
 % This script solves the MxN network for a single frequency (6 GHz by default),
-% reconstructs the voltage and current, and plots the power propagation
-% along the lines.
-% version 3 can also support loss and attenuated reflections
+% interference experiment
+% with a crude way of taking into account the power dependence:
+% 
+
 
 % for loops on parameters (like frequency) it is more convenient to use
 % SolveArrayFunV3.m
 clearvars
 %% Configurations
+
 coplanar_couplers =true; % toggle wether to calculate the coupler capacitance as a microstrip or as a coplanar
 use_nockit_5_fit = true; 
 phase = transpose(linspace(0,2*pi,201));
@@ -16,10 +18,10 @@ phase_factor = exp(1i*phase);
 
 % Geometry:
 % Lines gerometry:
-W=3e-6; % width of primary and secondary transmission lines
-t=10e-9; % thickness of WSi (sputtered)
+W=2.3e-6; % width of primary and secondary transmission lines
+t=8e-9; % thickness of WSi (sputtered)
 H=16e-9; % height of dielectric (say, Si - evaporated)
-W_c=200e-9; % width of coupling line
+W_c=300e-9; % width of coupling line
 gap_c = 1.4e-6; 
 % network geometry
 L = 100e-6; % length of each unit cell along main lines (m)
@@ -38,15 +40,19 @@ eps_r=11.7; % relative dielectric constant for Si
 eps_0=8.85e-12;
 
 L_kin=30.75615e-6*2e-6/W*10e-9/t;
-L_kin_c=30.75615e-6*2e-6/W_c*10e-9/t; % for coupling line
+L_kin_c_0=30.75615e-6*2e-6/W_c*10e-9/t; % for coupling line
 % The kinetic inductance per unit length (L_kin) is calibrated according to measurement from 11.2.19 of a 10 nm / 2 micron strip
 L_geo=0.00508*39.3701*(log(2/(W+H))+0.5+0.2235*(W+H))*0.000001;
 % Formula for geometric inductance per unit length taken from https://www.allaboutcircuits.com/tools/microstrip-inductance-calculator/
 % (note that one must convert from inches). But L_geo<L_kin, so it might not be so important...
 C=W*eps_0*eps_r/H; % capacitance per unit length
-
-factor = 2;
-L_kin_c = L_kin_c*factor;
+figure(204)
+N_pwrs=50;
+colororder(jet(N_pwrs))
+clf;
+%%
+for pwr_idx = 1:Npwrs
+L_kin_c = L_kin_c_0*factor(pwr_idx);
 
 if coplanar_couplers
         % copied from CPWR_calculations.m:
@@ -295,13 +301,26 @@ end
 
 %% plot - graphs
 figure(204)
-clf
-plot(phase,(abs(trans(1:M,:))), 'linewidth', 1.5);
+% clf
+plot(phase,(abs(trans(1,:))), 'linewidth', 1.5);
 grid on;
-xlabel( "phase difference in lines 1 & 4" , "fontsize", 15)
-ylabel( "transmission (a.u.)" , "fontsize", 15)
+xlabel( "phase difference in lines 1 & 2" , "fontsize", 15)
+ylabel( "transmission (a.u.) in line 1" , "fontsize", 15)
 title(sprintf("interference at %g GHz", Frequency*1e-9),"fontsize", 15)
-leg = legend(num2str((1:M)'),"location", "best", "fontsize", 16);
-    title(leg, "line")
+% leg = legend(num2str((1:M)'),"location", "best", "fontsize", 16);
+%     title(leg, "line")
  set(gca,'XTick',0:pi/2:2*pi) 
  set(gca,'XTickLabel',{'0','\pi/2','\pi','3\pi/2','2\pi'})
+ 
+ 
+ 
+hold on 
+end
+%%
+
+ cmap = colormap(jet(N_pwrs)) ; %Create Colormap
+ cbh = colorbar ; %Create Colorbar
+ cbh.Ticks = linspace(0, 1,5) ; %Create 8 ticks from zero to 1
+ cbh.TickLabels = num2cell(linspace(1,2,5)) ;    %Replace the labels of these 8 ticks with the numbers 1 to 8
+cbh.Label.String = "couplers L_k increase factor";
+cbh.Label.FontSize = 16

@@ -10,17 +10,19 @@ clearvars
 %% Configurations
 % Geometry:
 % Lines gerometry:
-W=3e-6; % width of primary and secondary transmission lines
-t=10e-9; % thickness of WSi (sputtered)
+W=2.3e-6; % width of primary and secondary transmission lines
+t=8e-9; % thickness of WSi (sputtered)
 H=16e-9; % height of dielectric (say, Si - evaporated)
-W_c=200e-9; % width of coupling line
+W_c=300e-9; % width of coupling line
  
 % network geometry
 L = 100e-6; % length of each unit cell along main lines (m)
 d = 27e-6; % length of each coupling segment (m)
 N=32; % number of unit cells
 M =7; % number of lines
-idx_of_input_lines = [4];
+idx_of_input_lines = [1,2]; % should be a length two vector with elements from 1:M.
+%                             the first will have an input amplitude of 1/sqrt(2) with zero phase.
+%                             the second with amplitude 1/sqrt(2)  and varying phase from 0:2*pi.
 if any(idx_of_input_lines > M)
     error("idx_of_imput_line greater than number of lines")
 end
