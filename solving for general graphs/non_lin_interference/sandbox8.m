@@ -1,6 +1,8 @@
 % sandbox
 % here we create a nockit2 grpah and solving with the non linear solver
 % 
+
+close all
 clearvars
  nockit5_fit=true;
  coplanar_couplers=false;
@@ -8,19 +10,18 @@ clearvars
 % this part constructs the graph representing the 2 traces ladder network
 % (NOCKIT) 
 
-iterations = 100;
+iterations = 500;
 % intereference experiment setup
 N_pwrs = 10;
-sig_pwr =  -25; % dbm
-pump_pwr = -60; % dbm
+sig_pwr =  -55; % dbm
+pump_pwr = -21; % dbm
 
-phase = 0;
-
+phase = 3*pi/2
 sig_amp = sqrt(50*10^((sig_pwr/10) - 3))*exp(1i*phase); % in Volts, assuming here it's about 50 ohm.\
 pump_amp = sqrt(50*10.^((pump_pwr/10) - 3));
 
 
-input_idx = [1]; %
+input_idx = [2,1]; %
 
 tic
 
@@ -56,7 +57,7 @@ Icc = 0.0002*t/0.00000001*W_c/0.000001; % samuel's formula
 
 
 
-gnd_conductance = 0;
+gnd_conductance = 0.01;
 gnd_conductance_c = gnd_conductance*W_c/W;
 % 
 % C = C*(1+loss*1i);
@@ -166,7 +167,7 @@ end
 % which solve_graph
 graph_data = process_graph(G);
 
-[t_edges, r_edges] = solve_graph_non_lin_2(graph_data,freq,iterations);
+[t_edges, r_edges] = solve_graph_non_lin_2(graph_data,freq,iterations,true);
 %[t_edges, r_edges] = solve_graph(graph_data,freq);
 
 % read solution: this part is specific to the NOCKIT geometry 
@@ -208,16 +209,16 @@ P = 0.5*real(V.*conj(I));
 
 %% plot - colormap
 
-figure(203)
-clf
-imagesc(transpose(real(P)), "XData",x )
-shading flat
-colorbar
-yticks(1:M)
-
-title(sprintf("power propagation at %g GHz", freq*1e-9))
-ylabel( "line" , "fontsize", 15)
-xlabel( "position along line (m)" , "fontsize", 15)
+% figure(203)
+% clf
+% imagesc(transpose(real(P)), "XData",x )
+% shading flat
+% colorbar
+% yticks(1:M)
+% 
+% title(sprintf("power propagation at %g GHz", freq*1e-9))
+% ylabel( "line" , "fontsize", 15)
+% xlabel( "position along line (m)" , "fontsize", 15)
 
 colormap jet
 

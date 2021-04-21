@@ -1,5 +1,7 @@
-function [t_edges, r_edges] = solve_graph_non_lin_2(graph_data,freq, iterations)
-
+function [t_edges, r_edges] = solve_graph_non_lin_2(graph_data,freq, iterations,plot_iterations)
+if nargin<4
+    plot_iterations=false;
+end
 % read input
     nodes_num = graph_data.node_num;
     edge_num= graph_data.edge_num;
@@ -42,11 +44,11 @@ function [t_edges, r_edges] = solve_graph_non_lin_2(graph_data,freq, iterations)
  sum_all(i) = sum(r) + sum(t); 
  end
  
-  figure(568)
- try
- plot(1:iterations, abs(diff_all));
- figure(586)
- plot(1:iterations, abs(sum_all));
+
+ if plot_iterations
+figure(568)
+subplot(2,1,1);  plot(1:iterations, abs(diff_all)); title("diffrences"); xlabel("iterations");
+ subplot(2,1,2); plot(1:iterations, abs(sum_all)); title("values"); xlabel("iterations");
  end
  t_edges = t;
  r_edges = r;
