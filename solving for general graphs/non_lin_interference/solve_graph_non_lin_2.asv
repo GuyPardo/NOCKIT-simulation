@@ -13,7 +13,7 @@ function [t_edges, r_edges] = solve_graph_non_lin_2(graph_data,freq, iterations)
 
     v_ph_arr = 1./sqrt(L_arr.*C_arr);
     Y_arr = sqrt(C_arr./L_arr);
-
+    k_arr = 2*pi*freq*(v_ph_arr).^-1;
 
      % solve linearly:
  [t,r] = solve_graph(graph_data, freq);
@@ -24,18 +24,30 @@ function [t_edges, r_edges] = solve_graph_non_lin_2(graph_data,freq, iterations)
  t_previous = t;
  r_previous = r;
  % calculate current
- I = (t-r).*Y_arr;
+ I = real(((t-r).*Y_arr  + Y_arr.*(t.*exp(1i*k_arr.*Len_arr)  - r.*exp(-1i*k_arr.*Len_arr)))/2);
+%  I = real((t-r).*Y_arr);
  
  % correct L:
- graph_data.L_arr = graph_data.L_arr.*(1+(I./graph_data.Ic_arr).^2);
+ graph_data.L_arr = L_arr.*(1+(I./graph_data.Ic_arr).^2);
 
  %solve again
  [t,r] = solve_graph(graph_data, freq);
  
  %calculate difference:
  
- diff_r(i) = r-r_previous;
- diff_t(i) = t-t_previous;
+ diff_r = r-r_previous;
+ diff_t = t-t_previous;
+ 
+ diff_all(i) = sum(diff_r) + sum(diff_t);
+ sum_all(i) = sum(r) + sum(t); 
  end
+ 
+  figure(568)
+ try
+ plot(1:iterations, abs(diff_all));
+ end
+ t_edges = t;
+ r_edges = r;
+ 
 end
 

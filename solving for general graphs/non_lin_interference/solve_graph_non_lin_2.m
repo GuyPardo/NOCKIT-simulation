@@ -23,12 +23,12 @@ function [t_edges, r_edges] = solve_graph_non_lin_2(graph_data,freq, iterations)
 
  t_previous = t;
  r_previous = r;
- % calculate current
+ % calculate current (average ebggining and end of each segment)
  I = real(((t-r).*Y_arr  + Y_arr.*(t.*exp(1i*k_arr.*Len_arr)  - r.*exp(-1i*k_arr.*Len_arr)))/2);
-%  I = real((t-r).*Y_arr);
+%   I = real((t-r).*Y_arr);
  
  % correct L:
- graph_data.L_arr = graph_data.L_arr.*(1+(I./graph_data.Ic_arr).^2);
+ graph_data.L_arr = L_arr.*(1+(I./graph_data.Ic_arr).^2);
 
  %solve again
  [t,r] = solve_graph(graph_data, freq);
@@ -39,11 +39,14 @@ function [t_edges, r_edges] = solve_graph_non_lin_2(graph_data,freq, iterations)
  diff_t = t-t_previous;
  
  diff_all(i) = sum(diff_r) + sum(diff_t);
+ sum_all(i) = sum(r) + sum(t); 
  end
  
- figure(568)
+  figure(568)
  try
  plot(1:iterations, abs(diff_all));
+ figure(586)
+ plot(1:iterations, abs(sum_all));
  end
  t_edges = t;
  r_edges = r;

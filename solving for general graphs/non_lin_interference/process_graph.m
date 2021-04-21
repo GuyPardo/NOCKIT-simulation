@@ -31,6 +31,7 @@ function [graph_data] = process_graph(G)
     graph_data.BC_arr = G.Edges.BC;
     graph_data.BCval_arr = G.Edges.BCval;
     graph_data.Ic_arr = G.Edges.Ic;
+    graph_data.gnd_cond_arr = G.Edges.gnd_cond;
     % define cell arrays of edge-ids:
     graph_data.outedges_cell = cell(1,graph_data.node_num);
     graph_data.inedges_cell = cell(1,graph_data.node_num); 

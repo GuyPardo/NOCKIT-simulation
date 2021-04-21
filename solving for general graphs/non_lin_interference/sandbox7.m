@@ -10,13 +10,13 @@ clearvars
 
 
 % intereference experiment setup
-N_pwrs = 14;
-sig_pwr =  -70; % dbm
-pump_min = -100;
-pump_max = -30;
+N_pwrs = 5;
+sig_pwr =  -55; % dbm
+pump_min = -40;
+pump_max = -20;
 pump_pwr = linspace(pump_min,pump_max,N_pwrs); % dbm
 
-phase = linspace(0,2*pi, 40);
+phase = linspace(0,2*pi, 30);
 figure(204)
 clf
 colororder(jet(N_pwrs));
@@ -161,7 +161,7 @@ G.Edges.BCval(G.findedge(nodes(input_idx(2),1),nodes(input_idx(2),2))) = pump_am
 % which solve_graph
 graph_data = process_graph(G);
 
-[t_edges, r_edges] = solve_graph_non_lin(graph_data,freq);
+[t_edges, r_edges] = solve_graph_non_lin_2(graph_data,freq,10);
 %[t_edges, r_edges] = solve_graph(graph_data,freq);
 
 % read solution: this part is specific to the NOCKIT geometry 

@@ -11,7 +11,7 @@ clearvars
 
 % intereference experiment setup
 N_pwrs = 10;
-sig_pwr =  -70; % dbm
+sig_pwr =  -20; % dbm
 pump_pwr = -36; % dbm
 
 phase = pi/2;

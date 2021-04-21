@@ -8,13 +8,13 @@ clearvars
 % this part constructs the graph representing the 2 traces ladder network
 % (NOCKIT) 
 
-
+iterations = 100;
 % intereference experiment setup
 N_pwrs = 10;
-sig_pwr =  -70; % dbm
-pump_pwr = -36; % dbm
+sig_pwr =  -30; % dbm
+pump_pwr = -60; % dbm
 
-phase = pi/2;
+phase = 0;
 
 sig_amp = sqrt(50*10^((sig_pwr/10) - 3))*exp(1i*phase); % in Volts, assuming here it's about 50 ohm.\
 pump_amp = sqrt(50*10.^((pump_pwr/10) - 3));
@@ -50,14 +50,17 @@ Cc = Yc/v_ph_c;
 L = 1/v_ph/Y0;
 Lc = 1/v_ph_c/Yc;
 Ic = 0.0002*t/0.00000001*W/0.000001; % samuel's formula
+% Ic=1e9;
 Icc = 0.0002*t/0.00000001*W_c/0.000001; % samuel's formula
 
 
 
-%loss: complex capacitance
-loss = 0.005;
-C = C*(1+loss*1i);
-Cc = Cc*(1+loss*1i);
+
+gnd_conductance = 0;
+gnd_conductance_c = gnd_conductance*W_c/W;
+% 
+% C = C*(1+loss*1i);
+% Cc = Cc*(1+loss*1i);
 
 if nockit5_fit
 % parameters correction from fit. use these to get somthing close to the
@@ -130,7 +133,8 @@ G.Edges.L(G.Edges.Weight==2) = L*ones(sum(G.Edges.Weight==2),1);
 G.Edges.L(G.Edges.Weight==1) = Lc*ones(sum(G.Edges.Weight==1),1);
 G.Edges.Ic(G.Edges.Weight==2) = Ic*ones(sum(G.Edges.Weight==2),1);
 G.Edges.Ic(G.Edges.Weight==1) = Icc*ones(sum(G.Edges.Weight==1),1);
-
+G.Edges.gnd_cond(G.Edges.Weight==2) = gnd_conductance*ones(sum(G.Edges.Weight==2),1);
+G.Edges.gnd_cond(G.Edges.Weight==1) = gnd_conductance_c*ones(sum(G.Edges.Weight==1),1);
 % define boundary conditions attribute for each edge according to the
 % following convention:
 % 0 - do nothing
@@ -145,8 +149,9 @@ G.Edges.BC(G.findedge(nodes(:,N+1),nodes(:,N+2))) = 2*ones(M,1);
 
 G.Edges.BCval = zeros(edge_num,1);
 G.Edges.BCval(G.findedge(nodes(input_idx(1),1),nodes(input_idx(1),2))) = sig_amp;
-%G.Edges.BCval(G.findedge(nodes(input_idx(2),1),nodes(input_idx(2),2))) = pump_amp;
-
+try
+G.Edges.BCval(G.findedge(nodes(input_idx(2),1),nodes(input_idx(2),2))) = pump_amp;
+end
 
 % L_arr = G.Edges.L;
 % C_arr = G.Edges.C;
@@ -161,7 +166,7 @@ G.Edges.BCval(G.findedge(nodes(input_idx(1),1),nodes(input_idx(1),2))) = sig_amp
 % which solve_graph
 graph_data = process_graph(G);
 
-[t_edges, r_edges] = solve_graph_non_lin_2(graph_data,freq,1000);
+[t_edges, r_edges] = solve_graph_non_lin_2(graph_data,freq,i);
 %[t_edges, r_edges] = solve_graph(graph_data,freq);
 
 % read solution: this part is specific to the NOCKIT geometry 

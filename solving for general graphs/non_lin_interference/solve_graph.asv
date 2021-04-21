@@ -44,10 +44,9 @@ function [t_edges, r_edges] = solve_graph(graph_data,freq)
     outedges_cell = graph_data.outedges_cell; 
     inedges_cell = graph_data.inedges_cell; 
 
-    complex_C_arr = C_arr + 1i*gnd_cond_arr/(2*pi*freq);
     
-v_ph_arr = 1./sqrt(L_arr.*complex_C_arr);
-Y_arr = sqrt(complex_C_arr./L_arr);
+v_ph_arr = 1./sqrt(L_arr.*C_arr);
+Y_arr = sqrt(C_arr./L_arr);
     
    omega = freq*2*pi; % angular frequency
    % index translation
