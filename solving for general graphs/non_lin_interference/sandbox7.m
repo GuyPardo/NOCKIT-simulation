@@ -10,11 +10,13 @@ clearvars
 
 
 % intereference experiment setup
-N_pwrs = 10;
+N_pwrs = 14;
 sig_pwr =  -70; % dbm
-pump_pwr = linspace(-100,-30,N_pwrs); % dbm
+pump_min = -100;
+pump_max = -30;
+pump_pwr = linspace(pump_min,pump_max,N_pwrs); % dbm
 
-phase = linspace(0,2*pi, 10);
+phase = linspace(0,2*pi, 40);
 figure(204)
 clf
 colororder(jet(N_pwrs));
@@ -25,7 +27,7 @@ sig_amp = sqrt(50*10^((sig_pwr/10) - 3))*exp(1i*phase(ii)); % in Volts, assuming
 pump_amp = sqrt(50*10.^((pump_pwr(pwr_idx)/10) - 3));
 
 
-input_idx = [1,2]; % should be a vector of length two. the first component is the signal idx, the second is the pump
+input_idx = [2,1]; % should be a vector of length two. the first component is the signal idx, the second is the pump
 
 tic
 
@@ -55,6 +57,7 @@ Cc = Yc/v_ph_c;
 L = 1/v_ph/Y0;
 Lc = 1/v_ph_c/Yc;
 Ic = 0.0002*t/0.00000001*W/0.000001; % samuel's formula
+% Ic= 1000000000; % if we only want to consider the coupler's non linearity
 Icc = 0.0002*t/0.00000001*W_c/0.000001; % samuel's formula
 if nockit5_fit
 % parameters correction from fit. use these to get somthing close to the
@@ -168,7 +171,7 @@ graph_data = process_graph(G);
 
         trans(:,ii) = t(:,end);
     end
-
+trans_norm = trans./trans(:,1);
 %%
  %% reconstruct physical quantities
 % defining coordinates along the lines:
@@ -201,11 +204,11 @@ graph_data = process_graph(G);
 %% plot 
 figure(204)
 % clf
-plot(phase,(20*log10(abs(trans(1,:)))), 'linewidth', 1.5);
+plot(phase,abs(trans_norm(2,:)), 'linewidth', 1.5);
 grid on;
-xlabel( "phase difference in lines 1 & 2" , "fontsize", 15)
-ylabel( "transmission  in line 1" , "fontsize", 15)
-title(sprintf("interference at %g GHz", freq*1e-9),"fontsize", 15)
+xlabel( "phase difference" , "fontsize", 15)
+ylabel( "transmission " , "fontsize", 15)
+title(sprintf("interference at %g GHz, signal power %g dBm", freq*1e-9, sig_pwr),"fontsize", 15)
 % leg = legend(num2str((1:M)'),"location", "best", "fontsize", 16);
 %     title(leg, "line")
  set(gca,'XTick',0:pi/2:2*pi) 
@@ -215,4 +218,11 @@ title(sprintf("interference at %g GHz", freq*1e-9),"fontsize", 15)
 hold on 
 end
 
+%%
+ cmap = colormap(jet(N_pwrs)) ; %Create Colormap
+ cbh = colorbar ; %Create Colorbar
+ cbh.Ticks = linspace(0, 1,5) ; %Create 8 ticks from zero to 1
+ cbh.TickLabels = num2cell(linspace(pump_min, pump_max,5)) ;    %Replace the labels of these 8 ticks with the numbers 1 to 8
+cbh.Label.String = "pump power (dBm)";
+cbh.Label.FontSize = 16
 
