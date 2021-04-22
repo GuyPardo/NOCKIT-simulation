@@ -12,17 +12,17 @@ close all
 
 gnd_cond = 0; % loss: conductance to ground;
 % intereference experiment setup
-N_pwrs = 1;
+N_pwrs = 20;
 sig_pwr =  -55; % dbm
-pump_min = -32;
-pump_max = -21;
+pump_min = -70;
+pump_max = -35;
 pump_pwr = linspace(pump_min,pump_max,N_pwrs); % dbm
 
 iterations = 1*logspace(1,2,N_pwrs);
 % iterations = linspace(10,100,N_pwrs);
- iterations = 67*ones(size(pump_pwr));
+% iterations = 67*ones(size(pump_pwr));
 
-phase = linspace(0,2*pi, 20);
+phase = linspace(0,2*pi, 60);
 figure(204)
 clf
 colororder(jet(N_pwrs));
@@ -69,8 +69,10 @@ Cc = Yc/v_ph_c;
 L = 1/v_ph/Y0;
 Lc = 1/v_ph_c/Yc;
 Ic = 0.0002*thickness/0.00000001*W/0.000001; % samuel's formula
+Ic = 60e-6*(thickness/6e-9)*(W/2.3e-6); % % from mikita measurement
 % Ic= 1000000000; % if we only want to consider the coupler's non linearity
 Icc = 0.0002*thickness/0.00000001*W_c/0.000001; % samuel's formula
+Icc = 60e-6*(thickness/6e-9)*(W_c/2.3e-6); % from mikita measurement
 if nockit5_fit
 % parameters correction from fit. use these to get somthing close to the
 % measurement for 2 traces NOCKIT5, but note that we still have to explain the factor of 2 in
@@ -86,7 +88,7 @@ v_ph = v_ph*x(1);
 end
 
 % frequency etc.
-freq = [6e9]; 
+freq = [5.1e9]; 
 omega= 2*pi*freq;
 k0 = 2*pi*freq/v_ph; % wavenumber for lines
 kc = 2*pi*freq/v_ph_c; % wavenumber for couplers
@@ -181,7 +183,7 @@ graph_data = process_graph(G);
 %plot 
 figure(204)
 % clf
-plot(phase,(abs(trans_norm(pwr_idx,:,2))), 'linewidth', 1.5);
+plot(phase,(abs(trans(pwr_idx,:,2))), 'linewidth', 1.5);
 grid on;
 xlabel( "phase difference" , "fontsize", 15)
 ylabel( "transmission" , "fontsize", 15)
@@ -202,4 +204,43 @@ end
  cbh.TickLabels = num2cell(linspace(pump_min, pump_max,5)) ;    %Replace the labels of these 8 ticks with the numbers 1 to 8
 cbh.Label.String = "pump power (dBm)";
 cbh.Label.FontSize = 16;
+figure(205)
+%%
+clf
+colororder(jet(N_pwrs))
+plot(phase,(20*log10(abs(trans(:,:,2)))), 'linewidth', 1.5);
+grid on;
+xlabel( "phase difference" , "fontsize", 15)
+ylabel( "transmission" , "fontsize", 15)
+title(sprintf("interference at %g GHz, signal power %g dBm", freq*1e-9, sig_pwr),"fontsize", 15)
+% leg = legend(num2str((1:M)'),"location", "best", "fontsize", 16);
+%     title(leg, "line")
+ set(gca,'XTick',0:pi/2:2*pi) 
+ set(gca,'XTickLabel',{'0','\pi/2','\pi','3\pi/2','2\pi'})
+%%
+ cmap = colormap(jet(N_pwrs)) ; %Create Colormap
+ cbh = colorbar ; %Create Colorbar
+ cbh.Ticks = linspace(0, 1,5) ; %Create 8 ticks from zero to 1
+ cbh.TickLabels = num2cell(linspace(pump_min, pump_max,5)) ;    %Replace the labels of these 8 ticks with the numbers 1 to 8
+cbh.Label.String = "pump power (dBm)";
+cbh.Label.FontSize = 16;
 
+%%
+figure(207)
+clf
+colororder(jet(N_pwrs))
+plot(phase,((abs(trans_norm(1:end-2,:,2)))), 'linewidth', 1.5);
+grid on;
+xlabel( "phase difference" , "fontsize", 15)
+ylabel( "transmission" , "fontsize", 15)
+title(sprintf("interference at %g GHz, signal power %g dBm", freq*1e-9, sig_pwr),"fontsize", 15)
+% leg = legend(num2str((1:M)'),"location", "best", "fontsize", 16);
+%     title(leg, "line")
+ set(gca,'XTick',0:pi/2:2*pi) 
+ set(gca,'XTickLabel',{'0','\pi/2','\pi','3\pi/2','2\pi'})
+  cmap = colormap(jet(N_pwrs)) ; %Create Colormap
+ cbh = colorbar ; %Create Colorbar
+ cbh.Ticks = linspace(0, 1,5) ; %Create 8 ticks from zero to 1
+ cbh.TickLabels = num2cell(linspace(pump_min, pump_max,5)) ;    %Replace the labels of these 8 ticks with the numbers 1 to 8
+cbh.Label.String = "pump power (dBm)";
+cbh.Label.FontSize = 16;

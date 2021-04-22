@@ -26,11 +26,12 @@ end
  t_previous = t;
  r_previous = r;
  % calculate current (average ebggining and end of each segment)
- I = real(((t-r).*Y_arr  + Y_arr.*(t.*exp(1i*k_arr.*Len_arr)  - r.*exp(-1i*k_arr.*Len_arr)))/2);
+ I  = real((t-r).*Y_arr);
+ I_avr = real(((t-r).*Y_arr  + Y_arr.*(t.*exp(1i*k_arr.*Len_arr)  - r.*exp(-1i*k_arr.*Len_arr)))/2);
 %   I = real((t-r).*Y_arr);
  
  % correct L:
- graph_data.L_arr = L_arr.*(1+(I./graph_data.Ic_arr).^2);
+ graph_data.L_arr = L_arr.*(1+(I_avr./graph_data.Ic_arr).^2);
 
  %solve again
  [t,r] = solve_graph(graph_data, freq);
@@ -39,6 +40,13 @@ end
  
  diff_r = r-r_previous;
  diff_t = t-t_previous;
+ 
+ if plot_iterations
+     figure(54)
+    colororder(jet(iterations))
+     plot(I)
+     hold on
+ end
  
  diff_all(i) = sum(diff_r) + sum(diff_t);
  sum_all(i) = sum(r) + sum(t); 
@@ -49,6 +57,7 @@ end
 figure(568)
 subplot(2,1,1);  plot(1:iterations, abs(diff_all)); title("diffrences"); xlabel("iterations");
  subplot(2,1,2); plot(1:iterations, abs(sum_all)); title("values"); xlabel("iterations");
+ 
  end
  t_edges = t;
  r_edges = r;
