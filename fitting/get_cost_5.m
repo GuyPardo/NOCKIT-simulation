@@ -3,7 +3,7 @@ function [cost] = get_cost_5(G,freq,data_dB, x)
 %   Detailed explanation goes here
 % tic
 % display(x)
-M = 7;
+M = 2;
 N = 31;
 nodes = reshape(1:M*(N+2),M,N+2 );  
 

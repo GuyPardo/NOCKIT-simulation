@@ -21,7 +21,7 @@ function [Y0, v_ph] = get_microstrip_properties(width,metal_thickness,dielectric
     % Formula for geometric inductance per unit length taken from https://www.allaboutcircuits.com/tools/microstrip-inductance-calculator/
     % (note that one must convert from inches). But L_geo<L_kin, so it might not be so important...
     L_geo=0.00508*39.3701*(log(2/(W+H))+0.5+0.2235*(W+H))*0.000001;
-    
+%     L_geo = 0;
 
     C=W*eps_0*eps_r/H; % capacitance per unit length
 
