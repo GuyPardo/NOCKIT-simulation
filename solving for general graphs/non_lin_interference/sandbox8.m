@@ -10,13 +10,13 @@ clearvars
 % this part constructs the graph representing the 2 traces ladder network
 % (NOCKIT) 
 
-iterations =106;
+iterations =100;
 % intereference experiment setup
 N_pwrs = 10;
 sig_pwr = -55;% -55; % dbm
-pump_pwr = -41; % dbm
+pump_pwr = -43; % dbm
 
-phase = 0;
+phase = pi/2;
 sig_amp = sqrt(50*10^((sig_pwr/10) - 3))*exp(1i*phase); % in Volts, assuming here it's about 50 ohm.\
 pump_amp = sqrt(50*10.^((pump_pwr/10) - 3));
 

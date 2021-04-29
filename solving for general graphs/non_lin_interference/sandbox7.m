@@ -13,16 +13,16 @@ close all
 gnd_cond = 0; % loss: conductance to ground;
 % intereference experiment setup
 N_pwrs = 20;
-sig_pwr =  -55; % dbm
+sig_pwr =  -70; % dbm
 pump_min = -70;
 pump_max = -40;
 pump_pwr = linspace(pump_min,pump_max,N_pwrs); % dbm
 
-iterations = 1*logspace(1,2,N_pwrs);
-% iterations = linspace(10,100,N_pwrs);
-% iterations = 67*ones(size(pump_pwr));
+% iterations = 1*logspace(1,2,N_pwrs);
+iterations = linspace(10,200,N_pwrs);
+%iterations = 100*ones(size(pump_pwr));
 
-phase = linspace(0,2*pi, 60);
+phase = linspace(0,2*pi, 17);
 figure(204)
 clf
 colororder(jet(N_pwrs));
@@ -45,7 +45,7 @@ trans_norm = zeros(N_pwrs, length(phase), M);
 for pwr_idx = 1:N_pwrs
     for ii = 1:length(phase)
 
-sig_amp = sqrt(50*10^((sig_pwr/10) - 3))*exp(-1i*phase(ii)); % in Volts, assuming here it's about 50 ohm.\
+sig_amp = sqrt(50*10^((sig_pwr/10) - 3))*exp(1i*phase(ii)); % in Volts, assuming here it's about 50 ohm.\
 pump_amp = sqrt(50*10.^((pump_pwr(pwr_idx)/10) - 3));
 
 
@@ -88,7 +88,7 @@ v_ph = v_ph*x(1);
 end
 
 % frequency etc.
-freq = [5.1e9]; 
+freq = [5.11e9]; 
 omega= 2*pi*freq;
 k0 = 2*pi*freq/v_ph; % wavenumber for lines
 kc = 2*pi*freq/v_ph_c; % wavenumber for couplers
@@ -229,7 +229,7 @@ cbh.Label.FontSize = 16;
 figure(207)
 clf
 colororder(jet(N_pwrs))
-plot(phase,((abs(trans_norm(1:end-2,:,2)))), 'linewidth', 1.5);
+plot(phase,((abs(trans_norm(1:end,:,2)))), 'linewidth', 1.5);
 grid on;
 xlabel( "phase difference" , "fontsize", 15)
 ylabel( "transmission" , "fontsize", 15)

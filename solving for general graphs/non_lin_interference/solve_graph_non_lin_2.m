@@ -11,7 +11,7 @@ end
     BC_arr = graph_data.BC_arr; 
     BCval_arr = graph_data.BCval_arr;
     Ic_arr = graph_data.Ic_arr;
-
+    I_star_arr = Ic_arr;
 
     v_ph_arr = 1./sqrt(L_arr.*C_arr);
     Y_arr = sqrt(C_arr./L_arr);
@@ -26,12 +26,13 @@ end
  t_previous = t;
  r_previous = r;
  % calculate current (average ebggining and end of each segment)
- I  = real((t-r).*Y_arr);
- I_avr = real(((t-r).*Y_arr  + Y_arr.*(t.*exp(1i*k_arr.*Len_arr)  - r.*exp(-1i*k_arr.*Len_arr)))/2);
+ Iin  = real((t-r).*Y_arr);
+ Iout = real(Y_arr.*(t.*exp(1i*k_arr.*Len_arr)  - r.*exp(-1i*k_arr.*Len_arr)));
+ I_avr = (Iin+Iout)/2;
 %   I = real((t-r).*Y_arr);
  
  % correct L:
- graph_data.L_arr = L_arr.*(1+(I_avr./graph_data.Ic_arr).^2);
+ graph_data.L_arr = L_arr.*(1+(I_avr./I_star_arr).^2);
 
  %solve again
  [t,r] = solve_graph(graph_data, freq);
@@ -44,7 +45,11 @@ end
  if plot_iterations
      figure(54)
     colororder(jet(iterations))
-     plot(I)
+    subplot(2,1,1)
+     plot(Iin)
+     hold on
+     subplot(2,1,2)
+     plot(Iout)
      hold on
  end
  
