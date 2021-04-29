@@ -63,7 +63,7 @@ beq = [];
 %X = [1.7,1.1]
 % X=[1.7856    1.1320  -22.0302]
 
- X = [ 1.75 ,1.6,   1.093  -22.2021]
+ X = [1 ,1,   1.093  -22.2021]
 [Y0_new, v_ph_new]  = get_microstrip_properties(W,t,H);
 [Yc_new, v_ph_c_new]  = get_microstrip_properties(W_c,t,H);
     v_ph_new = v_ph_new*X(1);

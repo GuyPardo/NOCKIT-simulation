@@ -32,6 +32,12 @@ x0 = [1.7,1.7,1.1,-20];
 % x0 = [1.7,1.7,1.1]
 % x0 = [1.7,1.1];
 % x0 = [1.7,1.1, -22];
+
+
+
+x0 = [1,1,2,-20];
+
+x0 = [0.9490    1.1236    2.6439  -22.2561]
 cost = get_cost_new(x0)
 
 %%
@@ -40,13 +46,13 @@ cost = get_cost_new(x0)
 
 options = optimset('PlotFcns',@optimplotfval, 'Display','iter');
 
-  lb = [.1, .1, .1 ,-40 ];
+  lb = [.5, .5, .1 ,-40 ];
 %   lb = [.1, .1, .1  ];
 %    lb = [.1, .1, -40];
-ub = [3, 3,3, 0];
+ub = [2.5, 2,3, 0];
 % ub = [3, 3,3];
 % ub = [3, 3, 0];
-%   [X,costval] = fminsearchbnd(@get_cost,x0,lb,ub, options)
+%    [X,costval] = fminsearchbnd(@get_cost_new2,x0,lb,ub, options)
 % 
 A = [];
 b = [];
@@ -55,20 +61,24 @@ beq = [];
 
 
 
-[X,costval] = fmincon(@get_cost_new,x0, A,b,Aeq,beq,lb,ub,[] ,options);
+[X,costval] = fmincon(@get_cost_new2,x0, A,b,Aeq,beq,lb,ub,[] ,options);
 
 
 %%
 % X = [ 0.1216    0.9369    1.0754  -22.0307]
 %X = [1.7,1.1]
 % X=[1.7856    1.1320  -22.0302]
+% 
+%  X = [1 ,1,   2  -22.2021]
 
- X = [ 1.75 ,1.6,   1.093  -22.2021]
-[Y0_new, v_ph_new]  = get_microstrip_properties(W,t,H);
-[Yc_new, v_ph_c_new]  = get_microstrip_properties(W_c,t,H);
-    v_ph_new = v_ph_new*X(1);
-    v_ph_c_new = v_ph_c_new*X(2);
-    Yc_new = Yc_new/X(3);
+t_new = t*X(1);
+W_c_new = W_c*X(2);
+[Y0_new, v_ph_new]  = get_microstrip_properties(W,t_new,H);
+[Yc_new, v_ph_c_new]  = get_microstrip_properties(W_c_new,t_new,H);
+    v_ph_new = v_ph_new*X(3);
+    v_ph_c_new = v_ph_c_new*X(3);
+    Yc_new = Yc_new*X(3);
+    Y0_new = Y0_new*X(3);
     
       
     

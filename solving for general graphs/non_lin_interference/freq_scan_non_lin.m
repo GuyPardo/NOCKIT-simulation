@@ -2,22 +2,22 @@
 % here we create a nockit2 grpah and solving with the non linear solver
 % 
 clearvars
-close all
+% close all
  nockit5_fit=true;
  coplanar_couplers=false;
 %% construct graph
 % this part constructs the graph representing the 2 traces ladder network
 % (NOCKIT) 
-freq_res = 401;
+freq_res = 201;
 freq_min = 3e9;
 freq_max = 9e9;
 
 gnd_cond = 0; % loss: conductance to ground;
 % intereference experiment setup
-% N_pwrs = 20;
+ N_pwrs = 20;
 sig_pwr =  -80; % dbm
 
-iterations = 100;
+iterations = 10;
 
 
 % geometry: and network structure
@@ -33,7 +33,6 @@ gap_c = 1.4e-6;
 
 
 input_idx = [1]; 
-
 
 
 gnd_cond_c = gnd_cond*W_c/W;
@@ -52,6 +51,7 @@ if nockit5_fit
 x = [1.9935    0.9193    0.8418];  
 x = [1.9935    1.9935     0.8418];  
 x = [1.7   1.7     1.07]; 
+ x = [1.6469  1.6469   1.0471  -22.2021]
 %x = [2,1,1]
 %x =  [1.0479    0.5550    0.4589  -52.1305]
 v_ph = v_ph*x(1);
@@ -170,5 +170,5 @@ trans_dB = 20*log10(abs(trans));
 %%
 title_str = sprintf("transmission with %g dBm in line %d", sig_pwr, input_idx);
 figure(222)
-clf
+hold on
 plot(freq,trans_dB); grid on; xlabel("frequency (Hz)"); ylabel ("dB"); title(title_str)

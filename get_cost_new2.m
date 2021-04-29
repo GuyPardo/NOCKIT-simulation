@@ -43,9 +43,12 @@ W_c = 300e-9;
 H = 16e-9;
 
 
+t_new = t*x(1);
+W_c_new = W_c*x(2);
+
 % addpath('Z:\Users\Guy\coupling transission lines\repos\NOCKIT-simulation');
-[Y0, v_ph]  = get_microstrip_properties(W,t,H);
-[Yc, v_ph_c]  = get_microstrip_properties(W_c,t,H);
+[Y0, v_ph]  = get_microstrip_properties(W,t_new,H);
+[Yc, v_ph_c]  = get_microstrip_properties(W_c_new,t_new,H);
 
     
     %updatd default config
@@ -57,17 +60,17 @@ H = 16e-9;
     
     
     
-    v_ph_new = v_ph*x(1);
-    v_ph_c_new = v_ph_c*x(2);
-    Yc_new = Yc/x(3);
-     Y0_new = Y0;
+    v_ph_new = v_ph*x(3);
+    v_ph_c_new = v_ph_c*x(3);
+    Yc_new = Yc*x(3);
+     Y0_new = Y0*x(3);
     
  
     
    %trans = freq_scan_fun_3(freq_red,M,N,L0,d,v_ph_new,v_ph_c_new,Y0_new,Yc_new );
    trans = freq_scan_fun_4(freq_red,v_ph_new, v_ph_c_new, Y0_new, Yc_new);
     trans_dB = 20*log10(abs(trans));
-   size(trans_dB)
+%    size(trans_dB)
     cost = sum(sum(abs(trans_dB + x(4) - data_dB_red)).^2);
 
 
