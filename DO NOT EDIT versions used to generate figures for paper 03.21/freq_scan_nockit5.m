@@ -4,7 +4,7 @@
 
 clearvars
 %% get meas data
-load('C:\Users\guypa\Google Drive\LIMUDIM\Lab_research\NOCKIT_new_folder\data\NOCKIT5_2traces_data.mat')
+% load('C:\Users\guypa\Google Drive\LIMUDIM\Lab_research\NOCKIT_new_folder\data\NOCKIT5_2traces_data.mat')
 
 %%
 coplanar_couplers = false;

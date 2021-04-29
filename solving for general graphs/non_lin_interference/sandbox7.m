@@ -15,7 +15,7 @@ gnd_cond = 0; % loss: conductance to ground;
 N_pwrs = 20;
 sig_pwr =  -55; % dbm
 pump_min = -70;
-pump_max = -35;
+pump_max = -40;
 pump_pwr = linspace(pump_min,pump_max,N_pwrs); % dbm
 
 iterations = 1*logspace(1,2,N_pwrs);
@@ -29,10 +29,10 @@ colororder(jet(N_pwrs));
 
 
 % geometry: and network structure
-N=31; % number of couplers. (= number of unit cells minus 1) 
+N=30; % number of couplers. (= number of unit cells minus 1) 
 M = 2; % number of lines
 L0 = 100e-6; % length of each line segment
-d = 27e-6; % length of each coupler segment
+d = 20e-6; % length of each coupler segment
 thickness = 8e-9;%10e-9;
 W = 2.3e-6;
 W_c = 300e-9;
