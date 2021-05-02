@@ -1,22 +1,15 @@
-% sandbox
+function trans = freq_scan_non_lin_fun(freq, v_ph, v_ph_c,Y0, Yc, Ic, Icc, sig_pwr,d)
 % here we create a nockit2 grpah and solving with the non linear solver
 % 
-clearvars
-% close all
- nockit5_fit=false;
- newfit = true;
- coplanar_couplers=false;
 %% construct graph
 % this part constructs the graph representing the 2 traces ladder network
 % (NOCKIT) 
-freq_res = 201;
-freq_min = 3e9;
-freq_max = 9e9;
+
 
 gnd_cond = 0; % loss: conductance to ground;
 % intereference experiment setup
- N_pwrs = 20;
-sig_pwr =  -80; % dbm
+%  N_pwrs = 20;
+% sig_pwr =  -75; % dbm
 
 iterations = 0;
 
@@ -25,8 +18,8 @@ iterations = 0;
 N=30; % number of couplers. (= number of unit cells minus 1) 
 M = 2; % number of lines
 L0 = 100e-6; % length of each line segment
-d = 27e-6; % length of each coupler segment
-thickness = 8e-9;%10e-9;
+% d = 27e-6; % length of each coupler segment
+thickness = 9e-9;%10e-9;
 W = 2.3e-6;
 W_c = 300e-9;
 H = 16e-9;
@@ -37,61 +30,24 @@ input_idx = [1];
 
 
 gnd_cond_c = gnd_cond*W_c/W;
-addpath(genpath('Z:\Users\Guy\coupling transission lines\repos\NOCKIT-simulation'))
-
-[Y0, v_ph]  = get_microstrip_properties(W,thickness,H);
-if coplanar_couplers
-    [Yc, v_ph_c ] = get_CPW_properties(thickness,W_c,gap_c);
-else
-    [Yc, v_ph_c ] = get_microstrip_properties(W_c, thickness,H);
-end
-if nockit5_fit
-% parameters correction from fit. use these to get somthing close to the
-% measurement for 2 traces NOCKIT5, but note that we still have to explain the factor of 2 in
-% the phase velocity. the other two factors are close to 1, so they are OK.
-x = [1.9935    0.9193    0.8418];  
-x = [1.9935    1.9935     0.8418];  
-x = [1.7   1.7     1.07]; 
- x = [1.6469  1.6469   1.0471  -22.2021]
-%x = [2,1,1]
-%x =  [1.0479    0.5550    0.4589  -52.1305]
-v_ph = v_ph*x(1);
-    v_ph_c = v_ph_c*x(2);
-    Yc =  Yc/x(3);
-    
-end
-X = [0.9278    1.0316    1.2634    1.4638];
-if newfit
-    t_new = thickness*X(1);
-W_c_new = W_c*X(2);
-W_new = W;%*X(3);
-
-d_new=d;%*X(3);
-[Y0_new, v_ph_new]  = get_microstrip_properties(W_new,t_new,H);
-[Yc_new, v_ph_c_new]  = get_microstrip_properties(W_c_new,t_new,H);
-    v_ph_new = v_ph_new*X(4)*X(3);
-    v_ph_c_new = v_ph_c_new*X(4);
-    Yc = Yc_new*X(4);
-    Y0 = Y0_new*X(4);
-end
-
+addpath('Z:\Users\Guy\coupling transission lines\repos\NOCKIT-simulation')
 
 
 C = Y0/v_ph;
 Cc = Yc/v_ph_c;
 L = 1/v_ph/Y0;
 Lc = 1/v_ph_c/Yc;
-Ic = 0.0002*thickness/0.00000001*W/0.000001; % samuel's formula
-Ic = 60e-6*(thickness/6e-9)*(W/2.3e-6); % % from mikita measurement
-% Ic= 1000000000; % if we only want to consider the coupler's non linearity
-Icc = 0.0002*thickness/0.00000001*W_c/0.000001; % samuel's formula
-Icc = 60e-6*(thickness/6e-9)*(W_c/2.3e-6); % from mikita measurement
+% %Ic = 0.0002*t_new/0.00000001*W/0.000001; % samuel's formula
+% Ic = 60e-6*(t_new/6e-9)*(W/2.3e-6); % % from mikita measurement
+% % Ic= 1000000000; % if we only want to consider the coupler's non linearity
+% Icc = 0.0002*t_new/0.00000001*W_c_new/0.000001; % samuel's formula
+% Icc = 60e-6*(t_new/6e-9)*(W_c_new/2.3e-6); % from mikita measurement
 
 
 sig_amp = sqrt(1/Y0*10^((sig_pwr/10) - 3)); % in Volts
 
 % frequency etc.
-freq = linspace(freq_min,freq_max,freq_res); % in Hz 
+%freq = linspace(freq_min,freq_max,freq_res); % in Hz 
 omega= 2*pi*freq;
 k0 = 2*pi*freq/v_ph; % wavenumber for lines
 kc = 2*pi*freq/v_ph_c; % wavenumber for couplers
@@ -178,10 +134,7 @@ for i = 1:length(freq)
     trans(:,i) = t(:,end)/sig_amp;
     
 end
-trans_dB = 20*log10(abs(trans));
+% trans_dB = 20*log10(abs(trans));
 
+end
 %%
-title_str = sprintf("transmission with %g dBm in line %d", sig_pwr, input_idx);
-figure(222)
-hold on
-plot(freq,trans_dB); grid on; xlabel("frequency (Hz)"); ylabel ("dB"); title(title_str)

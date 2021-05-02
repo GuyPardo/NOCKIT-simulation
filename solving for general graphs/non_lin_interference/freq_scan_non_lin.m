@@ -18,7 +18,7 @@ gnd_cond = 0; % loss: conductance to ground;
  N_pwrs = 20;
 sig_pwr =  -75; % dbm
 
-iterations = 50;
+iterations = 25;
 
 
 % geometry: and network structure
