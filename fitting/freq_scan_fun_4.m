@@ -1,4 +1,4 @@
-function trans =  freq_scan_fun_4(freq, v_ph, v_ph_c, Y0, Yc)
+function trans =  freq_scan_fun_4(freq, v_ph, v_ph_c, Y0, Yc,d)
 
 
 
@@ -13,7 +13,7 @@ function trans =  freq_scan_fun_4(freq, v_ph, v_ph_c, Y0, Yc)
 N=30; % number of couplers. (= number of unit cells minus 1) 
 M = 2; % number of lines
 L0 = 100e-6; % length of each line segment
-d = 27e-6; % length of each coupler segment
+% d = 27e-6; % length of each coupler segment
 
 
 
