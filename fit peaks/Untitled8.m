@@ -48,7 +48,8 @@ x0 = [1,1,2];
 
 
 % x0=   [0.7938    0.8354, 1    1.9709]
-x0 = [1,1,1,2]
+x0 = [1,1,2]
+x0 = [0.7938    0.8354    1.9709]
  
 cost = get_cost_peaks(x0)
 
@@ -58,10 +59,10 @@ cost = get_cost_peaks(x0)
 
 options = optimset('PlotFcns',@optimplotfval, 'Display','iter');
 
-  lb = [.5, .5,.5, .1 ];
+  lb = [.5, .5, .1 ];
 %   lb = [.1, .1, .1  ];
 %    lb = [.1, .1, -40];
-ub = [2.5, 2,2 ,3];
+ub = [2.5, 2 ,3];
 % ub = [3, 3,3];
 % ub = [3, 3, 0];
    [X,costval] = fminsearchbnd(@get_cost_peaks,x0,lb,ub, options)
@@ -90,10 +91,10 @@ W_new = W;%*X(3);
 d_new=d;%*X(3);
 [Y0_new, v_ph_new]  = get_microstrip_properties(W_new,t_new,H);
 [Yc_new, v_ph_c_new]  = get_microstrip_properties(W_c_new,t_new,H);
-    v_ph_new = v_ph_new*X(4)*X(3);
-    v_ph_c_new = v_ph_c_new*X(4);
-    Yc_new = Yc_new*X(4);
-    Y0_new = Y0_new*X(4);
+    v_ph_new = v_ph_new*X(3);
+    v_ph_c_new = v_ph_c_new*X(3);
+    Yc_new = Yc_new*X(3);
+    Y0_new = Y0_new*X(3);
     
       
     

@@ -3,7 +3,8 @@
 % 
 clearvars
 % close all
- nockit5_fit=true;
+ nockit5_fit=false;
+ newfit = true;
  coplanar_couplers=false;
 %% construct graph
 % this part constructs the graph representing the 2 traces ladder network
@@ -15,9 +16,9 @@ freq_max = 9e9;
 gnd_cond = 0; % loss: conductance to ground;
 % intereference experiment setup
  N_pwrs = 20;
-sig_pwr =  -80; % dbm
+sig_pwr =  -75; % dbm
 
-iterations = 10;
+iterations = 50;
 
 
 % geometry: and network structure
@@ -25,7 +26,7 @@ N=30; % number of couplers. (= number of unit cells minus 1)
 M = 2; % number of lines
 L0 = 100e-6; % length of each line segment
 d = 27e-6; % length of each coupler segment
-thickness = 8e-9;%10e-9;
+thickness = 9e-9;%10e-9;
 W = 2.3e-6;
 W_c = 300e-9;
 H = 16e-9;
@@ -59,8 +60,21 @@ v_ph = v_ph*x(1);
     Yc =  Yc/x(3);
     
 end
+X = [0.9278    1.0316    1    1.6638]; % guessing
+X = [0.7938    0.8354    1.9709]; % guessing
+if newfit
+    t_new = thickness*X(1);
+W_c_new = W_c*X(2);
+W_new = W;%*X(3);
 
-
+d_new=d;%*X(3);
+[Y0_new, v_ph_new]  = get_microstrip_properties(W_new,t_new,H);
+[Yc_new, v_ph_c_new]  = get_microstrip_properties(W_c_new,t_new,H);
+    v_ph = v_ph_new*X(3);
+    v_ph_c = v_ph_c_new*X(3);
+    Yc = Yc_new*X(3);
+    Y0 = Y0_new*X(3);
+end
 
 
 
@@ -68,11 +82,11 @@ C = Y0/v_ph;
 Cc = Yc/v_ph_c;
 L = 1/v_ph/Y0;
 Lc = 1/v_ph_c/Yc;
-Ic = 0.0002*thickness/0.00000001*W/0.000001; % samuel's formula
-Ic = 60e-6*(thickness/6e-9)*(W/2.3e-6); % % from mikita measurement
+Ic = 0.0002*t_new/0.00000001*W/0.000001; % samuel's formula
+Ic = 60e-6*(t_new/6e-9)*(W/2.3e-6); % % from mikita measurement
 % Ic= 1000000000; % if we only want to consider the coupler's non linearity
-Icc = 0.0002*thickness/0.00000001*W_c/0.000001; % samuel's formula
-Icc = 60e-6*(thickness/6e-9)*(W_c/2.3e-6); % from mikita measurement
+Icc = 0.0002*t_new/0.00000001*W_c_new/0.000001; % samuel's formula
+Icc = 60e-6*(t_new/6e-9)*(W_c_new/2.3e-6); % from mikita measurement
 
 
 sig_amp = sqrt(1/Y0*10^((sig_pwr/10) - 3)); % in Volts

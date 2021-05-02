@@ -72,10 +72,10 @@ d_new = d;%*x(3);
     
     
     
-    v_ph_new = v_ph*x(4)*x(3);
-    v_ph_c_new = v_ph_c*x(4);
-    Yc_new = Yc*x(4);
-     Y0_new = Y0*x(4);
+    v_ph_new = v_ph*x(3);
+    v_ph_c_new = v_ph_c*x(3);
+    Yc_new = Yc*x(3);
+     Y0_new = Y0*x(3);
     
  
     
@@ -112,6 +112,6 @@ cop = trans_dB(2,:);
 BG1 = freq_red(find(abs(diff(dir))>1,1));
 BG2 = freq_red(find((diff(cop))>1,1));
 
-cost = cost + 100*(abs(BG1 -data_BG1) + abs(BG2 - data_BG2))*1e-9;
+cost = cost + 10*(abs(BG1 -data_BG1) + abs(BG2 - data_BG2))*1e-9;
 
 end
