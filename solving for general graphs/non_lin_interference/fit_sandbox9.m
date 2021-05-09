@@ -23,7 +23,7 @@ sig_pwr = -80; %dbm
 N=30; % number of couplers. (= number of unit cells minus 1) 
 M = 2; % number of lines
 L0 = 100e-6; % length of each line segment
-d = 27e-6; % length of each coupler segment
+d = 20e-6; % length of each coupler segment
 t = 9e-9;
 W = 2.3e-6;
 W_c = 300e-9;
@@ -53,8 +53,10 @@ x0 = [1,1,2,1];
 
 % x0=   [0.7938    0.8354, 1    1.9709]
 % x0 = [1,1,2]
-% x0 = [0.7938    0.8354    1.9709  1]
- 
+x0 = [0.7938    0.8354    1.9709, -22  ]
+
+x0 = [1.9,1.1,1/0.8, -22]
+ x0 =  [1.9935    0.9193    1/0.8418  -21.9094]
 % 
 % x0 = [0.7948    0.8416    1.9652    1.1838]
 % x0 = [0.7948    0.8416    1.9652, 1*20/27]
@@ -70,14 +72,14 @@ cost = get_cost_non_lin(x0)
 
 options = optimset('PlotFcns',@optimplotfval, 'Display','iter');
 
-  lb = [.5, .5, .1 .7];
-%   lb = [.1, .1, .1  ];
+%   lb = [.5, .5, .1 .7];
+  lb = [0.5 0.5, 0.5 ,-35 ];
 %    lb = [.1, .1, -40];
-ub = [2.5, 2 ,3,1.3];
-% ub = [3, 3,3];
+% ub = [2.5, 2 ,3,1.3];
+ub = [3, 3,3, 0];
 % ub = [3, 3, 0];
-    [X,costval] = fminsearchbnd(@get_cost_non_lin,x0,lb,ub, options)
-% 
+%     [X,costval] = fminsearchbnd(@get_cost_non_lin,x0,lb,ub, options)
+
 A = [];
 b = [];
 Aeq = [];
@@ -85,7 +87,7 @@ beq = [];
 
 
 
-%  [X,costval] = fmincon(@get_cost_non_lin,x0, A,b,Aeq,beq,lb,ub,[] ,options);
+ [X,costval] = fmincon(@get_cost_non_lin,x0, A,b,Aeq,beq,lb,ub,[] ,options);
 % % 
 
 %%
@@ -105,19 +107,25 @@ beq = [];
 % X = [ 0.7898    1.1247    2.0031    1.4134]
 % X = [0.7600    0.9871    2.0499    1.2147]
 %  X = [0.7668    1.0    1.91    1.1406];
+X = [ 1.9935    0.9193    1/0.8418  -21.9094]
+t_new = t;%*X(1);
 
-t_new = t*X(1);
-
-W_c_new = W_c*X(2);
+W_c_new = W_c;%*X(2);
 W_new = W;%*X(3);
 
-d_new=d*X(4);
+d_new=d;%*X(4);
 [Y0_new, v_ph_new]  = get_microstrip_properties(W_new,t_new,H);
 [Yc_new, v_ph_c_new]  = get_microstrip_properties(W_c_new,t_new,H);
-    v_ph_new = v_ph_new*X(3);
-    v_ph_c_new = v_ph_c_new*X(3);
+%     v_ph_new = v_ph_new*X(3);
+%     v_ph_c_new = v_ph_c_new*X(3);
+%     Yc_new = Yc_new*X(3);
+%     Y0_new = Y0_new*X(3);
+    
+    
+       v_ph_new = v_ph_new*X(1);
+    v_ph_c_new = v_ph_c_new*X(2);
     Yc_new = Yc_new*X(3);
-    Y0_new = Y0_new*X(3);
+    Y0_new = Y0_new;%*X(3);
     
       
  Ic = 60e-6*(t_new/6e-9)*(W/2.3e-6);%*X(4); % % from mikita measurement

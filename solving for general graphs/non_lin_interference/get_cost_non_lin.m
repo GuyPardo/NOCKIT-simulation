@@ -46,7 +46,7 @@ display(x)
 N=30; % number of couplers. (= number of unit cells minus 1) 
 M = 2; % number of lines
 L0 = 100e-6; % length of each line segment
-d = 27e-6; % length of each coupler segment
+d = 20e-6; % length of each coupler segment
 t = 9e-9;
 W = 2.3e-6;
 W_c = 300e-9;
@@ -54,10 +54,10 @@ H = 16e-9;
 
 
 
-t_new = t*x(1);
-W_c_new = W_c*x(2);
+t_new = t;%*x(1);
+W_c_new = W_c;%*x(2);
  W_new = W;%*x(3);
-d_new = d*x(4);
+d_new = d;%*x(4);
 
 Ic = 60e-6*(t_new/6e-9)*(W/2.3e-6); % % from mikita measurement
 Icc = 60e-6*(t_new/6e-9)*(W_c_new/2.3e-6); % from mikita measurement
@@ -80,11 +80,14 @@ Icc = 60e-6*(t_new/6e-9)*(W_c_new/2.3e-6); % from mikita measurement
     
     
     
-    v_ph_new = v_ph*x(3);
-    v_ph_c_new = v_ph_c*x(3);
+%     v_ph_new = v_ph*x(3);
+%     v_ph_c_new = v_ph_c*x(3);
+%     Yc_new = Yc*x(3);
+%      Y0_new = Y0*x(3);
+    v_ph_new = v_ph*x(1);
+    v_ph_c_new = v_ph_c*x(2);
     Yc_new = Yc*x(3);
-     Y0_new = Y0*x(3);
-    
+     Y0_new = Y0;
  
     
    %trans = freq_scan_fun_3(freq_red,M,N,L0,d,v_ph_new,v_ph_c_new,Y0_new,Yc_new );
@@ -121,12 +124,12 @@ cop = trans_dB(2,:);
 BG1 = freq_red(find(abs(diff(dir))>1,1));
 BG2 = freq_red(find((diff(cop))>1,1));
 
-cost = cost + .0001*(abs(BG1 -data_BG1) + abs(BG2 - data_BG2))*1e-9;
+% cost = cost + .0001*(abs(BG1 -data_BG1) + abs(BG2 - data_BG2))*1e-9;
 
 
 %lsq
 
-%  cost = sum(sum(abs(trans_dB -22 - data_dB_red)).^2);
+ cost = sum(sum(abs(trans_dB +x(4) - data_dB_red)).^2);
 
 
 
