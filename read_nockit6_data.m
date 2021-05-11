@@ -8,9 +8,13 @@ for i=1:4
     
    
 end
+
+freq = freq(1,:);
+
+data_dB = 20*log10(abs(data));
 %%
  figure(808)
-plot(freq(1,:),20*log10(abs(data)), 'linewidth',2); grid on; title ("measured transmission w. input from line 4"); ylabel("dB", 'fontsize',16);xlabel("frequency (Hz)", 'fontsize',16);
+plot(freq,20*log10(abs(data)), 'linewidth',2); grid on; title ("measured transmission w. input from line 4"); ylabel("dB", 'fontsize',16);xlabel("frequency (Hz)", 'fontsize',16);
 leg = legend(num2str((1:4)'),"location", "best", "fontsize", 13);
 title(leg, "line")
 
@@ -20,8 +24,10 @@ for i=1:4
      data_smooth_mag(i,:) = smooth((abs(data(i,:))),smooth_num );
 end
 
- figure(809)
-plot(freq(1,:),20*log10(data_smooth_mag), 'linewidth',2); grid on; title ("smoothed transmission w. input from line 4"); ylabel("dB", 'fontsize',16);xlabel("frequency (Hz)", 'fontsize',16);
+data_smooth_dB = 20*log10(data_smooth_mag);
+
+figure(809)
+plot(freq,20*log10(data_smooth_mag), 'linewidth',2); grid on; title ("smoothed transmission w. input from line 4"); ylabel("dB", 'fontsize',16);xlabel("frequency (Hz)", 'fontsize',16);
 leg = legend(num2str((1:4)'),"location", "best", "fontsize", 13);
 title(leg, "line")
 

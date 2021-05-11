@@ -3,7 +3,7 @@ clearvars
 
 
 coplanar_couplers = true;
-nockit5_fit  = false;
+fit  = false;
 %% construct graph
 % this part constructs the graph representing nockit network: a square
 % lattice made out of  M lines with N couplers between each adjacent pair. 
@@ -49,23 +49,31 @@ end
 % % Y0 = 0.020259488114653; % admittance for lines
 % % Yc = 0.002735070881675; % admittance for couplers
 
-if nockit5_fit
+if fit
 % parameters correction from fit. use these to get somthing close to the
 % measurement for 2 traces NOCKIT5, but note that we still have to explain the factor of 2 in
 % the phase velocity. the other two factors are close to 1, so they are OK.
-x = [1.9935    0.9193    0.8418];  
+% x = [1,1,1,1,1];  
+% x = [1,1,1.3];
 
+% hh = x(1); tt = x(2); lam = x(3); WW = x(4); Wcc = x(5);
 %x = [2,1,1]
 %x =  [1.0479    0.5550    0.4589  -52.1305]
+% v_ph = v_ph*sqrt(tt*hh/lam);
+%     v_ph_c = v_ph_c*sqrt(tt*hh/lam);
+%     Yc =  Yc/sqrt(lam*hh/tt/Wcc^2);
+%     Y0 =  Y0/sqrt(lam*hh/tt/WW^2);
+
+
 v_ph = v_ph*x(1);
-    v_ph_c = v_ph_c*x(2);
-    Yc =  Yc/x(3);
+v_ph_c = v_ph_c*x(2);
+Yc = Yc*x(3);
     
 end
 
 
 % frequency etc.
-freq = 1e9*linspace(2,9,801); 
+freq = 1e9*linspace(2,9,201); 
 omega= 2*pi*freq;
 
 

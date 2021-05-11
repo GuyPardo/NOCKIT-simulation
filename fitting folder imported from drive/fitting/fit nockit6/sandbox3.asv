@@ -3,79 +3,28 @@ addpath('')
 
 addpath(genpath('Z:\Users\Guy\coupling transission lines\repos\NOCKIT-simulation'))
 
-name = "\Transmission@-40";
-
-lab = true;
-
-
-if lab
-
-   folder = 'Z:\Measurements\2020.dir\01_12_20 cooldown\Nockit6';
-else
-   folder = 'C:\Users\guypa\Google Drive\LIMUDIM\Lab_research\nockit6 data\Nockit6'; 
-end
-%% import data
-smoothing = 0;
-
-% traceid = 1:4;
-% path =  strcat(folder,name);
-% clearvars data
-% for i=1:length(traceid)
-% 
-%         foldername = sprintf("4to%s", num2str(traceid(i)));
-% 
-%     folder_path = strcat(path, "\", foldername);
-%  
-%     [freq, data_raw] = import_data_4_fun(folder_path);
-%     data(i,:) = data_raw(end,:);
-% end
-load NOCKIT5_2traces_data.mat
-% data_mag = (abs(data).^2);
-% data_dB = 10*log10(data_mag);
-
-
-if smoothing
-    for i=1:4
-   data_dB(i,:) = smooth(data_dB(i,:), smoothing); 
-    end
-end
 
  % down sampling
 res = 201;
 %data_dB_red = nan(2,res);
 freq_red = downsample(freq,res);
-data_dB_red = (downsample(data_dB, res))';
-% for i=1:2
-%     
-%  data_dB_red(:,i) = downsample(data_dB(:,i), res);
-% end
+data_dB_red = (downsample(data_smooth_dB, res))';
 
-%% plot 
-figure(301); clf; plot(freq_red, data_dB_red(:,:), 'linewidth', 1.5); grid on; xlabel('freq (Hz)'); ylabel('dB'); title('measured transmission')
-legend("4-->1","4-->2","4-->3","4-->4");
-%  c_o = colororder;
- 
-%  colororder('default')
+
 %% fitting
-    v_ph = 1.8628e+06;
-    v_ph_c = 5.4916e+06;
-    Z0 = 50.1153;
-    Zc = 1.9916e+03;
 
-Y0 = 1/Z0;
-Yc = 1/Zc;
 
 
 % geometry: and network structure
-N=30; % number of couplers. (= number of unit cells minus 1) 
-M = 2; % number of lines
+N=31; % number of couplers. (= number of unit cells minus 1) 
+M = 7; % number of lines
 L0 = 100e-6; % length of each line segment
 d = 27e-6; % length of each coupler segment
 
-W=2.3e-6; % width of primary and secondary transmission lines
-t=8e-9; % thickness of WSi (sputtered)
-H=16e-9; % height of dielectric (say, Si - evaporated)
-W_c=300e-9; % width of coupling line
+W=3e-6; % width of primary and secondary transmission lines
+t=8.5e-9; % thickness of WSi (sputtered)
+H=35e-9; % height of dielectric (say, Si - evaporated)
+W_c=200e-9; % width of coupling line
 
 
 [Y0, v_ph] = get_microstrip_properties(W,t,H);
@@ -88,7 +37,7 @@ omega= 2*pi*freq;
 
 
 
-input_idx = [1];   % can be more than one.
+input_idx = [4];   % can be more than one.
 %%
 % define graph: define an array of nodes with M rows and N+2 columns. the
 % nodes are numbered such that nodes 1:M are the first column, M+1:2*M are
@@ -157,7 +106,7 @@ graph_data = process_graph(G);
 
 %% config
 % options = optimoptions('fmincon','Display','iter', 'PlotFcn', 'optimplotfval','PlotFcn', 'optimplotfval');
-
+% 
 % options = optimoptions('fmincon','Display','iter','Algorithm','sqp', 'PlotFcn', 'optimplotfval','PlotFcn', 'optimplotfval');
 % options = optimoptions('fmincon','Display','iter','Algorithm','sqp-legacy', 'PlotFcn', 'optimplotfval','PlotFcn', 'optimplotfval');
 % options = optimoptions('fmincon','Display','iter','Algorithm','interior-point', 'PlotFcn', 'optimplotfval','PlotFcn', 'optimplotfval');
@@ -170,18 +119,27 @@ options = optimset('PlotFcns',@optimplotfval, 'Display','iter');
 % lb = [.2,-60];
 % ub = [3,-45];
 % x0 = [2,2,1,-22]
-x0 = [1,.8,1,1,1,-22];
+% x0 = [1,.8,1,1,1,-22];
+% 
+% 
+%  x0 =[1.0819    1.3596    0.4855    1.2106    1.0862  -22.0017]
+%  x0 = [0.9717    1.3580    0.4355    1.1422    1.0249]
+%  
+% %     x0 = [1.0170    0.7107    0.2524    1.0619    0.9896]
+% %  x0 = [1,.8,.25]
 
 
- x0 =[1.0819    1.3596    0.4855    1.2106    1.0862  -22.0017]
- x0 = [0.9717    1.3580    0.4355    1.1422    1.0249]
-%  x0 = [1,.8,.25]
  
 %   x0 = [1.0163    0.7106    0.2522    1.0612    0.9889];
-  lb = [.6, .6, .1,0.8,0.7];
-%   lb = [.6, .6, .1];
-ub = [1.3, 1.4,2,1.2,1.3];
-% ub = [1.3, 1.4,2];
+% x0 = [1,.8 , 0.25, 1,1];
+
+% x0 = [1,.8 , 0.25, -22];
+% x0= [  1.1051    0.7540    0.3074 ];
+x0 =
+%   lb = [.6, .6, .1,0.8,0.7];
+  lb = [.6, .6, .1];
+% ub = [1.3, 1.4,2,1.2,1.3];
+ub = [1.3, 1.4,2];
 
 A = [];
 b = [];
@@ -193,7 +151,7 @@ fun = @(x) get_cost_5(G,freq_red, data_dB_red, x);
 fun(x0)
 %%
 % [X,costval] = fmincon(fun,x0, A,b,Aeq,beq,lb,ub,[], options)
-[X,costval] = fminsearchbnd(fun,x0,lb,ub ,options)
+ [X,costval] = fminsearchbnd(fun,x0,lb,ub ,options)
 
 %% plot
 % X = [1.6973    2.9982    2.9024  -52.7307];
