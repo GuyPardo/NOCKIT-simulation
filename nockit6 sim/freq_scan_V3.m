@@ -5,7 +5,7 @@ tic
 % edit 2020_11_15:
 % parameters for nockit 6 design
 % frequency scan 
-Frequency=linspace(2,9,201)*1e9;
+Frequency=linspace(2,9,2001)*1e9;
 w = 2*pi*Frequency;
 
 %% Configurations
@@ -14,9 +14,9 @@ use_nockit_5_fit = false;
 % Lines gerometry:
     W=3e-6; % width of primary and secondary transmission lines
     t=8.5e-9; % thickness of WSi (sputtered)
-    H=32e-9; % height of dielectric (say, Si - evaporated)
+    H=35e-9; % height of dielectric (say, Si - evaporated)
     W_c=200e-9; % width of coupling line
-    gap_c = 1.4e-6; % coplanar gap for coupler. only relevant for the coplanar couplers case
+    gap_c = 5.4e-6; % coplanar gap for coupler. only relevant for the coplanar couplers case
  
 % network geometry
     L = 100e-6; % length of each unit cell along main lines (m)

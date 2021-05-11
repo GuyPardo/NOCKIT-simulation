@@ -2,38 +2,38 @@
 clearvars
 
 
-coplanar_couplers = false;
-nockit5_fit  = true;
+coplanar_couplers = true;
+nockit5_fit  = false;
 %% construct graph
 % this part constructs the graph representing nockit network: a square
 % lattice made out of  M lines with N couplers between each adjacent pair. 
 
 
 
-tic
+% tic
+% % geometry: and network structure
+% N=31; % number of couplers. (= number of unit cells minus 1) 
+% M = 2; % number of lines
+% L0 = 100e-6; % length of each line segment
+% d = 27e-6; % length of each coupler segment
+% t = 8.5e-9;%10e-9;
+% W = 3e-6;
+% W_c = 200e-9;
+% H = 29e-9;%16e-9;
+% gap_c = 1.4e-6;
+
+
+
 % geometry: and network structure
 N=31; % number of couplers. (= number of unit cells minus 1) 
-M = 2; % number of lines
-L0 = 100e-6; % length of each line segment
-d = 27e-6; % length of each coupler segment
-t = 8.5e-9;%10e-9;
-W = 3e-6;
-W_c = 200e-9;
-H = 29e-9;%16e-9;
-gap_c = 1.4e-6;
-
-
-
-% geometry: and network structure
-N=30; % number of couplers. (= number of unit cells minus 1) 
 M = 7; % number of lines
 L0 = 100e-6; % length of each line segment
-d = 20e-6; % length of each coupler segment
-t = 8e-9;
-W = 2.3e-6;
-W_c = 300e-9;
-H = 16e-9;
-gap_c = 1.4e-6;
+d = 27e-6; % length of each coupler segment
+t = 8.5e-9; % thickness of metal
+W = 3e-6; % width of main traces
+W_c = 200e-9; % width of couplers
+H = 35e-9; % thickness of dielectric
+gap_c = 5.4e-6; % for coplanar couplers, width of the gap between trace and ground.
 addpath(genpath('Z:\Users\Guy\coupling transission lines\repos\NOCKIT-simulation'))
 
 [Y0, v_ph]  = get_microstrip_properties(W,t,H);
@@ -65,7 +65,7 @@ end
 
 
 % frequency etc.
-freq = 1e9*linspace(3,9,201); 
+freq = 1e9*linspace(2,9,801); 
 omega= 2*pi*freq;
 
 
@@ -164,13 +164,13 @@ trans_dB = 10*log10(trans_mag2);
 
 figure(701) % transmittance graphs
 clf;
-    plot(freq, trans_dB(1:M,:), 'linewidth', 1.5)
+    plot(freq, trans_dB(1:4,:), 'linewidth', 2)
     grid on
-    leg = legend(num2str((1:M)'),"location", "best", "fontsize", 13);
+    leg = legend(num2str((1:4)'),"location", "best", "fontsize", 13);
     title(leg, "line")
     xlabel("frequency (Hz)", "fontsize", 16)
     ylabel("dB", "fontsize", 16)
-    title("transmittace", "fontsize", 16)
+    title(sprintf("transmittace w. input from line %d", input_idx), "fontsize", 16)
 figure(702)  % reflectance graphs  
 clf;
     plot(freq, ref_dB, 'linewidth', 1.5)
