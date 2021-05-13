@@ -1,29 +1,30 @@
-function [cost] = get_cost_5(G,freq,data_dB, x)
+function [cost] = get_cost_6(nockit_params,freq,data_dB, x)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 % tic
-% x = factor changing [, H,t,lamnda]
- display(x)
- if length(x)>4
+% x = factor changing [t,W,Wc,H,gap_c,lam]
 
-H = x(1); t = x(2); lam = x(3); W = x(4); Wc = x(5);
-else
-    H = x(1); t = x(2); lam = x(3); W = 1; Wc = 1;
-end
+
+ display(x)
+ 
+G = change_params(nockit_params,x);
+
+ N = nockit_params.N;
+ M= nockit_params.M;
+ 
+ 
+
+ 
+
   if x(end)<0
       db_offset = x(end);
   else
-      db_offset = -51.4124;
+      db_offset = -51;
   end
  
-M = 7;
-N = 31;
+
 nodes = reshape(1:M*(N+2),M,N+2 );  
 
-G.Edges.v_ph(G.Edges.Weight==2) = G.Edges.v_ph(G.Edges.Weight==2)*sqrt(t*H/lam);
-G.Edges.v_ph(G.Edges.Weight==1) = G.Edges.v_ph(G.Edges.Weight==1)*sqrt(t*H/lam);
-G.Edges.Y(G.Edges.Weight==1) = G.Edges.Y(G.Edges.Weight==1)/sqrt(lam*H/t/Wc^2);
-G.Edges.Y(G.Edges.Weight==2) = G.Edges.Y(G.Edges.Weight==2)/sqrt(lam*H/t/W^2);
 
 graph_data = process_graph(G);
 
@@ -42,7 +43,7 @@ end
    
 % size(trans_dB)
 % size(data_dB)
-    cost = sum(sum(abs(trans_dB(3:4,:) + db_offset - data_dB(3:4,:)).^2));
+    cost = sum(sum(abs(trans_dB(3:4,:) +db_offset - data_dB(3:4,:)).^2));
    
 %     toc;
 end

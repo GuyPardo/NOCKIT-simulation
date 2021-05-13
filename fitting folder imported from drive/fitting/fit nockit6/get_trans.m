@@ -14,6 +14,10 @@ M = 7;
 N = 31;
 nodes = reshape(1:M*(N+2),M,N+2 );  
 H = G;
+
+
+v_ph
+
 H.Edges.v_ph(H.Edges.Weight==2) = H.Edges.v_ph(H.Edges.Weight==2)*sqrt(t*h/lam);
 H.Edges.v_ph(H.Edges.Weight==1) = H.Edges.v_ph(H.Edges.Weight==1)*sqrt(t*h/lam);
 H.Edges.Y(H.Edges.Weight==1) = H.Edges.Y(H.Edges.Weight==1)/sqrt(lam*h/t/Wc^2);

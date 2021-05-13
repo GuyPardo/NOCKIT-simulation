@@ -1,9 +1,25 @@
-function [cost] = get_cost_5(G,freq,data_dB, x)
+function [cost] = get_cost_6(G,freq,data_dB, x)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 % tic
 % x = factor changing [, H,t,lamnda]
  display(x)
+ 
+ nockit_params_new.N = nockit_params.N; % number of couplers. (= number of unit cells minus 1) 
+nockit_params_new.M = nockit_params.M; % number of lines
+nockit_params_new.L0 = nockit_params.L0; % length of each line segment
+nockit_params_new.d = nockit_params.d; % length of each coupler segment
+nockit_params_new.t = nockit_params.t*x(1); % thickness of metal
+nockit_params_new.W = nockit_params.W*x(2) ; % width of main traces
+nockit_params_new.W_c = nockit_params.W_c*x(3); % width of couplers
+nockit_params_new.H = nockit_params.H*x(4); % thickness of dielectric
+nockit_params_new.gap_c = nockit_params.gap_c*x(5); % for coplanar couplers, width of the gap between trace and ground.
+nockit_params_new.input_idx = [4];
+ 
+ 
+ 
+ 
+ 
  if length(x)>4
 
 H = x(1); t = x(2); lam = x(3); W = x(4); Wc = x(5);
@@ -13,11 +29,11 @@ end
   if x(end)<0
       db_offset = x(end);
   else
-      db_offset = -51.4124;
+      db_offset = -22;
   end
  
-M = 7;
-N = 31;
+M = 2;
+N = 30;
 nodes = reshape(1:M*(N+2),M,N+2 );  
 
 G.Edges.v_ph(G.Edges.Weight==2) = G.Edges.v_ph(G.Edges.Weight==2)*sqrt(t*H/lam);
@@ -42,7 +58,7 @@ end
    
 % size(trans_dB)
 % size(data_dB)
-    cost = sum(sum(abs(trans_dB(3:4,:) + db_offset - data_dB(3:4,:)).^2));
+    cost = sum(sum(abs(trans_dB(:,:) +db_offset - data_dB(:,:)).^2));
    
 %     toc;
 end

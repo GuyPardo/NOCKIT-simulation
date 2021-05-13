@@ -5,7 +5,7 @@ tic
 % edit 2020_11_15:
 % parameters for nockit 6 design
 % frequency scan 
-Frequency=linspace(2,9,2001)*1e9;
+Frequency=linspace(2,9,801)*1e9;
 w = 2*pi*Frequency;
 
 %% Configurations
@@ -67,7 +67,7 @@ use_nockit_5_fit = false;
 
 % loss mechanisms:
     R = 0e4; % series resistance per unit length  
-    G = 0e1; % shunt conductance per unit length
+    G = .5e1; % shunt conductance per unit length
     R_c =0;  % series resistance per unit length for couplers 
     G_c =0;  % shunt conductance per unit length for couplers
 

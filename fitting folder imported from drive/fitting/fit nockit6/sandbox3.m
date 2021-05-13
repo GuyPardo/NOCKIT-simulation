@@ -26,10 +26,10 @@ W=3e-6; % width of primary and secondary transmission lines
 t=8.5e-9; % thickness of WSi (sputtered)
 H=35e-9; % height of dielectric (say, Si - evaporated)
 W_c=200e-9; % width of coupling line
-
+gap_c = 8e-6;
 
 [Y0, v_ph] = get_microstrip_properties(W,t,H);
-[Yc, v_ph_c] = get_microstrip_properties(W_c,t,H);
+[Yc, v_ph_c] = get_CPW_properties(t,Wc,gap_c);
 
 
 % frequency etc.
@@ -152,8 +152,8 @@ beq = [];
 fun = @(x) get_cost_5(G,freq_red, data_dB_red, x);
 fun(x0)
 %%
-[X,costval] = fmincon(fun,x0, A,b,Aeq,beq,lb,ub,[], options)
-%  [X,costval] = fminsearchbnd(fun,x0,lb,ub ,options)
+% [X,costval] = fmincon(fun,x0, A,b,Aeq,beq,lb,ub,[], options)
+ [X,costval] = fminsearchbnd(fun,x0,lb,ub ,options)
 
 %% plot
 % X = [1.6973    2.9982    2.9024  -52.7307];

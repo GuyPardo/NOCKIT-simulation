@@ -33,7 +33,7 @@ t = 8.5e-9; % thickness of metal
 W = 3e-6; % width of main traces
 W_c = 200e-9; % width of couplers
 H = 35e-9; % thickness of dielectric
-gap_c = 5.4e-6; % for coplanar couplers, width of the gap between trace and ground.
+gap_c = 8e-6; % for coplanar couplers, width of the gap between trace and ground.
 addpath(genpath('Z:\Users\Guy\coupling transission lines\repos\NOCKIT-simulation'))
 
 [Y0, v_ph]  = get_microstrip_properties(W,t,H);
