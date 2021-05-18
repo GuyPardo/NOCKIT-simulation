@@ -1,4 +1,4 @@
-function [cost] = get_cost_6(nockit_params,freq,data_dB, x)
+function [cost] = get_cost_6(nockit_params,freq,data_dB, x, ind_vec)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 % tic
@@ -43,7 +43,7 @@ end
    
 % size(trans_dB)
 % size(data_dB)
-    cost = sum(sum(abs(trans_dB(2:4,:) +db_offset - data_dB(2:4,:)).^2));
+    cost = sum(sum(abs(trans_dB(ind_vec,:) +db_offset - data_dB(ind_vec,:)).^2));
    
 %     toc;
 end

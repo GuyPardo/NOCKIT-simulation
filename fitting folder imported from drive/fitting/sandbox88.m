@@ -3,9 +3,19 @@ addpath('')
 
 addpath(genpath('Z:\Users\Guy\coupling transission lines\repos\NOCKIT-simulation'))
 %%
-read_nockit6_data
+
+% read_nockit6_data
+load nockit6_data.mat
+
 %%
  % down sampling
+ 
+ % smooth
+  smooth_num=30;
+for i=1:4
+     data_smooth_mag(i,:) = smooth((abs(data(i,:))),smooth_num );
+end
+ data_smooth_dB = 20*log10(data_smooth_mag);
 res = 201;
 %data_dB_red = nan(2,res);
 freq_red = downsample(freq,res);
@@ -14,7 +24,7 @@ data_dB_red = (downsample(data_smooth_dB', res))';
 
 %% fitting
 
-
+  ind_vec = 3:4;
 
 % geometry: and network structure
 nockit_params.N=31; % number of couplers. (= number of unit cells minus 1) 
@@ -55,8 +65,7 @@ options = optimset('PlotFcns',@optimplotfval, 'Display','iter');
 
 
 %%X = [t,W,Wc,H,gap_c,lam]
-x0 = [1,1,1,1,1,1]; 
-% x0 = [ 1.2627    0.6171    0.6023    1.2998    1.1985    1.2994]
+x0 = [ 0.9575   1.0047  0.9312 1.1149 ,1, 0.8605       ];
 
   lb = [.2, .22, .2,0.2,0.2,.2];
   ub = [2, 2,2,2,2,2];
@@ -67,14 +76,15 @@ Aeq = [];
 beq = [];
 
 %% minimize
-fun = @(x) get_cost_6(nockit_params,freq_red, data_dB_red, x);
+fun = @(x) get_cost_6(nockit_params,freq_red, data_dB_red, x, ind_vec);
 fun(x0)
 %%
 % [X,costval] = fmincon(fun,x0, A,b,Aeq,beq,lb,ub,[], options)
  [X,costval] = fminsearchbnd(fun,x0,lb,ub ,options)
 
 %% plot
-
+%X = [t,W,Wc,H,gap_c,lam]
+% X = [ 0.9575   1.0047  0.9312 1.1149 ,1, 0.8605       ];
 N = nockit_params.N;
 M = nockit_params.M;
 G = change_params(nockit_params,X);
@@ -101,13 +111,13 @@ figure(333); clf;
  grid on; xlabel('freq (Hz)'); ylabel('dB'); title('transmission')
  hold on
   cc = colororder();
-  ind_vec = 2
+
   for i=ind_vec
    
     plot(freq, data_dB(i,:), 'color',cc(i,:), 'linewidth', 2)
   end
 
 for i=ind_vec
- plot(freq, (trans_dB(i:)), 'linewidth',2 ,'linestyle', '--','color',cc(i,:));
+ plot(freq, (trans_dB(i,:)), 'linewidth',2 ,'linestyle', '--','color',cc(i,:));
 end
 

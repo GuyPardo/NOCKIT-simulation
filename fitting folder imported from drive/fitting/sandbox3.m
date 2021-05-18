@@ -5,7 +5,7 @@ addpath(genpath('Z:\Users\Guy\coupling transission lines\repos\NOCKIT-simulation
 
 name = "\Transmission@-40";
 
-lab = true;
+lab = false;
 
 
 if lab
