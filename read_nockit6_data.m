@@ -19,7 +19,7 @@ leg = legend(num2str((1:4)'),"location", "best", "fontsize", 13);
 title(leg, "line")
 
 %%
-smooth_num=30;
+smooth_num=10;
 for i=1:4
      data_smooth_mag(i,:) = smooth((abs(data(i,:))),smooth_num );
 end
