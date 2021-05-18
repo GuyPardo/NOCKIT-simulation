@@ -10,7 +10,11 @@ H = x(1); t = x(2); lam = x(3); W = x(4); Wc = x(5);
 else
     H = x(1); t = x(2); lam = x(3); W = 1; Wc = 1;
 end
-    
+  if x(end)<0
+      db_offset = x(end);
+  else
+      db_offset = -22;
+  end
  
 M = 2;
 N = 30;
@@ -38,7 +42,7 @@ end
    
 % size(trans_dB)
 % size(data_dB)
-    cost = sum(sum(abs(trans_dB(:,:) -22 - data_dB(:,:)).^2));
+    cost = sum(sum(abs(trans_dB(:,:) +db_offset - data_dB(:,:)).^2));
    
 %     toc;
 end

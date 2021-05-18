@@ -5,7 +5,7 @@ addpath(genpath('Z:\Users\Guy\coupling transission lines\repos\NOCKIT-simulation
 
 name = "\Transmission@-40";
 
-lab = true;
+lab = false;
 
 
 if lab
@@ -70,12 +70,12 @@ Yc = 1/Zc;
 N=30; % number of couplers. (= number of unit cells minus 1) 
 M = 2; % number of lines
 L0 = 100e-6; % length of each line segment
-d = 27e-6; % length of each coupler segment
+d = 26e-6; % length of each coupler segment
 
 W=2.3e-6; % width of primary and secondary transmission lines
 t=8e-9; % thickness of WSi (sputtered)
 H=16e-9; % height of dielectric (say, Si - evaporated)
-W_c=300e-9; % width of coupling line
+W_c=280e-9; % width of coupling line
 
 
 [Y0, v_ph] = get_microstrip_properties(W,t,H);
@@ -158,12 +158,12 @@ graph_data = process_graph(G);
 %% config
 % options = optimoptions('fmincon','Display','iter', 'PlotFcn', 'optimplotfval','PlotFcn', 'optimplotfval');
 
-% options = optimoptions('fmincon','Display','iter','Algorithm','sqp', 'PlotFcn', 'optimplotfval','PlotFcn', 'optimplotfval');
+options = optimoptions('fmincon','Display','iter','Algorithm','sqp', 'PlotFcn', 'optimplotfval','PlotFcn', 'optimplotfval');
 % options = optimoptions('fmincon','Display','iter','Algorithm','sqp-legacy', 'PlotFcn', 'optimplotfval','PlotFcn', 'optimplotfval');
 % options = optimoptions('fmincon','Display','iter','Algorithm','interior-point', 'PlotFcn', 'optimplotfval','PlotFcn', 'optimplotfval');
 % options = optimoptions('fmincon','Display','iter','Algorithm','active-set', 'PlotFcn', 'optimplotfval','PlotFcn', 'optimplotfval');
 
-options = optimset('PlotFcns',@optimplotfval, 'Display','iter');
+% options = optimset('PlotFcns',@optimplotfval, 'Display','iter');
 % %    x0 =  [1.99 ,   0.9 ,  0.8, -52];
 % x0 = [1.9935    1.9193    0.8418  -21.9094];
 % % x0 = [1.9, -52]
@@ -179,11 +179,16 @@ x0 = [1,.8,1,1,1,-22];
     x0 = [1.0170    0.7107    0.2524    1.0619    0.9896]
 %  x0 = [1,.8,.25]
  
-  x0 = [1.0163    0.7106    0.2522    1.0612    0.9889];
-  lb = [.6, .6, .1,0.8,0.7];
-%   lb = [.6, .6, .1];
-ub = [1.3, 1.4,2,1.2,1.3];
-% ub = [1.3, 1.4,2];
+%   x0 = [1.0163    0.7106    0.2522    1.0612    0.9889];
+% x0 = [1,.8 , 0.25, 1,1];
+
+x0 = [1,.8 , 0.25, -22];
+x0= [  1.1051    0.7540    0.3074 ];
+
+%   lb = [.6, .6, .1,0.8,0.7];
+  lb = [.6, .6, .1];
+% ub = [1.3, 1.4,2,1.2,1.3];
+ub = [1.3, 1.4,2];
 
 A = [];
 b = [];
@@ -194,8 +199,8 @@ beq = [];
 fun = @(x) get_cost_5(G,freq_red, data_dB_red, x);
 fun(x0)
 %%
-% [X,costval] = fmincon(fun,x0, A,b,Aeq,beq,lb,ub,[], options)
- [X,costval] = fminsearchbnd(fun,x0,lb,ub ,options)
+[X,costval] = fmincon(fun,x0, A,b,Aeq,beq,lb,ub,[], options)
+%  [X,costval] = fminsearchbnd(fun,x0,lb,ub ,options)
 
 %% plot
 % X = [1.6973    2.9982    2.9024  -52.7307];
