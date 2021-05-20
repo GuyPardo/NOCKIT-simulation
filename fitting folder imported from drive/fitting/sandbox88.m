@@ -11,15 +11,18 @@ load nockit6_data.mat
  % down sampling
  
  % smooth
-  smooth_num=30;
+  smooth_num=2;
 for i=1:4
      data_smooth_mag(i,:) = smooth((abs(data(i,:))),smooth_num );
 end
  data_smooth_dB = 20*log10(data_smooth_mag);
-res = 201;
+res = 401;
 %data_dB_red = nan(2,res);
 freq_red = downsample(freq,res);
 data_dB_red = (downsample(data_smooth_dB', res))';
+
+
+plot(freq_red, data_dB_red)
 
 
 %% fitting
@@ -64,11 +67,11 @@ omega= 2*pi*freq;
 options = optimset('PlotFcns',@optimplotfval, 'Display','iter');
 
 
-%%X = [t,W,Wc,H,gap_c,lam]
-x0 = [ 0.9575   1.0047  0.9312 1.1149 ,1, 0.8605       ];
-
-  lb = [.2, .22, .2,0.2,0.2,.2];
-  ub = [2, 2,2,2,2,2];
+%%X = [t,W,Wc,H,lam]
+% x0 = [ 0.9575   1.0047  0.9312 1.1149 ,1, 0.8605       ];
+x0 = [1,1,1,1,1];
+  lb = [.2, .22, .2,0.2,0.2];
+  ub = [2, 2,2,2,2];
     
 A = [];
 b = [];
@@ -85,6 +88,8 @@ fun(x0)
 %% plot
 %X = [t,W,Wc,H,gap_c,lam]
 % X = [ 0.9575   1.0047  0.9312 1.1149 ,1, 0.8605       ];
+X =  [1.0709    1.0232    0.9961    1.0622    0.9548];
+X = [1,1,1,1,1]
 N = nockit_params.N;
 M = nockit_params.M;
 G = change_params(nockit_params,X);
