@@ -19,8 +19,8 @@ d = 27e-6; % length of each coupler segment
 t = 10e-9;
 W = 3e-6;
 W_c = 200e-9;
-H = 16e-9;
-gap_c = 1.4e-6;
+H = 35e-9;
+gap_c = 8e-6;
 addpath(genpath('Z:\Users\Guy\coupling transission lines\repos\NOCKIT-simulation'))
 
 [Y0, v_ph]  = get_microstrip_properties(W,t,H);

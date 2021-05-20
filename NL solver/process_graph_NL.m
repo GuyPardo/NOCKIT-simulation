@@ -1,4 +1,4 @@
-function [graph_data] = process_graph(G)
+function [graph_data] = process_graph_NL(G)
 % written by guy 2021_04_21. pre processing of a directed graph G
 % this function recives a digraph object G and returns a struct graph_data
 % with the following fields:

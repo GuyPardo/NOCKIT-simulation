@@ -1,4 +1,8 @@
+
+
 % sandbox
+
+
 % here we create a nockit2 grpah and solving with the non linear solver
 % 
 clearvars
@@ -18,7 +22,7 @@ gnd_cond = 0; % loss: conductance to ground;
  N_pwrs = 20;
 sig_pwr =  -75; % dbm
 
-iterations = 25;
+iterations = 5;
 
 
 % geometry: and network structure
@@ -164,12 +168,12 @@ G.Edges.BCval(G.findedge(nodes(input_idx(1),1),nodes(input_idx(1),2))) = sig_amp
 % BCval_arr = G.Edges.BCval;
 % %
 
-graph_data = process_graph(G);
+graph_data = process_graph_NL(G);
 
 %% loop on freqs
 trans = zeros(M,length(freq));
 for i = 1:length(freq)
-    [t_edges, r_edges] = solve_graph_non_lin_2(graph_data,freq(i), iterations);
+    [t_edges, r_edges] = solve_graph_NL_envelope(graph_data,freq(i), iterations);
     
     % read solution: this part is specific to the NOCKIT geometry 
  t = reshape(t_edges(G.findedge(nodes(:,1:N+1) ,nodes(:,2:N+2) )), M,N+1);

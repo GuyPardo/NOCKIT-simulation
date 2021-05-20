@@ -1,7 +1,7 @@
 function [G] = get_nockit_graph(nockit_params)
 %GET_NOCKIT_GRAPH 
 %   nockit_params should be a struct with fields
-%           N,M,L0,d,t,W,W_c,H,gap_c, input_idx
+%           N,M,L0,d,t,W,W_c,H,gap_c, gnd_cond, input_idx
 
 
 % read input:
@@ -17,6 +17,7 @@ W = nockit_params.W;
 W_c = nockit_params.W_c;
 H = nockit_params.H;
 input_idx = nockit_params.input_idx;
+gnd_cond = nockit_params.gnd_cond;
 
 if coplanar_couplers
     gap_c = nockit_params.gap_c;
@@ -57,6 +58,7 @@ G = G.addedge(s,t,w);
 
 edge_num = G.numedges;
 nodes_num = G.numnodes;
+
 
 
 % define edges attributres; pahe velocity, length and characteristic

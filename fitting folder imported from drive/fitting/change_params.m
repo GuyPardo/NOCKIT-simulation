@@ -12,12 +12,12 @@ nockit_params_new.t = nockit_params.t*x(1); % thickness of metal
 nockit_params_new.W = nockit_params.W*x(2) ; % width of main traces
 nockit_params_new.W_c = nockit_params.W_c*x(3); % width of couplers
 nockit_params_new.H = nockit_params.H*x(4); % thickness of dielectric
-nockit_params_new.gap_c = nockit_params.gap_c*x(5); % for coplanar couplers, width of the gap between trace and ground.
+%nockit_params_new.gap_c = nockit_params.gap_c*x(5); % for coplanar couplers, width of the gap between trace and ground.
 nockit_params_new.input_idx =nockit_params.input_idx;
 
 G = get_nockit_graph(nockit_params_new);
 
- lam = x(6); %inductance factor
+ lam = x(5); %inductance factor
  
  G.Edges.v_ph(G.Edges.Weight==2) = G.Edges.v_ph(G.Edges.Weight==2)/sqrt(lam);
 G.Edges.v_ph(G.Edges.Weight==1) = G.Edges.v_ph(G.Edges.Weight==1)/sqrt(lam);
