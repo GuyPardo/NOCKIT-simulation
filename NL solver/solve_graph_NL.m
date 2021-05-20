@@ -1,4 +1,4 @@
-function [t_edges, r_edges] = solve_graph(graph_data,freq)
+function [t_edges, r_edges] = solve_graph_NL(graph_data,freq)
 % written by Guy 2021_04_21
 % solves for a given graph  and a given frequency
 % 

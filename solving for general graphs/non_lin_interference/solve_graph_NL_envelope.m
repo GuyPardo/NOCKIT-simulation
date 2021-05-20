@@ -1,4 +1,4 @@
-function [t_edges, r_edges] = solve_graph_non_lin_2(graph_data,freq, iterations,plot_iterations)
+function [t_edges, r_edges] = solve_graph_NL_envelope(graph_data,freq, iterations,plot_iterations)
 if nargin<4
     plot_iterations=false;
 end
@@ -18,7 +18,7 @@ end
     k_arr = 2*pi*freq*(v_ph_arr).^-1;
 
      % solve linearly:
- [t,r] = solve_graph(graph_data, freq);
+ [t,r] = solve_graph_NL(graph_data, freq);
  
  for i=1:iterations   
    
@@ -35,7 +35,7 @@ end
  graph_data.L_arr = L_arr.*(1+(I_avr./I_star_arr).^2);
 
  %solve again
- [t,r] = solve_graph(graph_data, freq);
+ [t,r] = solve_graph_NL(graph_data, freq);
  
  %calculate difference:
  
