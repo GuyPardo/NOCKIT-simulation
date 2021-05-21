@@ -44,14 +44,14 @@ end
  diff_t = t-t_previous;
  
  if plot_iterations
-     figure(54)
-    colororder(jet(iterations))
-    subplot(2,1,1)
-     plot(Iin)
-     hold on
-     subplot(2,1,2)
-     plot(Iout)
-     hold on
+%      figure(54)
+%     colororder(jet(iterations))
+%     subplot(2,1,1)
+%      plot(Iin)
+%      hold on
+%      subplot(2,1,2)
+%      plot(Iout)
+%      hold on
  end
  
  diff_all(i) = sum(diff_r) + sum(diff_t);
