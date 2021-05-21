@@ -6,13 +6,16 @@ X = [ 1.0709    1.0232    0.9961    1.0622    0.9548];
 
 nockit_params = get_nockit6_params(X);
 input_idx= 1;
-sig_pwr= linspace(-80,-35,20); %dBm % for nockit6 params, critical power is ~-55 for couplers, and -32 for main lines
+sig_pwr= linspace(-80,-35,10); %dBm % for nockit6 params, critical power is ~-55 for couplers, and -32 for main lines
 iterations1 = 2*logspace(0,1,length(sig_pwr));
-iterations2 = 3*logspace(0,2,length(sig_pwr));
+iterations2 = 1*logspace(0,2,length(sig_pwr));
 
 iterations(1:(length(sig_pwr)-6)) = iterations1(1:(length(sig_pwr)-6));
 iterations((length(sig_pwr)-5):length(sig_pwr)) = iterations2((length(sig_pwr)-5):length(sig_pwr));
 % iterations
+average = ones(size(iterations));
+average(iterations>30) = 10;
+
 
 % critical_pwr = 10*log10((derived_params.Ic)^2/derived_params.Y0/1e-3);
 % critical_pwr_c = 10*log10((derived_params.Icc)^2/derived_params.Y0/1e-3);
@@ -30,7 +33,7 @@ for pwr_idx = 1:length(sig_pwr)
     txt_str = sprintf("calculating pwr #%d: %g dBm...", pwr_idx, sig_pwr(pwr_idx));
     disp(txt_str);
     for i=1:length(freq)
-       [t_edges, r_edges] = solve_graph_NL_envelope(graph_data,freq(i), iterations(pwr_idx));
+       [t_edges, r_edges] = solve_graph_NL_envelope(graph_data,freq(i), iterations(pwr_idx), average(pwr_idx));
 
        [t,r]   = read_nockit_solution(nockit_params, G,t_edges,r_edges);
 
