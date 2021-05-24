@@ -46,8 +46,7 @@ end
     
  v_ph_arr = 1./sqrt(L_arr.*complex_C_arr);
  Y_arr = sqrt(complex_C_arr./L_arr);
- k_arr = 2*pi*freq*(v_ph_arr).^-1;   
- 
+    
  %solve again
  [t,r] = solve_graph_NL(graph_data, freq);
  

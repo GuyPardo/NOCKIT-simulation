@@ -17,7 +17,7 @@ W = nockit_params.W;
 W_c = nockit_params.W_c;
 H = nockit_params.H;
 
-if isfield(nockit_params, 'gap_c')
+if isfield(nockit_params, 'gnd_cond')
    gnd_cond = nockit_params.gnd_cond;
 else
     gnd_cond=0;
