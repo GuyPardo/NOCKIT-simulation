@@ -6,7 +6,8 @@ X = [ 1.0709    1.0232    0.9961    1.0622    0.9548];
 
 nockit_params = get_nockit6_params(X);
 input_idx= 4;
-sig_pwr= linspace(50,-35, 20); %dBm % for nockit6 params, critical power is ~-55 for couplers, and -32 for main lines
+sig_pwr= linspace(-40,-30, 11); %dBm % for nockit6 params, critical power is ~-55 for couplers, and -32 for main lines
+% sig_pwr= -30;
 iterations1 = 2*logspace(0,1,length(sig_pwr));
 iterations2 = 3*logspace(0,2,length(sig_pwr));
 nockit_params.gnd_cond = 20;
@@ -16,7 +17,8 @@ nockit_params.gnd_cond = 20;
 % critical_pwr = 10*log10((derived_params.Ic)^2/derived_params.Y0/1e-3);
 % critical_pwr_c = 10*log10((derived_params.Icc)^2/derived_params.Y0/1e-3);
 
-iterations  = linspace(1,30,length(sig_pwr));
+iterations  = linspace(20,30,length(sig_pwr));
+% iterations = 30;
 plot_iter = false;
 %%
 %power loop:
@@ -60,7 +62,7 @@ plot(freq,plt_mat, 'linewidth', 2); grid on
  cmap = colormap(jet(length(sig_pwr))) ; %Create Colormap
  colororder(cmap);
  cbh = colorbar ; %Create Colorbar
- N_ticks = 10;
+ N_ticks = 11;
  cbh.Ticks = linspace(0, 1,N_ticks) ; 
  cbh.TickLabels = num2cell(linspace(min(sig_pwr), max(sig_pwr),N_ticks)) ;    %Replace the labels of these 8 ticks with the numbers 1 to 8
 cbh.Label.String = "signal power (dBm)";
