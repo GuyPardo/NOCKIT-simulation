@@ -11,12 +11,13 @@ load nockit6_data.mat
  % down sampling
  
  % smooth
-  smooth_num=2;
+  smooth_num=1;
 for i=1:4
      data_smooth_mag(i,:) = smooth((abs(data(i,:))),smooth_num );
 end
  data_smooth_dB = 20*log10(data_smooth_mag);
-res = 401;
+% res = 401;
+res = length(freq);
 %data_dB_red = nan(2,res);
 freq_red = downsample(freq,res);
 data_dB_red = (downsample(data_smooth_dB', res))';
@@ -70,6 +71,7 @@ options = optimset('PlotFcns',@optimplotfval, 'Display','iter');
 %%X = [t,W,Wc,H,lam]
 % x0 = [ 0.9575   1.0047  0.9312 1.1149 ,1, 0.8605       ];
 x0 = [1,1,1,1,1];
+% x0=[1.0709    1.0232    0.9961    1.0622    0.9548];
   lb = [.2, .22, .2,0.2,0.2];
   ub = [2, 2,2,2,2];
     
@@ -87,9 +89,10 @@ fun(x0)
 
 %% plot
 %X = [t,W,Wc,H,gap_c,lam]
-% X = [ 0.9575   1.0047  0.9312 1.1149 ,1, 0.8605       ];
-X =  [1.0709    1.0232    0.9961    1.0622    0.9548];
-X = [1,1,1,1,1]
+% % X = [ 0.9575   1.0047  0.9312 1.1149 ,1, 0.8605       ];
+% X =  [1.0709    1.0232    0.9961    1.0622    0.9548];
+% X = [1,1,1,1,1]
+
 N = nockit_params.N;
 M = nockit_params.M;
 G = change_params(nockit_params,X);
@@ -104,7 +107,7 @@ for i=1:length(freq)
     
   
     
-    [ref(:,i),trans(:,i)] = read_nockit_solution(nockit_params, G, t_edges, r_edges);
+    [trans(:,i),ref(:,i)] = read_nockit_solution(nockit_params, G, t_edges, r_edges);
     
 end
    trans_dB = 20*log10(abs(trans)) - 51;
@@ -119,7 +122,7 @@ figure(333); clf;
 
   for i=ind_vec
    
-    plot(freq, data_dB(i,:), 'color',cc(i,:), 'linewidth', 2)
+    plot(freq_red, data_dB_red(i,:), 'color',cc(i,:), 'linewidth', 2)
   end
 
 for i=ind_vec

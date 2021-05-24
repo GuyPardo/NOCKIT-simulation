@@ -36,7 +36,7 @@ for i=1:length(freq)
     
   % read solution: (this part is specific to the NOCKIT geometry)   
     %ref(:,i) = r_edges(G.findedge(nodes(:,1),nodes(:,2)));
-   [ref(:,i),trans(:,i)] = read_nockit_solution(nockit_params, G, t_edges, r_edges);
+   [trans(:,i),ref(:,i)] = read_nockit_solution(nockit_params, G, t_edges, r_edges);
     
 end
    trans_dB = 20*log10(abs(trans));

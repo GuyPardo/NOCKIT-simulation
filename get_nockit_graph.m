@@ -17,7 +17,10 @@ W = nockit_params.W;
 W_c = nockit_params.W_c;
 H = nockit_params.H;
 input_idx = nockit_params.input_idx;
-gnd_cond = nockit_params.gnd_cond;
+
+if isfield(nockit_params, 'gnc_cond')
+    gnd_cond = nockit_params.gnd_cond;
+end
 
 if coplanar_couplers
     gap_c = nockit_params.gap_c;
