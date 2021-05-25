@@ -1,4 +1,4 @@
-function [] = plt_nockit_current(G,coordinates,t_edges,r_edges,freq, dB)
+function [] = plt_nockit_voltage(G,coordinates,t_edges,r_edges,freq, dB,pwr)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 res = 60;
@@ -6,7 +6,7 @@ if nargin<6
     dB = false;
 end
 
-input_pwr = G.
+
 Y = sqrt(G.Edges.C./G.Edges.L);
 v_ph = (G.Edges.C.*G.Edges.L).^-0.5;
 K = 2*pi*freq./v_ph;
@@ -23,7 +23,6 @@ end_nodes = G.Edges.EndNodes;
 Weight = G.Edges.Weight;
 for i = 1:G.numedges
 %     l= linspace(0,G.Edges.len(i),res); % coordinate along edge
-
     x_start = coordinates(1,end_nodes(i,1));
     y_start = coordinates(2,end_nodes(i,1));
     x_end = coordinates(1,end_nodes(i,2));
@@ -35,11 +34,11 @@ for i = 1:G.numedges
     xx = sqrt((x - x_start).^2 + (y-y_start).^2); %% coordinate along line
     z = zeros(size(x));
 
-    current = Y(i)*(t_edges(i)*exp(1i*K(i)*xx)   -  r_edges(i)*exp(-1i*K(i)*xx));
+    voltage = (t_edges(i)*exp(1i*K(i)*xx)   +  r_edges(i)*exp(-1i*K(i)*xx));
     if dB
-        col = 10*log10(abs(real(current)));
+        col = 10*log10(abs(real(voltage)));
     else
-        col = real(current);
+        col = real(voltage);
     end
     
    if Weight(i)==1
@@ -67,16 +66,19 @@ colormap(ax2, 'redblue');
 % % set([ax1,ax2],'Position',[.17 .11 .685 .815]);
 cb1 = colorbar(ax1,'Position',[.09 .11 .0475 .815]  );
 cb2 = colorbar(ax2,'Position',[.82 .11 .0475 .815]);
-cb1.Label.String = 'coupler current (A)';
+cb1.Label.String = 'coupler voltage (V)';
 cb1.FontSize = 14;
-cb2.Label.String = 'traces current (A)';
+cb2.Label.String = 'traces voltage (V)';
 cb2.FontSize = 14;
+
+title_str = sprintf("signed voltage propagation @%d GHz, %d dBm", freq*1e-9, pwr);
+title(ax1, title_str); set(ax1,'Color','none');
+
 
 %  colormap jet;
 % 
 %  colorbar 
-title_str = sprintf("signed current propagation @%d GHz", freq*1e-9);
-title(ax1, title_str);set(ax1,'Color','none');
+
 
 end
 

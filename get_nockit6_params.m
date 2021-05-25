@@ -9,7 +9,7 @@ nockit_params.d = 27e-6; % length of each coupler segment
 
 nockit_params.W=3e-6; % width of primary and secondary transmission lines
 nockit_params.t=8.5e-9; % thickness of WSi (sputtered)
-nockit_params.H=35e-9; % height of dielectric (say, Si - evaporated)
+nockit_params.H=29e-9; % height of dielectric (say, Si - evaporated)
 nockit_params.W_c=200e-9; % width of coupling line
 nockit_params.gap_c = 8e-6;
 nockit_params.gnd_cond=0;

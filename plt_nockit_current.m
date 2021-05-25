@@ -1,4 +1,4 @@
-function [] = plt_nockit_current(G,coordinates,t_edges,r_edges,freq, dB)
+function [] = plt_nockit_current(G,coordinates,t_edges,r_edges,freq, dB,pwr)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 res = 60;
@@ -19,13 +19,15 @@ hold on
 ax2 = axes;
 hold on
 
-
+end_nodes = G.Edges.EndNodes;
+Weight = G.Edges.Weight;
 for i = 1:G.numedges
 %     l= linspace(0,G.Edges.len(i),res); % coordinate along edge
-    x_start = coordinates(1,G.Edges.EndNodes(i,1));
-    y_start = coordinates(2,G.Edges.EndNodes(i,1));
-    x_end = coordinates(1,G.Edges.EndNodes(i,2));
-    y_end = coordinates(2,G.Edges.EndNodes(i,2));
+
+    x_start = coordinates(1,end_nodes(i,1));
+    y_start = coordinates(2,end_nodes(i,1));
+    x_end = coordinates(1,end_nodes(i,2));
+    y_end = coordinates(2,end_nodes(i,2));
     
 
     x = linspace(x_start, x_end, res);
@@ -40,11 +42,11 @@ for i = 1:G.numedges
         col = real(current);
     end
     
-   if G.Edges.Weight(i)==1
+   if Weight(i)==1
     surface(ax1,[x;x],[y;y],[col;col],'facecol','no','edgecol','interp','linew',4);
 
    end
-   if G.Edges.Weight(i)==2
+   if Weight(i)==2
     surface(ax2,[x;x],[y;y],[col;col],'facecol','no','edgecol','interp','linew',8);
    end
    
@@ -56,12 +58,12 @@ linkaxes([ax1,ax2])
 ax2.Visible = 'off';
 ax2.XTick = [];
 ax2.YTick = [];
-ax1.Visible = 'off';
+% ax1.Visible = 'off';
 ax1.XTick = [];
 ax1.YTick = [];
 
-colormap(ax1,'copper');
-colormap(ax2, 'winter');
+colormap(ax1,'redblue');
+colormap(ax2, 'redblue');
 % % set([ax1,ax2],'Position',[.17 .11 .685 .815]);
 cb1 = colorbar(ax1,'Position',[.09 .11 .0475 .815]  );
 cb2 = colorbar(ax2,'Position',[.82 .11 .0475 .815]);
@@ -73,7 +75,8 @@ cb2.FontSize = 14;
 %  colormap jet;
 % 
 %  colorbar 
-
+title_str = sprintf("signed current propagation @%d GHz, %d dBm", freq*1e-9, pwr);
+title(ax1, title_str);set(ax1,'Color','none');
 
 end
 
