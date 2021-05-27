@@ -38,6 +38,8 @@ end
  Iin  = real((t-r).*Y_arr);
  Iout = real(Y_arr.*(t.*exp(1i*k_arr.*Len_arr)  - r.*exp(-1i*k_arr.*Len_arr)));
  I_avr = (Iin+Iout)/2;
+ 
+ I_avr = real(Y_arr.*(t.*exp(1i*k_arr.*0.5*Len_arr)  - r.*exp(-1i*k_arr.*0.5*Len_arr)));
 %   I = real((t-r).*Y_arr);
  
  % correct L:

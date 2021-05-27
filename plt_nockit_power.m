@@ -6,7 +6,7 @@ if nargin<6
     dB = false;
 end
 
-
+pwr_W = 10^(pwr-3);
 Y = sqrt(G.Edges.C./G.Edges.L);
 v_ph = (G.Edges.C.*G.Edges.L).^-0.5;
 K = 2*pi*freq./v_ph;
@@ -38,6 +38,7 @@ for i = 1:G.numedges
     current = Y(i)*(t_edges(i)*exp(1i*K(i)*xx)   -  r_edges(i)*exp(-1i*K(i)*xx));
     
     power = 0.5*real(voltage.*conj(current));
+
     if dB
         col = 10*log10(abs(power));
     else
@@ -64,7 +65,10 @@ ax2.YTick = [];
 ax1.XTick = [];
 ax1.YTick = [];
 
-colormap(ax1,'redblue');
+limits = max(abs(ax1.ZLim) );
+caxis(ax1, [-limits, limits])
+
+    colormap(ax1,'redblue');
 colormap(ax2, 'jet');
 % % set([ax1,ax2],'Position',[.17 .11 .685 .815]);
 cb1 = colorbar(ax1,'Position',[.09 .11 .0475 .815]  );

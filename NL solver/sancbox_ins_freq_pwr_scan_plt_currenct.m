@@ -11,15 +11,15 @@ X = [ 1.0709    1.0232    0.9961    1.0622    0.9548];
 
 nockit_params = get_nockit6_params(X);
 nockit_params.gnd_cond = 0;
-input_idx= 4;
-sig_pwr= -33; %dBm % for nockit6 params, critical power is ~-55 for couplers, and -32 for main lines
+input_idx= 1;
+sig_pwr= -32; %dBm % for nockit6 params, critical power is ~-55 for couplers, and -32 for main lines
 % iterations1 = 2*logspace(0,1,length(sig_pwr));
 % iterations2 = 3*logspace(0,2,length(sig_pwr));
 
 % iterations(1:(length(sig_pwr)-6)) = iterations1(1:(length(sig_pwr)-6));
 % iterations((length(sig_pwr)-5):length(sig_pwr)) = iterations2((length(sig_pwr)-5):length(sig_pwr));
 % iterations
-iterations = [150]*ones(size(sig_pwr));
+iterations = [60]*ones(size(sig_pwr));
 % critical_pwr = 10*log10((derived_params.Ic)^2/derived_params.Y0/1e-3);
 % critical_pwr_c = 10*log10((derived_params.Icc)^2/derived_params.Y0/1e-3);
 
@@ -39,12 +39,12 @@ for pwr_idx = 1:length(sig_pwr)
     [t_edges, r_edges] = solve_graph_NL_envelope(graph_data,freq, iterations(pwr_idx), true);
 coordinates = get_nockit_coordinates(G,nockit_params);
 
-figure(501)
-plt_network_power(G,coordinates, t_edges,r_edges);
-figure(502)
-plt_nockit_current(G,coordinates, t_edges,r_edges,freq, false,sig_pwr(pwr_idx));
-figure(503)
-plt_nockit_voltage(G,coordinates, t_edges,r_edges,freq,false,sig_pwr(pwr_idx));
+% figure(501)
+% plt_network_power(G,coordinates, t_edges,r_edges);
+% figure(502)
+% plt_nockit_current(G,coordinates, t_edges,r_edges,freq, false,sig_pwr(pwr_idx));
+% figure(503)
+% plt_nockit_voltage(G,coordinates, t_edges,r_edges,freq,false,sig_pwr(pwr_idx));
 
 figure(504)
 plt_nockit_power(G,coordinates, t_edges,r_edges,freq,false, sig_pwr(pwr_idx));

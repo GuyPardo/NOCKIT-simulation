@@ -6,7 +6,7 @@ X = [ 1.0709    1.0232    0.9961    1.0622    0.9548];
 
 nockit_params = get_nockit6_params(X);
 input_idx= 1;
-sig_pwr= linspace(-80,-35,20); %dBm % for nockit6 params, critical power is ~-55 for couplers, and -32 for main lines
+sig_pwr= linspace(-50,20); %dBm % for nockit6 params, critical power is ~-55 for couplers, and -32 for main lines
 iterations1 = 2*logspace(0,1,length(sig_pwr));
 iterations2 = 3*logspace(0,2,length(sig_pwr));
 
@@ -30,7 +30,7 @@ for pwr_idx = 1:length(sig_pwr)
     txt_str = sprintf("calculating pwr #%d: %g dBm...", pwr_idx, sig_pwr(pwr_idx));
     disp(txt_str);
     for i=1:length(freq)
-       [t_edges, r_edges] = solve_graph_NL_envelope(graph_data,freq(i), iterations(pwr_idx));
+       [t_edges, r_edges] = solve_graph_NL_envelope(graph_data,freq(i), iterations(pwr_idx), true);
 
        [t,r]   = read_nockit_solution(nockit_params, G,t_edges,r_edges);
 
@@ -47,7 +47,7 @@ trans_dB_norm = trans_dB - repmat(trans_dB(1,:,:), length(sig_pwr),1,1);
 %% Plot
 
 
-output_idx = 1; 
+output_idx = 4; 
 clear plt_mat
 plt_mat(:,:) = trans_dB(:,output_idx,:);
 
@@ -59,7 +59,7 @@ plot(freq,plt_mat, 'linewidth', 2); grid on
  cmap = colormap(jet(length(sig_pwr))) ; %Create Colormap
  colororder(cmap);
  cbh = colorbar ; %Create Colorbar
- N_ticks = 10;
+ N_ticks = 6;
  cbh.Ticks = linspace(0, 1,N_ticks) ; 
  cbh.TickLabels = num2cell(linspace(min(sig_pwr), max(sig_pwr),N_ticks)) ;    %Replace the labels of these 8 ticks with the numbers 1 to 8
 cbh.Label.String = "signal power (dBm)";
