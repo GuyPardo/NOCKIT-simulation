@@ -25,7 +25,7 @@ for i=1:length(freq_red)
     [trans(:,i), ~] = read_nockit_solution(nockit_params, G, t_edges, r_edges);
     
 end
-%%fff
+%%
    trans_dB = 20*log10(abs(trans));
    trans_mag2 = abs(trans);
    data_mag2 = abs(data).*(10^(+2.1/2));
