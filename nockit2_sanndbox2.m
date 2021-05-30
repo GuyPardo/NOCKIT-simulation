@@ -2,8 +2,8 @@
 
 %load('C:\Users\guypa\Google Drive\LIMUDIM\Lab_research\NOCKIT_new_folder\data\NOCKIT5_2traces_data.mat')
 load NOCKIT5_2traces_data
-N_downsample = 201;
-N_downsample = length(freq);
+N_downsample = 401;
+% N_downsample = length(freq);
 data_red = downsample(data,N_downsample);
 data_dB_red = 20*log10(abs(data_red));
 freq_red = downsample(freq,N_downsample);
@@ -18,7 +18,7 @@ L0 = 100e-6; % length of each line segment
 d = 27e-6; % length of each coupler segment
 t = 9e-9;
 W = 2.3e-6;
-W_c = 300e-9;
+W_c = 200e-9;
 H = 16e-9;
 
 
