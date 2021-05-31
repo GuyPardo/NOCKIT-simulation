@@ -73,9 +73,9 @@ colormap(ax2, 'jet');
 % % set([ax1,ax2],'Position',[.17 .11 .685 .815]);
 cb1 = colorbar(ax1,'Position',[.12 .11 .0475 .815]  );
 cb2 = colorbar(ax2,'Position',[.85 .11 .0475 .815]);
-cb1.Label.String = 'couplers power (W)';
+cb1.Label.String = 'Couplers power [a.u.]';
 cb1.Label.FontSize = 14;
-cb2.Label.String = 'traces power (W)';
+cb2.Label.String = 'Traces power [a.u.]';
 cb2.Label.FontSize = 14;
 
 title_str = sprintf("signed power propagation @%01g GHz, %d dBm", freq*1e-9, pwr);
@@ -89,7 +89,7 @@ set(ax2, 'xlim', [0,32*100*1e-6])
  set(ax1, 'ylim', [0,1.62e-4])
 set(ax2, 'ylim',  [0,1.62e-4])
 
-ax1.XLabel.String = 'position along lines (m)';
+ax1.XLabel.String = 'Position along lines (m)';
 ax1.XLabel.FontSize = 12;
 %  colormap jet;
 % 
