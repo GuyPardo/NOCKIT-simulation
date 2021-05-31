@@ -6,7 +6,7 @@ if nargin<6
     dB = false;
 end
 
-pwr_W = 10^(pwr-3);
+pwr_W = 10^((pwr-30)/10);
 Y = sqrt(G.Edges.C./G.Edges.L);
 v_ph = (G.Edges.C.*G.Edges.L).^-0.5;
 K = 2*pi*freq./v_ph;
@@ -42,7 +42,7 @@ for i = 1:G.numedges
     if dB
         col = 10*log10(abs(power));
     else
-        col = power;
+        col = power./pwr_W;
     end
     
    if Weight(i)==1

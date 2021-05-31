@@ -50,7 +50,7 @@ Ic = 60e-6*(t/6e-9)*(W/2.3e-6); % % from mikita measurement
 % Icc = 0.0002*t_new/0.00000001*W_c_new/0.000001; % samuel's spreadsheet formula
 Icc = 60e-6*(t/6e-9)*(W_c/2.3e-6); % from mikita measurement
 
-sig_amp = sqrt(1/Y0*10^((sig_pwr/10) - 3)); % in Volts
+sig_amp = sqrt(2/Y0*10^((sig_pwr/10) - 3)); % in Volts % the factor of 2 is rms
 
 % build graph
 
