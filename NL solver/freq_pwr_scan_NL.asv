@@ -1,17 +1,19 @@
-clearvars
 %%config
 
-freq = linspace(3,9,51)*1e9;
- 
+freq = linspace(3,9,101)*1e9;
+
 % X = []
 X = [ 1.0709    1.0232    0.9961    1.0622    0.9548]; % from fit
 
 nockit_params = get_nockit6_params(X);
-nockit_params.gnd.cond = 1;
-input_idx= 4;
-sig_pwr= -90; %dBm % for nockit6 params, critical power is ~-55 for couplers, and -32 for main lines
+input_idx= 1;
+sig_pwr= linspace(-50,20); %dBm % for nockit6 params, critical power is ~-55 for couplers, and -32 for main lines
+iterations1 = 2*logspace(0,1,length(sig_pwr));
+iterations2 = 3*logspace(0,2,length(sig_pwr));
 
- iterations = 2*ones(length(sig_pwr));
+iterations(1:(length(sig_pwr)-6)) = iterations1(1:(length(sig_pwr)-6));
+iterations((length(sig_pwr)-5):length(sig_pwr)) = iterations2((length(sig_pwr)-5):length(sig_pwr));
+% iterations
 
 % critical_pwr = 10*log10((derived_params.Ic)^2/derived_params.Y0/1e-3);
 % critical_pwr_c = 10*log10((derived_params.Icc)^2/derived_params.Y0/1e-3);
@@ -28,8 +30,6 @@ for pwr_idx = 1:length(sig_pwr)
     
     txt_str = sprintf("calculating pwr #%d: %g dBm...", pwr_idx, sig_pwr(pwr_idx));
     disp(txt_str);
-    
-    % loop on frequency
     for i=1:length(freq)
        [t_edges, r_edges] = solve_graph_NL_envelope(graph_data,freq(i), iterations(pwr_idx), true);
 

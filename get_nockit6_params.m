@@ -12,7 +12,7 @@ nockit_params.t=8.5e-9; % thickness of WSi (sputtered)
 nockit_params.H=29e-9; % height of dielectric (say, Si - evaporated)
 nockit_params.W_c=200e-9; % width of coupling line
 nockit_params.gap_c = 8e-6;
-nockit_params.gnd_cond=0;
+nockit_params.gnd_cond=0; % loss : conductace to ground per unit length, main lines.
 
 if nargin>0
     nockit_params.t = nockit_params.t*X(1);
