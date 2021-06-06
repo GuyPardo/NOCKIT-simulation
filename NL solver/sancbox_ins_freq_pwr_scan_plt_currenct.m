@@ -10,7 +10,7 @@ freq = [8.5]*1e9;
 X = [ 1.0709    1.0232    0.9961    1.0622    0.9548];
 
 nockit_params = get_nockit6_params(X);
-nockit_params.gnd_cond = 0;
+nockit_params.gnd_cond = 1;
 input_idx= 4;
 sig_pwr= -40; %dBm % for nockit6 params, critical power is ~-55 for couplers, and -32 for main lines
 % iterations1 = 2*logspace(0,1,length(sig_pwr));
@@ -52,3 +52,6 @@ plt_nockit_power(G,coordinates, t_edges,r_edges,freq,false, sig_pwr(pwr_idx));
 end
 disp("pwr scan finished")
 toc
+
+
+%%

@@ -24,7 +24,7 @@ L = 100e-6; % length of each unit cell along main lines (m)
 d = 27e-6; % length of each coupling segment (m)
 N=32; % number of unit cells
 M =7; % number of lines
-idx_of_input_lines = [1,4];
+idx_of_input_lines = [4];
 if any(idx_of_input_lines > M)
     error("idx_of_imput_line greater than number of lines")
 end

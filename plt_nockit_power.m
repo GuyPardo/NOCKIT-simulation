@@ -42,7 +42,7 @@ for i = 1:G.numedges
     if dB
         col = 10*log10(abs(power));
     else
-        col = power./pwr_W;
+        col = power/pwr_W;
     end
     
    if Weight(i)==1
@@ -95,6 +95,7 @@ ax1.XLabel.FontSize = 12;
 % 
 %  colorbar 
 
-
+ax1.ZLim
+ax2.ZLim
 end
 
