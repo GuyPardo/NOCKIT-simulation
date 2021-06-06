@@ -64,7 +64,7 @@ ax2.YTick = [];
 % ax1.Visible = 'off';
 % ax1.XTick = [];
 ax1.YTick = [];
-% define limits by hand: for paper plots at -90 and -40, 8.5GHz, no loss.
+% define limits by hand: for paper plots at -
 ZLim1 =  [-0.0326    0.0326]; 
 ZLim2 = [ -0.0044  1.1032];
 
