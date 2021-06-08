@@ -12,7 +12,7 @@ X = [ 1.0709    1.0232    0.9961    1.0622    0.9548];
 nockit_params = get_nockit6_params(X);
 nockit_params.gnd_cond = 0;
 input_idx= 4;
-sig_pwr= -90; %dBm % for nockit6 params, critical power is ~-55 for couplers, and -32 for main lines
+sig_pwr= -40; %dBm % for nockit6 params, critical power is ~-55 for couplers, and -32 for main lines
 % iterations1 = 2*logspace(0,1,length(sig_pwr));
 % iterations2 = 3*logspace(0,2,length(sig_pwr));
 
