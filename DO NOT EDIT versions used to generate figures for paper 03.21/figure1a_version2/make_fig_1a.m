@@ -5,7 +5,7 @@ freq_red = downsample(freq,401);
 % X = [t,W,Wc,H,lam]
 
 X = [0.8341    0.9311    1.2711     1.0139    0.6633]; % latest fit result as of 30.5.21
-
+% X = [1,1,1,1,.6]
 get_nockit2_params;
 
 G = change_params(nockit_params,X);

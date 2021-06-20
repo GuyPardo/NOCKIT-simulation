@@ -77,8 +77,8 @@ beq = [];
 fun = @(x) get_cost_22(nockit_params,freq_red, data_dB_red, x, ind_vec);
 fun(x0)
 %%
-[X,costval] = fmincon(fun,x0, A,b,Aeq,beq,lb,ub,[], options)
-%  [X,costval] = fminsearchbnd(fun,x0,lb,ub ,options)
+% [X,costval] = fmincon(fun,x0, A,b,Aeq,beq,lb,ub,[], options)
+ [X,costval] = fminsearchbnd(fun,x0,lb,ub ,options)
 
 %% plot
 %X = [t,W,Wc,H,lam]
@@ -94,6 +94,8 @@ fun(x0)
 %    X = [0.6316    0.7151    0.9981    2.2361    0.5197]
 %    X = [0.8341    0.9311    1.2711    2.2179    0.6633] % very nice
 % X = [0.3661    1.5997    2.1244    1.8366    0.2278]
+% X = [  0.8670    0.8932    1.2340    1.0613    0.7141];
+X  =  [ 0.9299    1.1904    1.5986    1.6693    1.0784];
 N = nockit_params.N;
 M = nockit_params.M;
 G = change_params(nockit_params,X);
