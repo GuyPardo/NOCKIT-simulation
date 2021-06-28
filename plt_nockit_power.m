@@ -1,7 +1,7 @@
 function [] = plt_nockit_power(G,coordinates,t_edges,r_edges,freq, dB,pwr)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
-res = 60;
+res = 100;
 if nargin<6
     dB = false;
 end

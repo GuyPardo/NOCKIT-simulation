@@ -58,7 +58,7 @@ ax2.Visible = 'off';
 ax2.XTick = [];
 ax2.YTick = [];
 % ax1.Visible = 'off';
-%ax1.XTick = [];
+ax1.XTick = [];
 ax1.YTick = [];
 
 colormap(ax1,'redblue');

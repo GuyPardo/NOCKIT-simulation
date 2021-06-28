@@ -59,24 +59,43 @@ ax2.Visible = 'off';
 ax2.XTick = [];
 ax2.YTick = [];
 % ax1.Visible = 'off';
-ax1.XTick = [];
+% ax1.XTick = [];
 ax1.YTick = [];
 
 colormap(ax1,'redblue');
 colormap(ax2, 'redblue');
-% % set([ax1,ax2],'Position',[.17 .11 .685 .815]);
-cb1 = colorbar(ax1,'Position',[.09 .11 .0475 .815]  );
-cb2 = colorbar(ax2,'Position',[.82 .11 .0475 .815]);
-cb1.Label.String = 'coupler current (A)';
-cb1.FontSize = 14;
-cb2.Label.String = 'traces current (A)';
-cb2.FontSize = 14;
+% % % set([ax1,ax2],'Position',[.17 .11 .685 .815]);
+% cb1 = colorbar(ax1,'Position',[.09 .11 .0475 .815]  );
+% cb2 = colorbar(ax2,'Position',[.82 .11 .0475 .815]);
+% cb1.Label.String = 'coupler current (A)';
+% cb1.FontSize = 14;
+% cb2.Label.String = 'traces current (A)';
+% cb2.FontSize = 14;
 
+
+cb1 = colorbar(ax1,'Position',[.12 .11 .0475 .815]  );
+cb2 = colorbar(ax2,'Position',[.85 .11 .0475 .815]);
+cb1.Label.String = 'Couplers current [a.u.]';
+cb1.Label.FontSize = 14;
+cb2.Label.String = 'Traces current [a.u.]';
+cb2.Label.FontSize = 14;
+cb2.Ruler.Exponent = -2;
 %  colormap jet;
 % 
 %  colorbar 
 title_str = sprintf("signed current propagation @%d GHz, %d dBm", freq*1e-9, pwr);
-title(ax1, title_str);set(ax1,'Color','none');
+title(ax1, title_str);%set(ax1,'Color','none');
+
+set(ax1, 'position', [0.1800 0.1100 0.6550 0.7850])
+set(ax2, 'position', [0.1800 0.1100 0.6550 0.7850])
+set(ax1, 'xlim', [-2e-5,32*100*1e-6 + 2e-5])
+set(ax2, 'xlim', [-2e-5,32*100*1e-6 + 2e-5])
+ set(ax1, 'ylim', [-3e-6,1.62e-4 + 3e-6])
+set(ax2, 'ylim',  [-3e-6,1.62e-4 + 3e-6])
+
+ax1.XLabel.String = 'Position along lines (m)';
+ax1.XLabel.FontSize = 12;
+
 
 end
 
